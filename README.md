@@ -1,7 +1,7 @@
 # LAP6_feedback-cubbies
 
 ## About The Project
-This community-driven feature integrates seamlessly into an existing application to provide a space for giving and receiving constructive feedback. It’s designed to support new graduates seeking guidance on the quality of their work, helping to alleviate the uncertainty often felt during the job search process. By fostering clarity and empowerment, it enables users to build confidence and advance in their career journeys.
+This feature is designed to integrate into an existing app, creating a space where users can give and receive constructive feedback. It’s aimed at supporting new grads who want guidance on their work, helping ease the uncertainty of the job search process. By promoting clarity and confidence, it empowers users to grow and move forward in their careers.
 
 ## Tech Stack
 Frontend: React, SASS, ShadUI, HTML
