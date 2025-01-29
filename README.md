@@ -17,8 +17,6 @@ Backend: Firebase
 
 ## ERD
 
-## Team
-
 ## Project Resources:
 - Figma
 - VsCode, GitHub
