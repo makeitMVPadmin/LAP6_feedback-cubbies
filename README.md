@@ -13,13 +13,9 @@ Backend: Firebase
 - Display uploaded profiles in a queue or list format for easy access.
 - Allow users to tag their uploads with predefined roles for context.
 
-## User Flow
-
-## ERD
-
 ## Project Resources:
 - Figma
 - VsCode, GitHub
 - Jira, Confluence
 
-## Implementation
+## Firebase initialization steps
