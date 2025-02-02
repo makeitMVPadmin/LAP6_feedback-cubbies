@@ -39,11 +39,11 @@ Install Firebase tools globally using npm:
 npm install -g firebase-tools
 ```
 ### **Login to Firebase**
-#### Authenticate with Firebase using your Google account:
+#### Authenticate with Firebase using your Google account
 ```
 firebase login
 ```
-#### Navigate to your project directory and run:
+#### Navigate to your project directory and run
 ```
 firebase init
 ```
@@ -79,7 +79,10 @@ If you need to add a custom app link (e.g., /app1), update your firebase.json fi
 ```
 ## Deploying the App
 Once Firebase is initialized and configured, follow these steps to deploy:
-
+### Build the app
+```
+npm run build
+```
 ### Assign a Firebase Hosting target
 ```
 firebase target:apply hosting app1 app1-site
