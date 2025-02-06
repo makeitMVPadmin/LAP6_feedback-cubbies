@@ -26,13 +26,9 @@ function Post({ post }) {
     </CardHeader>
     <CardContent>
       <Carousel className="w-full max-w-xs">
-        <CarouselContent>
-          {/* Loop through the images array from the mock data */}
-          {post.images.map((image, index) => (
-            <CarouselItem key={index}>
-              <div className="p-1">
-                <Card>
-                  <CardContent className="flex aspect-square items-center justify-center p-6">
+        <CarouselContent className="flex overflow-hidden">
+              {post.images.map((image, index) => (
+                <CarouselItem key={index} className="flex-none">
                     <img
                       src={image}
                       alt={post.title}
@@ -42,12 +38,9 @@ function Post({ post }) {
                         objectFit: "cover",
                       }}
                     />
-                  </CardContent>
-                </Card>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
