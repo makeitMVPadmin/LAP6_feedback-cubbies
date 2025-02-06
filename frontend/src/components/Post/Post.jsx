@@ -35,7 +35,7 @@ function Post({ post }) {
                   <CardContent className="flex aspect-square items-center justify-center p-6">
                     <img
                       src={image}
-                      alt={`image ${index + 1} from ${post.title}`}
+                      alt={post.title}
                       style={{
                         width: "350px",
                         height: "auto",
