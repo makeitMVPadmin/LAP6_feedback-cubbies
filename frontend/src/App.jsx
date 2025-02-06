@@ -18,6 +18,7 @@ function App() {
 
     fetchData();
   }, []);
+  
   return (
     <>
       <h1>Feedback Cubbies</h1>

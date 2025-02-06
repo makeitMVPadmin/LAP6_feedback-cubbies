@@ -1,4 +1,5 @@
 import { db } from "../firebase.js";
+import * as functions from "firebase-functions";
 import {
   collection,
   addDoc,
@@ -21,7 +22,15 @@ import {
 //updatedAt
 
 //Create a new notification
-const createNotification = async (params) => {
+const createNotification = functions.https.onCall(async (params, context) => {
+  // Check if the user is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "User is not authenticated."
+    );
+  }
+
   try {
     const docRef = await addDoc(collection(db, "notification"), {
       userId: params.userId,
@@ -37,10 +46,18 @@ const createNotification = async (params) => {
     console.error("Error creating notification: ", err);
     throw new Error(`createNotification failed: ${err.message}`);
   }
-};
+});
 
 //Get all notifications for a user
-const getNotifications = async () => {
+const getNotifications = functions.https.onCall(async (context) => {
+  // Check if the user is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "User is not authenticated."
+    );
+  }
+
   try {
     const querySnapshot = await getDocs(collection(db, "notification"));
     const notificationArray = querySnapshot.docs.map((doc) => ({
@@ -53,57 +70,77 @@ const getNotifications = async () => {
     console.error("Error getting notifications: ", err);
     throw new Error(`getNotifications failed: ${err.message}`);
   }
-};
+});
 
 //Get all unread notifications for a user
-const getUnreadNotifications = async ({ userId }) => {
-  try {
-    // Filtering for unread notifications of the entire collection
-    const notificationsRef = collection(db, "notification");
-    const notifQuery = query(
-      notificationsRef,
-      where("userId", "==", userId),
-      where("readStatus", "==", false)
-    );
+const getUnreadNotifications = functions.https.onCall(
+  async ({ userId, context }) => {
+    // Check if the user is authenticated
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "User is not authenticated."
+      );
+    }
 
-    const querySnapshot = await getDocs(notifQuery);
+    try {
+      // Filtering for unread notifications of the entire collection
+      const notificationsRef = collection(db, "notification");
+      const notifQuery = query(
+        notificationsRef,
+        where("userId", "==", userId),
+        where("readStatus", "==", false)
+      );
 
-    // Extracting the unread notification data
-    const unreadNotifArray = [];
-    querySnapshot.forEach((doc) => {
+      const querySnapshot = await getDocs(notifQuery);
+
+      // Extracting the unread notification data
+      const unreadNotifArray = [];
+      querySnapshot.forEach((doc) => {
         unreadNotifArray.push({
-            id: doc.id,
-            ...doc.data(),
+          id: doc.id,
+          ...doc.data(),
         });
-    })
+      });
 
-    console.log(unreadNotifArray);
-    return unreadNotifArray;
-  } catch (err) {
-    console.error("Error getting notifications: ", err);
-    throw new Error(`getUnreadNotifications failed: ${err.message}`);
+      console.log(unreadNotifArray);
+      return unreadNotifArray;
+    } catch (err) {
+      console.error("Error getting notifications: ", err);
+      throw new Error(`getUnreadNotifications failed: ${err.message}`);
+    }
   }
-};
+);
 
 // Mark a notification as read
-const markNotificationAsRead = async ({ notificationId }) => {
-    try {
-        // Reference to a single/specific document
-        const notificationsDocRef = doc(db, "notification", notificationId);
-        await updateDoc (notificationsDocRef, {
-            readStatus: true,
-            updatedAt: serverTimestamp(),
-        });
-        return true;
-    } catch (err) {
-        console.error("Error marking notification as read: ", err);
-        throw new Error(`markNotificationAsRead failed: ${err.message}`);
+const markNotificationAsRead = functions.https.onCall(
+  async ({ notificationId, context }) => {
+    // Check if the user is authenticated
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "User is not authenticated."
+      );
     }
-}
+
+    try {
+      // Reference to a single/specific document
+      const notificationsDocRef = doc(db, "notification", notificationId);
+      await updateDoc(notificationsDocRef, {
+        readStatus: true,
+        updatedAt: serverTimestamp(),
+      });
+      return true;
+    } catch (err) {
+      console.error("Error marking notification as read: ", err);
+      throw new Error(`markNotificationAsRead failed: ${err.message}`);
+    }
+  }
+);
 
 export default {
   createNotification,
   getNotifications,
   getUnreadNotifications,
-  markNotificationAsRead
+  markNotificationAsRead,
 };
