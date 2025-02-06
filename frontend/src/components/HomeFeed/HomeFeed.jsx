@@ -1,5 +1,7 @@
 import React from "react";
+import Post from "../Post/Post.jsx";
 
+// loop through the posted portfolios
 function HomeFeed() {
   // mock data - replace with actual data later
   let mockPosts = [
@@ -22,16 +24,7 @@ function HomeFeed() {
   return (
     <section className="">
       {mockPosts.map((post) => (
-      <div key={post.id} className="">
-        <h2 className="">{post.username}</h2>
-        <h3 className="">{post.title}</h3>
-        <p className="">{post.description}</p>
-        <div className="carousel">
-          {post.images.map((image, index) => (
-            <img className="" key={index} src={image} alt={post.title} />
-          ))}
-        </div>
-      </div>
+        <Post key={post.id} post={post} />
       ))}
     </section>
   )
