@@ -21,58 +21,68 @@ import {
 //createdAt
 //updatedAt
 
-//Create a new notification
-const createNotification = functions.https.onCall(async (params, context) => {
-  // Check if the user is authenticated
-  if (!context.auth) {
-    throw new functions.https.HttpsError(
-      "failed-precondition",
-      "User is not authenticated."
-    );
-  }
+// Trigger: Whenever a new comment(feedback) is created, a new notification is created.
+const onCommentCreated = functions.firestore
+  .document("feedbacks/{feedbackId}")
+  .onCreate(async (snapshot, context) => {
+    try {
+      const feedbackData = snapshot.data();
+      const feedbackId = context.params.feedbackId;
 
-  try {
-    const docRef = await addDoc(collection(db, "notification"), {
-      userId: params.userId,
-      portfolioId: params.portfolioId,
-      feedbackId: params.feedbackId,
-      message: params.message,
-      readStatus: false,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    return docRef;
-  } catch (err) {
-    console.error("Error creating notification: ", err);
-    throw new Error(`createNotification failed: ${err.message}`);
-  }
-});
+      // Check if the fields exist
+      if (!feedbackData || !feedbackData.userId || !feedbackData.portfolioId) {
+        console.error("Missing required fields in feedback data");
+        return null;
+      }
 
-//Get all notifications for a user
-const getNotifications = functions.https.onCall(async (context) => {
-  // Check if the user is authenticated
-  if (!context.auth) {
-    throw new functions.https.HttpsError(
-      "failed-precondition",
-      "User is not authenticated."
-    );
-  }
+      // Create a new notification
+      await addDoc(collection(db, "notification"), {
+        userId: feedbackData.userId,
+        portfolioId: feedbackData.portfolioId,
+        feedbackId: feedbackId,
+        message: "New comment",
+        readStatus: false,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
 
-  try {
-    const querySnapshot = await getDocs(collection(db, "notification"));
-    const notificationArray = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log(notificationArray);
-    return notificationArray;
-  } catch (err) {
-    console.error("Error getting notifications: ", err);
-    throw new Error(`getNotifications failed: ${err.message}`);
-  }
-});
+      return null;
+    } catch (err) {
+      console.error("Error creating notification: ", err);
+      throw new Error(
+        `createNotification while listening to comment creation failed: ${err.message}`
+      );
+    }
+  });
 
-//Get all unread notifications for a user
+// TODO: this block of code needs to be replaced with a real-time listener on the frontend.
+
+  // Get all notifications for a user
+  // const getNotifications = functions.https.onCall(async (context) => {
+  //   // Check if the user is authenticated
+  //   if (!context.auth) {
+  //     throw new functions.https.HttpsError(
+  //       "failed-precondition",
+  //       "User is not authenticated."
+  //     );
+  //   }
+
+  //   try {
+  //     const querySnapshot = await getDocs(collection(db, "notification"));
+  //     const notificationArray = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     console.log(notificationArray);
+  //     return notificationArray;
+  //   } catch (err) {
+  //     console.error("Error getting notifications: ", err);
+  //     throw new Error(`getNotifications failed: ${err.message}`);
+  //   }
+  // });
+
+// Callable functions to fetch unread notifications and mark them as read.
+// Get all unread notifications for a user
 const getUnreadNotifications = functions.https.onCall(
   async ({ userId, context }) => {
     // Check if the user is authenticated
@@ -139,7 +149,7 @@ const markNotificationAsRead = functions.https.onCall(
 );
 
 export default {
-  createNotification,
+  onCommentCreated,
   getNotifications,
   getUnreadNotifications,
   markNotificationAsRead,
