@@ -6,14 +6,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "../ui/carousel";
 
 // rendering a single posted portfolio
 function Post({ post }) {
