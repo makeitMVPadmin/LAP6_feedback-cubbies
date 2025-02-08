@@ -11,7 +11,9 @@ import {
   updateDoc,
   getDoc,
 } from "firebase/firestore";
+import { type } from "os";
 
+// COMMENTS
 // Data Structure: 'notification' collection
 //id - notification id
 //userId - assumption: this is the sender
@@ -50,10 +52,11 @@ const onCommentCreated = functions.firestore
       // Create a new notification
       await addDoc(collection(db, "notification"), {
         userId: feedbackData.userId, // Assuming this is the sender
-        portfolioId: feedbackData.portfolioId,
         ownerUserId, // Assuming this is the receiver
+        portfolioId: feedbackData.portfolioId,
         feedbackId: feedbackId,
-        message: feedbackData.message,
+        type: "feedback",
+        message: `${feedbackData.userId} commented on your portfolio`,
         readStatus: false,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -87,7 +90,7 @@ const getNotifications = functions.https.onCall(
         notificationsRef,
         where("ownerUserId", "==", userId),
         orderBy("createdAt", "desc"),
-        limit(5) 
+        limit(5)
       );
 
       // Using last document snapshot('startAfter')
@@ -143,7 +146,7 @@ const getUnreadNotifications = functions.https.onCall(
         where("ownerUserId", "==", userId),
         where("readStatus", "==", false),
         orderBy("createdAt", "desc"),
-        limit(10) // TODO: adjust as per design requirements
+        limit(5)
       );
 
       const querySnapshot = await getDocs(q);
@@ -168,7 +171,7 @@ const getUnreadNotifications = functions.https.onCall(
 
 // Mark a notification as read
 const markNotificationAsRead = functions.https.onCall(
-  async ({ notificationId }, context ) => {
+  async ({ notificationId }, context) => {
     // Check if the user is authenticated
     if (!context.auth) {
       throw new functions.https.HttpsError(
@@ -192,9 +195,60 @@ const markNotificationAsRead = functions.https.onCall(
   }
 );
 
+// REACTIONS/BOOSTS
+// Data Structure: 'reactions' collection
+// id - reaction id
+// userId - assumption: this is the sender
+// portfolioId - Id of the portfolio receiving the reaction
+// createdAt
+// updatedAt
+
+// Trigger: Whenever a user reacts to a portfolio, a new reaction is created.
+const onReactionCreated = functions.firestore
+  .document("reaction/{reactionId}")
+  .onCreate(async (snapshot, context) => {
+    try {
+      const reactionData = snapshot.data();
+      const reactionId = context.params.reactionId;
+
+      // Check if the fields exist
+      if (!reactionData || !reactionData.userId || !reactionData.portfolioId) {
+        console.error("Missing required fields in reaction data");
+        return null;
+      }
+
+      // // Fetch the portfolio to get the ownerUserId (receiver)
+      const portfolioDoc = await getDoc(doc(db, "portfolio", reactionData.portfolioId));
+      if (!portfolioDoc.exists()) {
+        console.error("Portfolio not found");
+        return null;
+      }
+
+      const ownerUserId = portfolioDoc.data().userId;
+
+      // Create a new notification for the reaction
+      await addDoc(collection(db, "notification"), {
+        userId: reactionData.userId, // Assuming this is the sender
+        ownerUserId, // Assuming this is the receiver
+        portfolioId: reactionData.portfolioId,
+        reactionId,
+        type: "reaction",
+        message: `${reactionData.userId} reacted to your portfolio`,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      })
+
+      return null;
+    } catch (err) {
+      console.error("Error creating reaction notification:", err);
+      throw new Error(`onReactionCreated failed: ${err.message}`);
+    }
+  });
+
 export default {
   onCommentCreated,
   getNotifications,
   getUnreadNotifications,
   markNotificationAsRead,
+  onReactionCreated
 };
