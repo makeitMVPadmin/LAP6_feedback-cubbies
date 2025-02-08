@@ -23,7 +23,8 @@ function App() {
   return (
     <>
       <h1>Feedback Cubbies</h1>
-      <Button variant="ghost">Secondary</Button>
+      <Button text="click me" variant="secondary" />
+      <Button variant="link">Click me</Button>
 
 
       <HomeFeed />

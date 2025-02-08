@@ -4,7 +4,7 @@ export default {
     content: [
 		"./index.html",
 		"./src/**/*.{ts,tsx,js,jsx}",
-		"./node_modules/@shadcn/ui/dist/**/*.js"
+		"./node_modules/@shadcn/ui/dist/**/*.js",
 	  ],
   theme: {
   	extend: {
