@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 
-const getFeedbackForPortfolio = async (portfolioId) => {
+const getPortfolioFeedback = async (portfolioId) => {
   const feedbackQuery = query(
     collection(db, "feedback"),
     where("portfolioId", "==", portfolioId)
@@ -68,7 +68,7 @@ const deleteFeedback = async (feedbackId) => {
 };
 
 export {
-  getFeedbackForPortfolio,
+  getPortfolioFeedback,
   createFeedback,
   updateFeedback,
   deleteFeedback,

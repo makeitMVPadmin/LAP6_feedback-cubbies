@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  getFeedbackForPortfolio,
+  getPortfolioFeedback,
   createFeedback,
   updateFeedback,
   deleteFeedback,
@@ -15,8 +15,8 @@ const Feedback = () => {
   const [updatedComments, setUpdatedComments] = useState({});
 
 
-  const getPortfolioFeedback = async () => {
-    const feedback = await getFeedbackForPortfolio(portfolioId);
+  const retrivePortfolioFeedback = async () => {
+    const feedback = await getPortfolioFeedback(portfolioId);
     setFeedbackList(feedback);
   };
 
@@ -88,7 +88,7 @@ const Feedback = () => {
   };
 
   useEffect(() => {
-    getPortfolioFeedback();
+    retrivePortfolioFeedback();
   }, [portfolioId]);
 
   return (
