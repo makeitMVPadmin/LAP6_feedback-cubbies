@@ -12,24 +12,30 @@ import { Link } from "react-router-dom";
 function NavigationMenuDemo() {
   return (
     <NavigationMenu>
-      <NavigationMenuList className="">
-        <NavigationMenuItem className="">
-          <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+      <NavigationMenuList>
+        {/* Home Link */}
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link to="/">Home</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="">
-          <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+        {/* Comments Link */}
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link to="/comments">Comments</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
-        <NavigationMenuItem className="">
+        {/* Notifications Dropdown */}
+        <NavigationMenuItem>
           <NavigationMenuTrigger>Notifications</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <Link to="/comments">notification1</Link>
+            <NavigationMenuLink
+              asChild
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link to="/notifications">Notification 1</Link>
             </NavigationMenuLink>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -37,4 +43,5 @@ function NavigationMenuDemo() {
     </NavigationMenu>
   );
 }
+
 export default NavigationMenuDemo;
