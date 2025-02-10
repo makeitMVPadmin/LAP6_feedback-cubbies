@@ -53,7 +53,7 @@ const onCommentCreated = functions.firestore
         userId: feedbackData.userId, // Assuming this is the sender
         ownerUserId, // Assuming this is the receiver
         portfolioId: feedbackData.portfolioId,
-        feedbackId: feedbackId,
+        feedbackId: feedbackId, // Assuming this is the comment
         type: "feedback",
         message: `${feedbackData.userId} commented on your portfolio`,
         readStatus: false,
@@ -124,58 +124,58 @@ const onReactionCreated = functions.firestore
   });
 
 // Get paginated notificationns for a user "All Notifications Tab" (infinite scrolling)
-const getNotifications = functions.https.onCall(
-  async ({ userId, lastVisibleDoc }, context) => {
-    if (!context.auth) {
-      throw new functions.https.HttpsError(
-        "failed-precondition",
-        "User is not authenticated."
-      );
-    }
+// const getNotifications = functions.https.onCall(
+//   async ({ userId, lastVisibleDoc }, context) => {
+//     if (!context.auth) {
+//       throw new functions.https.HttpsError(
+//         "failed-precondition",
+//         "User is not authenticated."
+//       );
+//     }
 
-    try {
-      const notificationsRef = collection(db, "notification");
-      // Fetching the first 5 notifications
-      let q = query(
-        notificationsRef,
-        where("ownerUserId", "==", userId),
-        orderBy("createdAt", "desc"),
-        limit(5)
-      );
+//     try {
+//       const notificationsRef = collection(db, "notification");
+//       // Fetching the first 5 notifications
+//       let q = query(
+//         notificationsRef,
+//         where("ownerUserId", "==", userId),
+//         orderBy("createdAt", "desc"),
+//         limit(5)
+//       );
 
-      // Using last document snapshot('startAfter')
-      if (lastVisibleDoc) {
-        const lastVisibleSnapshot = await getDoc(
-          doc(db, "notification", lastVisibleDoc)
-        );
-        q = query(
-          notificationsRef,
-          where("ownerUserId", "==", userId),
-          orderBy("createdAt", "desc"),
-          startAfter(lastVisibleSnapshot),
-          limit(5)
-        );
-      }
+//       // Using last document snapshot('startAfter')
+//       if (lastVisibleDoc) {
+//         const lastVisibleSnapshot = await getDoc(
+//           doc(db, "notification", lastVisibleDoc)
+//         );
+//         q = query(
+//           notificationsRef,
+//           where("ownerUserId", "==", userId),
+//           orderBy("createdAt", "desc"),
+//           startAfter(lastVisibleSnapshot),
+//           limit(5)
+//         );
+//       }
 
-      const querySnapshot = await getDocs(q);
-      const notificationList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+//       const querySnapshot = await getDocs(q);
+//       const notificationList = querySnapshot.docs.map((doc) => ({
+//         id: doc.id,
+//         ...doc.data(),
+//       }));
 
-      // Fetch the last document snapshot for the next call
-      const lastVisibleDoc =
-        querySnapshot.docs.length > 0
-          ? querySnapshot.docs[querySnapshot.docs.length - 1].id
-          : null;
+//       // Fetch the last document snapshot for the next call
+//       const lastVisibleDoc =
+//         querySnapshot.docs.length > 0
+//           ? querySnapshot.docs[querySnapshot.docs.length - 1].id
+//           : null;
 
-      return { notificationList, lastVisibleDoc };
-    } catch (err) {
-      console.error("Error getting notifications: ", err);
-      throw new Error(`getNotifications failed: ${err.message}`);
-    }
-  }
-);
+//       return { notificationList, lastVisibleDoc };
+//     } catch (err) {
+//       console.error("Error getting notifications: ", err);
+//       throw new Error(`getNotifications failed: ${err.message}`);
+//     }
+//   }
+// );
 
 // Get all unread notifications for a user "Unread Comments/Feedbacks & Reactions Tab"
 const getUnreadNotifications = functions.https.onCall(
