@@ -24,7 +24,8 @@ function HomeFeed() {
       "images": [resume]
     },
   ]
-
+  
+  
   return (
     <section className="">
       {mockPosts.map((post) => (

@@ -15,19 +15,27 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 
+
 // rendering a single posted portfolio
 function Post({ post }) {
+  console.log("Received post:", post);
+  if (!post) {
+    console.error("Post is undefined!");
+    return null;
+  }
+
+  
   return (
     <Card>
     <CardHeader>
-      <CardTitle>{post.username}</CardTitle>
-      <CardTitle>{post.title}</CardTitle>
-      <CardDescription>{post.description}</CardDescription>
+      <CardTitle>{post?.username || "Unknown User"}</CardTitle>
+      <CardTitle>{post?.title || "Untitled Post"}</CardTitle>
+      <CardDescription>{post?.description || "No description available."}</CardDescription>
     </CardHeader>
     <CardContent>
       <Carousel className="w-full max-w-xs">
         <CarouselContent className="flex overflow-hidden">
-              {post.images.map((image, index) => (
+              {post.images?.map((image, index) => (
                 <CarouselItem key={index} className="flex-none">
                     <img
                       src={image}
