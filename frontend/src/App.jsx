@@ -1,12 +1,9 @@
-import Comments from "./pages/CommentsPage";
 import HomePage from "./pages/HomePage";
 import NavigationMenuDemo from "@/components/TopNav/TopNav";
 import { Button } from "@/components/ui/button";
-import React from "react";
-import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import fetchUsers from "./firebase/functions/fetchUsers";
+import FeedbackPage from "./pages/FeedbackPage";
 
 function App() {
   return (
@@ -23,7 +20,7 @@ function App() {
           {/* Define Routes */}
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/comments" element={<Comments />} />
+            <Route path="/feedback" element={<FeedbackPage />} />
           </Routes>
         </main>
       </div>
