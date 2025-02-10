@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "module": "CommonJS",
     "target": "ESNext",
     "outDir": "./dist",
