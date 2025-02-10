@@ -3,7 +3,6 @@ import "./App.css";
 import fetchUsers from "./firebase/functions/fetchUsers";
 import { Button } from "./components/ui/button";
 import HomeFeed from "./components/HomeFeed/HomeFeed";
-import { Link } from "lucide-react";
 
 function App() {
   const [userData, setUsers] = useState([]);
