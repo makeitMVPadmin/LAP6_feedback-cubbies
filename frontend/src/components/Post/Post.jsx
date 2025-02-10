@@ -1,9 +1,60 @@
 import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
 
-function Post() {
+
+// rendering a single posted portfolio
+function Post({ post }) {
+  // console.log("Received post:", post);
+  
+  if (!post) {
+    console.error("Post is undefined!");
+    return null;
+  }
+
   return (
-    <div>Post</div>
-  )
+    <Card>
+    <CardHeader>
+      <CardTitle>{post?.username || "Unknown User"}</CardTitle>
+      <CardTitle>{post?.title || "Untitled Post"}</CardTitle>
+      <CardDescription>{post?.description || "No description available."}</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <Carousel className="w-full max-w-xs">
+        <CarouselContent className="flex overflow-hidden">
+              {post.images?.map((image, index) => (
+                <CarouselItem key={index} className="flex-none">
+                    <img
+                      src={image}
+                      alt={post.title}
+                      style={{
+                        width: "350px",
+                        height: "auto",
+                        objectFit: "cover",
+                      }}
+                    />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </CardContent>
+  </Card>
+  );
 }
 
-export default Post
+export default Post;

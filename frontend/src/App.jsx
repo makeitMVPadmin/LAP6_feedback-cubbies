@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import fetchUsers from "./firebase/functions/fetchUsers";
-import { Button } from "@/components/ui/button";
+import { Button } from "./components/ui/button";
+import HomeFeed from "./components/HomeFeed/HomeFeed";
+import Post from "./components/Post/Post";
 
 function App() {
   const [userData, setUsers] = useState([]);
@@ -20,8 +22,7 @@ function App() {
   }, []);
   return (
     <>
-      <h1>Feedback Cubbies</h1>
-      <Button>Click me</Button>
+      <HomeFeed />
     </>
   );
 }
