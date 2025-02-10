@@ -18,13 +18,13 @@ import {
 
 // rendering a single posted portfolio
 function Post({ post }) {
-  console.log("Received post:", post);
+  // console.log("Received post:", post);
+  
   if (!post) {
     console.error("Post is undefined!");
     return null;
   }
 
-  
   return (
     <Card>
     <CardHeader>
