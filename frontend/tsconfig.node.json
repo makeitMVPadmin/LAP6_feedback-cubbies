@@ -1,20 +1,15 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
+    "module": "CommonJS",
     "target": "ESNext",
-    "module": "ESNext",
-    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
-    "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "composite": true // this is not automatically added
   },
-  "include": ["src"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }
