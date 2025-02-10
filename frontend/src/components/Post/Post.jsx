@@ -26,7 +26,7 @@ function Post({ post }) {
   }
 
   return (
-    <Card>
+    <Card className="flex flex-col items-center text-left w-3xl">
     <CardHeader>
       <CardTitle>{post?.username || "Unknown User"}</CardTitle>
       <CardTitle>{post?.title || "Untitled Post"}</CardTitle>
@@ -41,7 +41,7 @@ function Post({ post }) {
                       src={image}
                       alt={post.title}
                       style={{
-                        width: "350px",
+                        width: "450px",
                         height: "auto",
                         objectFit: "cover",
                       }}
