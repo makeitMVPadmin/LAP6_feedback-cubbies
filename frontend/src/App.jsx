@@ -10,6 +10,7 @@ import fetchUsers from "./firebase/functions/fetchUsers";
 
 function App() {
   return (
+    <>
     <Router>
       <div className="min-h-screen flex flex-col">
         <header className="bg-white shadow-md p-4">
@@ -27,6 +28,7 @@ function App() {
         </main>
       </div>
     </Router>
+    </>
   );
 }
 
