@@ -29,6 +29,63 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [getUnreadReactions, setGetUnreadReactions] = useState([]);
 
   console.log("ownerUserId:", ownerUserId);
+  const mockNotifications = [
+    {
+      id: "notif1",
+      userId: "user123",
+      portfolioId: "portfolio1",
+      feedbackId: "feedback1",
+      reactionId: null,
+      message: "User1 commented on your portfolio",
+      readStatus: false,
+      createdAt: "2025-02-01T10:30:00Z",
+      updatedAt: "2025-02-01T10:30:00Z",
+    },
+    {
+      id: "notif2",
+      userId: "user123",
+      portfolioId: "portfolio1",
+      feedbackId: null,
+      reactionId: "reaction1",
+      message: "User2 reacted to your portfolio",
+      readStatus: true,
+      createdAt: "2025-02-02T11:00:00Z",
+      updatedAt: "2025-02-02T11:00:00Z",
+    },
+    {
+      id: "notif3",
+      userId: "user456",
+      portfolioId: "portfolio2",
+      feedbackId: "feedback2",
+      reactionId: null,
+      message: "User3 commented on your portfolio",
+      readStatus: false,
+      createdAt: "2025-02-03T09:45:00Z",
+      updatedAt: "2025-02-03T09:45:00Z",
+    },
+    {
+      id: "notif4",
+      userId: "user456",
+      portfolioId: "portfolio2",
+      feedbackId: null,
+      reactionId: "reaction2",
+      message: "User4 reacted to your portfolio",
+      readStatus: true,
+      createdAt: "2025-02-04T14:15:00Z",
+      updatedAt: "2025-02-04T14:15:00Z",
+    },
+    {
+      id: "notif5",
+      userId: "user789",
+      portfolioId: "portfolio3",
+      feedbackId: "feedback3",
+      reactionId: null,
+      message: "User5 commented on your portfolio",
+      readStatus: false,
+      createdAt: "2025-02-05T08:30:00Z",
+      updatedAt: "2025-02-05T08:30:00Z",
+    },
+  ];
 
   // Listener for a new feedback created
   const listenForNewFeedback = () => {
@@ -89,16 +146,6 @@ const NotificationTabs = ({ ownerUserId }) => {
   };
 
   // Fetching all notifications
-  const mockNotifications = [
-    { id: "1", message: "New comment on your post", createdAt: "2025-02-10" },
-    {
-      id: "2",
-      message: "You received a new reaction",
-      createdAt: "2025-02-11",
-    },
-    { id: "3", message: "Your feedback was upvoted", createdAt: "2025-02-12" },
-  ];
-
   const fetchNotifications = async () => {
     setLoading(true);
     try {
