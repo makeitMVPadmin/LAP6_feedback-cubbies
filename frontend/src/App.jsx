@@ -13,7 +13,7 @@ function App() {
         <div className="min-h-screen flex flex-col">
           <header className="bg-white shadow-md p-4">
             <NavigationMenuDemo />
-            <NotificationTabs ownerUserId="Dn8E6i4iljA5zqTY0ghu"/>
+            <NotificationTabs ownerUserId="Dn8E6i4iljA5zqTY0ghu"/>  // Replace with the actual user ID
           </header>
           <main className="flex-grow p-4">
             <Routes>
