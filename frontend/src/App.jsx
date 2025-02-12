@@ -12,23 +12,26 @@ import fetchUsers from "./firebase/functions/fetchUsers";
 function App() {
   return (
     <>
-    <Router>
-      <div className="min-h-screen flex flex-col">
-        <header className="bg-white shadow-md p-4">
-          <NavigationMenuDemo />
-        </header>
-        <main className="flex-grow p-4">
-          <h1>Feedback Cubbies</h1>
-          <Button>Click me</Button>
+      <Router>
+        <div className="min-h-screen flex flex-col">
+          <header className="bg-white shadow-md p-4">
+            <NavigationMenuDemo />
+          </header>
+          <main className="flex-grow p-4">
+            <h1>Feedback Cubbies</h1>
+            <Button>Click me</Button>
+            <link to="/FetchPortfolio">
+              <Button>Review Portfolio</Button>
+            </link>
 
-          {/* Define Routes */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/comments" element={<Comments />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+            {/* Define Routes */}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/comments" element={<Comments />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
     </>
   );
 }
