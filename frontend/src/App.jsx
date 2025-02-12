@@ -21,7 +21,7 @@ function App() {
             <h1>Feedback Cubbies</h1>
             <Button>Click me</Button>
             <link to="/FetchPortfolio">
-              <Button>Review Portfolio</Button>
+              <Button coclick>Review Portfolio</Button>
             </link>
 
             {/* Define Routes */}
