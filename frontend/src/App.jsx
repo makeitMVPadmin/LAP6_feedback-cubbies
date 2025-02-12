@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import FeedbackPage from "./pages/FeedbackPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import NotificationTabs from "./components/NotificationTabs/NotificationsTabs";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <div className="min-h-screen flex flex-col">
           <header className="bg-white shadow-md p-4">
             <NavigationMenuDemo />
+            <NotificationTabs ownerUserId="1234"/>
           </header>
           <main className="flex-grow p-4">
             <Routes>

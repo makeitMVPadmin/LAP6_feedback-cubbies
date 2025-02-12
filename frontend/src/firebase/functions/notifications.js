@@ -9,6 +9,8 @@ import {
   doc,
   updateDoc,
   getDoc,
+  orderBy,
+  limit
 } from "firebase/firestore";
 
 // CREATE
@@ -170,6 +172,8 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
       orderBy("createdAt", "desc"),
       limit(10)
     );
+
+    console.log(unreadFeedbackQuery);
 
     const querySnapshot = await getDocs(unreadFeedbackQuery);
 

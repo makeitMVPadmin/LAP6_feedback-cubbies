@@ -28,6 +28,8 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [getUnreadComments, setGetUnreadComments] = useState([]);
   const [getUnreadReactions, setGetUnreadReactions] = useState([]);
 
+  console.log("ownerUserId:", ownerUserId);
+
   // Listener for a new feedback created
   const listenForNewFeedback = () => {
     try {
@@ -87,18 +89,29 @@ const NotificationTabs = ({ ownerUserId }) => {
   };
 
   // Fetching all notifications
+  const mockNotifications = [
+    { id: "1", message: "New comment on your post", createdAt: "2025-02-10" },
+    {
+      id: "2",
+      message: "You received a new reaction",
+      createdAt: "2025-02-11",
+    },
+    { id: "3", message: "Your feedback was upvoted", createdAt: "2025-02-12" },
+  ];
+
   const fetchNotifications = async () => {
     setLoading(true);
     try {
       const { notificationList, lastVisible } = await getAllNotifications(
         ownerUserId
       );
-      setGetNotifications(notificationList);
+      setGetNotifications(Array.isArray(notificationList) ? notificationList : []);
       setGetLastVisibleDoc(lastVisible);
-      setLoading(false);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
-      return [];
+      setGetNotifications(mockNotifications);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,12 +132,17 @@ const NotificationTabs = ({ ownerUserId }) => {
         }));
 
         // Update the notifications state and removing duplicates
-        setGetNotifications((prev) => [
-          ...newNotifications.filter(
-            (newNotification) => !prev.some((p) => p.id === newNotification.id)
-          ),
-          ...prev,
-        ]);
+        setGetNotifications((prev) => {
+          const prevArr = Array.isArray(prev) ? prev : [];
+          const mergedArr = [
+            ...newNotifications.filter(
+              (newNotification) =>
+                !prevArr.some((p) => p.id === newNotification.id)
+            ),
+            ...prevArr,
+          ];
+          return mergedArr;
+        });
       });
 
       return unsubscribe;
@@ -134,15 +152,17 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
+  console.log("getNotifications:", getNotifications);
+
   useEffect(() => {
     fetchNotifications();
     const unsubscribeFeedback = listenForNewFeedback();
     const unsubscribeReaction = listenForNewReaction();
     const unsubscribeNotification = listenForNewNotifications();
     return () => {
-      unsubscribeFeedback();
-      unsubscribeReaction();
-      unsubscribeNotification();
+      if (unsubscribeFeedback) unsubscribeFeedback();
+      if (unsubscribeReaction) unsubscribeReaction();
+      if (unsubscribeNotification) unsubscribeNotification();
     };
   }, [ownerUserId]);
 
@@ -151,8 +171,8 @@ const NotificationTabs = ({ ownerUserId }) => {
     setLoading(true);
     try {
       const [unreadComments, unreadReactions] = await Promise.all([
-        getUnreadCommentsNotification(),
-        getUnreadReactionsNotification(),
+        getUnreadCommentsNotification(ownerUserId),
+        getUnreadReactionsNotification(ownerUserId),
       ]);
 
       setGetUnreadComments(unreadComments);
@@ -166,7 +186,7 @@ const NotificationTabs = ({ ownerUserId }) => {
 
   useEffect(() => {
     fetchUnreadNotifs();
-  }, []);
+  }, [ownerUserId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -180,41 +200,41 @@ const NotificationTabs = ({ ownerUserId }) => {
           <TabsTrigger value="comments">COMMENTS</TabsTrigger>
           <TabsTrigger value="reactions">REACTIONS</TabsTrigger>
         </TabsList>
-      </Tabs>
 
-      {/* ALL Notifications */}
-      <TabsContent>
-        <section>
-          {/* map through the notifications */}
-          {getNotifications.map((notif) => (
-            <div key={notif.id}>
-              <h3>{notif.message}</h3>
-              {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
-              <p>{notif.createdAt}</p>
+        {/* ALL Notifications */}
+        <TabsContent>
+          <section>
+            {/* map through the notifications */}
+            {getNotifications.map((notif) => (
+              <div key={notif.id}>
+                <h3>{notif.message}</h3>
+                {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
+                <p>{notif.createdAt}</p>
+              </div>
+            ))}
+          </section>
+        </TabsContent>
+
+        {/* Unread Comments */}
+        <TabsContent>
+          {getUnreadComments.map((unreadNotif) => (
+            <div>
+              <h3>{unreadNotif.message}</h3>
+              <p>{unreadNotif.createdAt}</p>
             </div>
           ))}
-        </section>
-      </TabsContent>
+        </TabsContent>
 
-      {/* Unread Comments */}
-      <TabsContent>
-        {getUnreadComments.map((unreadNotif) => (
-          <div>
-            <h3>{unreadNotif.message}</h3>
-            <p>{unreadNotif.createdAt}</p>
-          </div>
-        ))}
-      </TabsContent>
-
-      {/* Unread Reactions */}
-      <TabsContent>
-        {getUnreadReactions.map((unreadNotif) => (
-          <div>
-            <h3>{unreadNotif.message}</h3>
-            <p>{unreadNotif.createdAt}</p>
-          </div>
-        ))}
-      </TabsContent>
+        {/* Unread Reactions */}
+        <TabsContent>
+          {getUnreadReactions.map((unreadNotif) => (
+            <div>
+              <h3>{unreadNotif.message}</h3>
+              <p>{unreadNotif.createdAt}</p>
+            </div>
+          ))}
+        </TabsContent>
+      </Tabs>
     </>
   );
 };
