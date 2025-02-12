@@ -32,7 +32,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const mockNotifications = [
     {
       id: "notif1",
-      userId: "user123",
+      userId: "Dn8E6i4iljA5zqTY0ghu",
       portfolioId: "portfolio1",
       feedbackId: "feedback1",
       reactionId: null,
@@ -152,11 +152,12 @@ const NotificationTabs = ({ ownerUserId }) => {
       const { notificationList, lastVisible } = await getAllNotifications(
         ownerUserId
       );
-      setGetNotifications(Array.isArray(notificationList) ? notificationList : []);
+      setGetNotifications(mockNotifications);
+      // setGetNotifications(Array.isArray(notificationList) ? notificationList : []);
       setGetLastVisibleDoc(lastVisible);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
-      setGetNotifications(mockNotifications);
+      // setGetNotifications(mockNotifications);
     } finally {
       setLoading(false);
     }
@@ -239,6 +240,10 @@ const NotificationTabs = ({ ownerUserId }) => {
     return <div>Loading...</div>;
   }
 
+  if (getNotifications.length == 0) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Tabs defaultValue="all">
@@ -248,6 +253,25 @@ const NotificationTabs = ({ ownerUserId }) => {
           <TabsTrigger value="reactions">REACTIONS</TabsTrigger>
         </TabsList>
 
+        {/* Sample of the data not inside the TabsContent */}
+        <section>
+          {/* map through the notifications */}
+          {getNotifications.map((notif) => (
+            <div key={notif.id}>
+              <h3>{notif.message}</h3>
+              {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
+              <p>{new Date(notif.createdAt).toLocaleDateString()}</p>
+              <p>
+                {" "}
+                {new Date(notif.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          ))}
+        </section>
+
         {/* ALL Notifications */}
         <TabsContent>
           <section>
@@ -256,7 +280,14 @@ const NotificationTabs = ({ ownerUserId }) => {
               <div key={notif.id}>
                 <h3>{notif.message}</h3>
                 {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
-                <p>{notif.createdAt}</p>
+                <p>{new Date(notif.createdAt).toLocaleDateString()}</p>
+                <p>
+                  {" "}
+                  {new Date(notif.createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
               </div>
             ))}
           </section>

@@ -39,6 +39,7 @@ export const createCommentNotification = async (feedbackId) => {
 
     // Fetch the sender
     const senderDoc = await getDoc(doc(db, "user", feedbackData.userId));
+    console.log("feedbackData.userId:", feedbackData.userId);
     if (!senderDoc.exists()) {
       console.error("User not found");
       return null;
