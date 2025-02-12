@@ -1,9 +1,11 @@
 import { db } from "../../firebase/firebase";
 import {
+  createCommentNotification,
+  createReactionNotification,
   getAllNotifications,
   getUnreadCommentsNotification,
   getUnreadReactionsNotification,
-} from "../../firebase/functions/notificationsFunctions";
+} from "../../firebase/functions/notifications";
 import {
   Tabs,
   TabsList,
@@ -26,6 +28,65 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [getUnreadComments, setGetUnreadComments] = useState([]);
   const [getUnreadReactions, setGetUnreadReactions] = useState([]);
 
+  // Listener for a new feedback created
+  const listenForNewFeedback = () => {
+    try {
+      const feedbackQuery = query(
+        collection(db, "feedback"),
+        orderBy("createdAt", "desc")
+      );
+
+      const unsubscribe = onSnapshot(feedbackQuery, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          if (change.type === "added") {
+            const feedbackId = change.doc.id;
+            console.log("New feedback detected");
+
+            try {
+              await createCommentNotification(feedbackId);
+            } catch (err) {
+              console.error("Failed to create notification:", err);
+            }
+          }
+        });
+      });
+      return unsubscribe;
+    } catch (err) {
+      console.error("Error listening for new feedback: ", err);
+      return [];
+    }
+  };
+
+  // Listener for a new reaction created
+  const listenForNewReaction = () => {
+    try {
+      const reactionQuery = query(
+        collection(db, "reaction"),
+        orderBy("createdAt", "desc")
+      );
+
+      const unsubscribe = onSnapshot(reactionQuery, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          if (change.type === "added") {
+            const reactionId = change.doc.id;
+            console.log("New reaction detected");
+
+            try {
+              await createReactionNotification(reactionId);
+            } catch (err) {
+              console.error("Failed to create notification:", err);
+            }
+          }
+        });
+      });
+      return unsubscribe;
+    } catch (err) {
+      console.error("Error listening for new reaction: ", err);
+      return [];
+    }
+  };
+
+  // Fetching all notifications
   const fetchNotifications = async () => {
     setLoading(true);
     try {
@@ -41,10 +102,9 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  // Listener for new notifications
+  // Listener for new notifications created
   const listenForNewNotifications = () => {
     try {
-      // Reference to a collection
       const notificationQuery = query(
         collection(db, "notification"),
         where("userId", "==", ownerUserId),
@@ -76,10 +136,17 @@ const NotificationTabs = ({ ownerUserId }) => {
 
   useEffect(() => {
     fetchNotifications();
-    const unsubscribe = listenForNewNotifications();
-    return () => unsubscribe();
+    const unsubscribeFeedback = listenForNewFeedback();
+    const unsubscribeReaction = listenForNewReaction();
+    const unsubscribeNotification = listenForNewNotifications();
+    return () => {
+      unsubscribeFeedback();
+      unsubscribeReaction();
+      unsubscribeNotification();
+    };
   }, [ownerUserId]);
 
+  // Fetching unread notifications
   const fetchUnreadNotifs = async () => {
     setLoading(true);
     try {
@@ -93,13 +160,17 @@ const NotificationTabs = ({ ownerUserId }) => {
     } catch (err) {
       console.error("Error fetching notifications list:", err);
     } finally {
-      setLoading (false);
+      setLoading(false);
     }
   };
 
-  useEffect (() => {
+  useEffect(() => {
     fetchUnreadNotifs();
-  }, [])
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -137,7 +208,7 @@ const NotificationTabs = ({ ownerUserId }) => {
 
       {/* Unread Reactions */}
       <TabsContent>
-      {getUnreadReactions.map((unreadNotif) => (
+        {getUnreadReactions.map((unreadNotif) => (
           <div>
             <h3>{unreadNotif.message}</h3>
             <p>{unreadNotif.createdAt}</p>

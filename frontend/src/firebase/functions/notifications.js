@@ -1,5 +1,4 @@
 import { db } from "../firebase.js";
-import * as functions from "firebase-functions";
 import {
   collection,
   addDoc,
@@ -10,112 +9,114 @@ import {
   doc,
   updateDoc,
   getDoc,
-  onSnapshot,
 } from "firebase/firestore";
 
 // CREATE
-// Trigger: Whenever a new comment(feedback) is created, a new notification is created.
-const onCommentCreated = functions.firestore
-  .document("feedback/{feedbackId}")
-  .onCreate(async (snapshot, context) => {
-    try {
-      const feedbackData = snapshot.data();
-      const feedbackId = context.params.feedbackId;
-
-      // Check if the data exist
-      if (!feedbackData || !feedbackData.userId || !feedbackData.portfolioId) {
-        console.error("Missing required fields in feedback data");
-        return null;
-      }
-
-      // Fetch the portfolio
-      const portfolioDoc = await getDoc(
-        doc(db, "portfolio", feedbackData.portfolioId)
-      );
-      if (!portfolioDoc.exists()) {
-        console.error("Portfolio not found");
-        return null;
-      }
-
-      // Fetch the sender
-      const senderDoc = await getDoc(doc(db, "user", feedbackData.userId));
-      if (!senderDoc.exists()) {
-        console.error("User not found");
-        return null;
-      }
-      const senderName = senderDoc.data().username;
-
-      // Create a new notification
-      await addDoc(collection(db, "notification"), {
-        userId: feedbackData.userId, // Sender
-        portfolioId: feedbackData.portfolioId, // Receiver
-        feedbackId: feedbackId,
-        message: `${senderName} commented on your portfolio`,
-        readStatus: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+export const createCommentNotification = async (feedbackId) => {
+  try {
+    // Fetch the feedback
+    const feedbackDoc = await getDoc(doc(db, "feedback", feedbackId));
+    if (!feedbackDoc.exists()) {
+      console.error("Feedback not found");
       return null;
-    } catch (err) {
-      console.error("Error creating notification: ", err);
-      throw new Error(
-        `createNotification while listening to comment creation failed: ${err.message}`
-      );
     }
-  });
 
-// Trigger: Whenever a user reacts to a portfolio, a new reaction is created.
-const onReactionCreated = functions.firestore
-  .document("reaction/{reactionId}")
-  .onCreate(async (snapshot, context) => {
-    try {
-      const reactionData = snapshot.data();
-      const reactionId = context.params.reactionId;
-
-      // Check if the data exist
-      if (!reactionData || !reactionData.userId || !reactionData.portfolioId) {
-        console.error("Missing required fields in reaction data");
-        return null;
-      }
-
-      // Fetch the portfolio
-      const portfolioDoc = await getDoc(
-        doc(db, "portfolio", reactionData.portfolioId)
-      );
-      if (!portfolioDoc.exists()) {
-        console.error("Portfolio not found");
-        return null;
-      }
-
-      // Fetch the sender
-      const senderDoc = await getDoc(doc(db, "user", reactionData.userId));
-      if (!senderDoc.exists()) {
-        console.error("User not found");
-        return null;
-      }
-      const senderName = senderDoc.data().username;
-
-      // Create a new notification for the reaction
-      await addDoc(collection(db, "notification"), {
-        userId: reactionData.userId,
-        portfolioId: reactionData.portfolioId,
-        reactionId,
-        message: `${senderName} reacted to your portfolio`,
-        readStatus: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-
+    const feedbackData = feedbackDoc.data();
+    if (!feedbackData || !feedbackData.userId || !feedbackData.portfolioId) {
+      console.error("Missing required fields in feedback data");
       return null;
-    } catch (err) {
-      console.error("Error creating reaction notification:", err);
-      throw new Error(`onReactionCreated failed: ${err.message}`);
     }
-  });
+    // Fetch the portfolio
+    const portfolioDoc = await getDoc(
+      doc(db, "portfolio", feedbackData.portfolioId)
+    );
+    if (!portfolioDoc.exists()) {
+      console.error("Portfolio not found");
+      return null;
+    }
+
+    // Fetch the sender
+    const senderDoc = await getDoc(doc(db, "user", feedbackData.userId));
+    if (!senderDoc.exists()) {
+      console.error("User not found");
+      return null;
+    }
+    const senderName = senderDoc.data().username;
+
+    // Create a new notification
+    await addDoc(collection(db, "notification"), {
+      userId: feedbackData.userId, // Sender
+      portfolioId: feedbackData.portfolioId, // Receiver
+      feedbackId: feedbackId,
+      message: `${senderName} commented on your portfolio`,
+      readStatus: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  } catch (err) {
+    console.error("Error creating notification: ", err);
+    throw new Error(
+      `createNotification while listening to comment creation failed: ${err.message}`
+    );
+  }
+};
+
+export const createReactionNotification = async (reactionId) => {
+  try {
+    // Fetch the reaction
+    const reactionDoc = await getDoc(doc(db, "reaction", reactionId));
+    if (!reactionDoc.exists()) {
+      console.error("Reaction not found");
+      return null;
+    }
+
+    const reactionData = reactionDoc.data();
+    if (!reactionData || !reactionData.userId || !reactionData.portfolioId) {
+      console.error("Missing required fields in reaction data");
+      return null;
+    }
+    // Fetch the portfolio
+    const portfolioDoc = await getDoc(
+      doc(db, "portfolio", reactionData.portfolioId)
+    );
+    if (!portfolioDoc.exists()) {
+      console.error("Portfolio not found");
+      return null;
+    }
+
+    // Fetch the sender
+    const senderDoc = await getDoc(doc(db, "user", reactionData.userId));
+    if (!senderDoc.exists()) {
+      console.error("User not found");
+      return null;
+    }
+    const senderName = senderDoc.data().username;
+
+    // Create a new notification for the reaction
+    await addDoc(collection(db, "notification"), {
+      userId: reactionData.userId,
+      portfolioId: reactionData.portfolioId,
+      reactionId,
+      message: `${senderName} reacted to your portfolio`,
+      readStatus: false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+
+  } catch (err) {
+    console.error("Error creating reaction notification:", err);
+    throw new Error(
+      `createNotification while listening to reaction creation failed: ${err.message}`
+    );
+  }
+};
 
 // GET
 // Get paginated notifications for a user "All" Notifications Tab
-const getAllNotifications = async (ownerUserId, lastVisibleDoc = null) => {
+export const getAllNotifications = async (
+  ownerUserId,
+  lastVisibleDoc = null
+) => {
   try {
     // Fetch all the portofolios associated with the ownerUserId
     const portfolioQuery = query(
@@ -147,9 +148,8 @@ const getAllNotifications = async (ownerUserId, lastVisibleDoc = null) => {
       ...doc.data(),
     }));
 
-    const lastVisible = notificationSnapshot.docs[
-      notificationSnapshot.docs.length - 1
-    ];
+    const lastVisible =
+      notificationSnapshot.docs[notificationSnapshot.docs.length - 1];
     return { notificationList, lastVisible };
   } catch (err) {
     console.error("Error getting notifications: ", err);
@@ -158,7 +158,7 @@ const getAllNotifications = async (ownerUserId, lastVisibleDoc = null) => {
 };
 
 // Get all unread notifications for a user "Unread Comments/Feedbacks & Reactions Tab"
-const getUnreadCommentsNotification = async (ownerUserId) => {
+export const getUnreadCommentsNotification = async (ownerUserId) => {
   try {
     // Filtering for unread notifications
     const notificationsRef = collection(db, "notification");
@@ -186,7 +186,7 @@ const getUnreadCommentsNotification = async (ownerUserId) => {
 };
 
 // Get all unread notifications for a user "Unread Comments/Feedbacks & Reactions Tab"
-const getUnreadReactionsNotification = async (ownerUserId) => {
+export const getUnreadReactionsNotification = async (ownerUserId) => {
   try {
     // Filtering for unread notifications of the entire collection
     const notificationsRef = collection(db, "notification");
@@ -204,7 +204,7 @@ const getUnreadReactionsNotification = async (ownerUserId) => {
     // Extracting the unread data
     const unreadReaction = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data(),  
+      ...doc.data(),
     }));
     return unreadReaction;
   } catch (err) {
@@ -214,26 +214,17 @@ const getUnreadReactionsNotification = async (ownerUserId) => {
 };
 
 // Mark a notification as read
-const markNotificationAsRead = async (notificationId) => {
-   try {
-      // Reference to a single/specific document
-      const notificationsDocRef = doc(db, "notification", notificationId);
-      await updateDoc(notificationsDocRef, {
-        readStatus: true,
-        updatedAt: serverTimestamp(),
-      });
-      return true;
-    } catch (err) {
-      console.error("Error marking notification as read: ", err);
-      throw new Error(`markNotificationAsRead failed: ${err.message}`);
-    }
-  };
-
-export default {
-  onCommentCreated,
-  onReactionCreated,
-  getAllNotifications,
-  getUnreadCommentsNotification,
-  getUnreadReactionsNotification,
-  markNotificationAsRead,
+export const markNotificationAsRead = async (notificationId) => {
+  try {
+    // Reference to a single/specific document
+    const notificationsDocRef = doc(db, "notification", notificationId);
+    await updateDoc(notificationsDocRef, {
+      readStatus: true,
+      updatedAt: serverTimestamp(),
+    });
+    return true;
+  } catch (err) {
+    console.error("Error marking notification as read: ", err);
+    throw new Error(`markNotificationAsRead failed: ${err.message}`);
+  }
 };
