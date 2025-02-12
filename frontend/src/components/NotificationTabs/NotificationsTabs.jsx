@@ -28,66 +28,6 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [getUnreadComments, setGetUnreadComments] = useState([]);
   const [getUnreadReactions, setGetUnreadReactions] = useState([]);
 
-  //TODO: Remove mock data
-  console.log("ownerUserId:", ownerUserId);
-  const mockNotifications = [
-    {
-      id: "notif1",
-      userId: "Dn8E6i4iljA5zqTY0ghu",
-      portfolioId: "portfolio1",
-      feedbackId: "feedback1",
-      reactionId: null,
-      message: "User1 commented on your portfolio",
-      readStatus: false,
-      createdAt: "2025-02-01T10:30:00Z",
-      updatedAt: "2025-02-01T10:30:00Z",
-    },
-    {
-      id: "notif2",
-      userId: "user123",
-      portfolioId: "portfolio1",
-      feedbackId: "feedback2",
-      reactionId: "reaction1",
-      message: "User2 reacted to your portfolio",
-      readStatus: false,
-      createdAt: "2025-02-02T11:00:00Z",
-      updatedAt: "2025-02-02T11:00:00Z",
-    },
-    {
-      id: "notif3",
-      userId: "user456",
-      portfolioId: "portfolio2",
-      feedbackId: "feedback2",
-      reactionId: null,
-      message: "User3 commented on your portfolio",
-      readStatus: false,
-      createdAt: "2025-02-03T09:45:00Z",
-      updatedAt: "2025-02-03T09:45:00Z",
-    },
-    {
-      id: "notif4",
-      userId: "user456",
-      portfolioId: "portfolio2",
-      feedbackId: null,
-      reactionId: "reaction2",
-      message: "User4 reacted to your portfolio",
-      readStatus: true,
-      createdAt: "2025-02-04T14:15:00Z",
-      updatedAt: "2025-02-04T14:15:00Z",
-    },
-    {
-      id: "notif5",
-      userId: "user789",
-      portfolioId: "portfolio3",
-      feedbackId: "feedback3",
-      reactionId: null,
-      message: "User5 commented on your portfolio",
-      readStatus: false,
-      createdAt: "2025-02-05T08:30:00Z",
-      updatedAt: "2025-02-05T08:30:00Z",
-    },
-  ];
-
   // Listener for a new feedback created
   const listenForNewFeedback = () => {
     try {
@@ -146,7 +86,6 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  //TODO: Remove the mock data and use the notificationList
   // Fetching all notifications
   const fetchNotifications = async () => {
     setLoading(true);
@@ -154,9 +93,9 @@ const NotificationTabs = ({ ownerUserId }) => {
       const { notificationList, lastVisible } = await getAllNotifications(
         ownerUserId
       );
-      setGetNotifications(mockNotifications);
-      //TODO: Using Firestore Data
-      // setGetNotifications(Array.isArray(notificationList) ? notificationList : []);
+      setGetNotifications(
+        Array.isArray(notificationList) ? notificationList : []
+      );
       setGetLastVisibleDoc(lastVisible);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
@@ -221,26 +160,13 @@ const NotificationTabs = ({ ownerUserId }) => {
   const fetchUnreadNotifs = async () => {
     setLoading(true);
     try {
-      // Using mock data:
-      const unreadComments = mockNotifications.filter(
-        (notification) => notification.feedbackId !== null && notification.readStatus === false
-      );
-  
-      const unreadReactions = mockNotifications.filter(
-        (notification) => notification.reactionId !== null && notification.readStatus === false
-      );
+      const [unreadComments, unreadReactions] = await Promise.all([
+        getUnreadCommentsNotification(ownerUserId),
+        getUnreadReactionsNotification(ownerUserId),
+      ]);
 
-      setGetUnreadComments(unreadComments);
-      setGetUnreadReactions(unreadReactions);
-
-      // TODO: Using Firestore Data:
-      // const [unreadComments, unreadReactions] = await Promise.all([
-      //   getUnreadCommentsNotification(ownerUserId),
-      //   getUnreadReactionsNotification(ownerUserId),
-      // ]);
-
-      // setGetUnreadComments(unreadComments);
-      // setGetUnreadReactions(unreadReactions);
+      setGetUnreadComments(unreadComments || []);
+      setGetUnreadReactions(unreadReactions || []);
     } catch (err) {
       console.error("Error fetching notifications list:", err);
     } finally {
@@ -277,10 +203,10 @@ const NotificationTabs = ({ ownerUserId }) => {
               <div key={notif.id}>
                 <h3>{notif.message}</h3>
                 {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
-                <p>{new Date(notif.createdAt).toLocaleDateString()}</p>
+                <p>{new Date(notif.createdAt.toDate()).toLocaleDateString()}</p>
                 <p>
                   {" "}
-                  {new Date(notif.createdAt).toLocaleTimeString([], {
+                  {new Date(notif.createdAt.toDate()).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
@@ -294,18 +220,18 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="comments">
           {getUnreadComments.length > 0 ? (
             getUnreadComments.map((unreadNotif) => (
-            <div>
-              <h3>{unreadNotif.message}</h3>
-              <p>{new Date(unreadNotif.createdAt).toLocaleDateString()}</p>
+              <div>
+                <h3>{unreadNotif.message}</h3>
+                <p>{new Date(unreadNotif.createdAt.toDate()).toLocaleDateString()}</p>
                 <p>
                   {" "}
-                  {new Date(unreadNotif.createdAt).toLocaleTimeString([], {
+                  {new Date(unreadNotif.createdAt.toDate()).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </p>
-            </div>
-          ))
+              </div>
+            ))
           ) : (
             <p>No notifications to display.</p>
           )}
@@ -315,18 +241,18 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="reactions">
           {getUnreadReactions.length > 0 ? (
             getUnreadReactions.map((unreadNotif) => (
-            <div>
-              <h3>{unreadNotif.message}</h3>
-              <p>{new Date(unreadNotif.createdAt).toLocaleDateString()}</p>
+              <div>
+                <h3>{unreadNotif.message}</h3>
+                <p>{new Date(unreadNotif.createdAt.toDate()).toLocaleDateString()}</p>
                 <p>
                   {" "}
-                  {new Date(unreadNotif.createdAt).toLocaleTimeString([], {
+                  {new Date(unreadNotif.createdAt.toDate()).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </p>
-            </div>
-          ))
+              </div>
+            ))
           ) : (
             <p>No notifications to display.</p>
           )}
