@@ -6,7 +6,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-import fetchPortfolio from "./firebase/functions/fetchPortfolio";
+// import fetchPortfolio from "./firebase/functions/fetchPortfolio";
 import fetchUsers from "./firebase/functions/fetchUsers";
 
 function App() {
@@ -20,9 +20,8 @@ function App() {
           <main className="flex-grow p-4">
             <h1>Feedback Cubbies</h1>
             <Button>Click me</Button>
-            <link to="/FetchPortfolio">
-              <Button coclick>Review Portfolio</Button>
-            </link>
+
+            <Button>Review Portfolio</Button>
 
             {/* Define Routes */}
             <Routes>
