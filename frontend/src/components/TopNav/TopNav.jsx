@@ -2,23 +2,18 @@ import NotificationDrawer from "../NotificationDrawer/NotificationDrawer";
 import logo from "/images/logos/communiti_logo.png";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Home, Users, User, Bell } from "lucide-react";
-import { useState } from "react";
 
-function TopNav({ setCurrentPage, currentPage }) {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+function TopNav({ setCurrentPage, currentPage, setIsDrawerOpen }) {
   const navItems = [
     { name: "Home", icon: Home, page: "home" },
     { name: "Communities", icon: Users, page: "communities" },
     { name: "Coffee Chat", icon: User, page: "coffee-chat" },
   ];
+
   return (
     <div className="w-[1156px] h-[104px] flex items-center justify-between mx-auto px-6 pt-6 bg-white">
       {/* Logo */}
@@ -33,7 +28,6 @@ function TopNav({ setCurrentPage, currentPage }) {
         <NavigationMenuList className="flex space-x-6">
           {navItems.map(({ name, icon: Icon, page }) => (
             <NavigationMenuItem key={page}>
-              {/* ✅ Replacing NavigationMenuLink with button */}
               <button
                 onClick={() => setCurrentPage(page)}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
@@ -55,50 +49,59 @@ function TopNav({ setCurrentPage, currentPage }) {
             </NavigationMenuItem>
           ))}
 
-          {/* Notifications Button */}
+          {/* Notifications Button (Opens Drawer & Updates State) */}
           <NavigationMenuItem>
             <button
-              onClick={() => setIsDrawerOpen(true)}
-              className="flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-gray-200"
+              onClick={() => setCurrentPage("notifications")}
+              className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
+              ${
+                currentPage === "notifications"
+                  ? "bg-gray-300"
+                  : "hover:bg-gray-200"
+              }`}
             >
-              <Bell className="w-6 h-6 mb-1" stroke="black" strokeWidth={2} />
-              <span className="text-gray-800 font-medium">Notifications</span>
+              <Bell
+                className="w-6 h-6 mb-1"
+                stroke={currentPage === "notifications" ? "blue" : "black"}
+                strokeWidth={2}
+              />
+              <span
+                className={`font-medium ${
+                  currentPage === "notifications"
+                    ? "text-blue-600"
+                    : "text-gray-800"
+                }`}
+              >
+                Notifications
+              </span>
             </button>
           </NavigationMenuItem>
 
-          {/* Login Link */}
+          {/*Login Button */}
           <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
+            <button
               onClick={() => setCurrentPage("login")}
+              className={`text-gray-800 font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out
+              ${currentPage === "login" ? "bg-gray-300" : "hover:bg-gray-200"}`}
             >
-              <button className="text-gray-800 font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-gray-200">
-                Login
-              </button>
-            </NavigationMenuLink>
+              Login
+            </button>
           </NavigationMenuItem>
 
-          {/* Sign Up Button */}
+          {/*Sign Up Button */}
           <NavigationMenuItem>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
+            <button
               onClick={() => setCurrentPage("signup")}
+              className={`bg-black text-white font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out
+              ${
+                currentPage === "signup" ? "bg-gray-800" : "hover:bg-gray-700"
+              }`}
             >
-              <button className="bg-black text-white font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out hover:bg-gray-800">
-                Sign Up
-              </button>
-            </NavigationMenuLink>
+              Sign Up
+            </button>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-
-      {/* Notification Drawer */}
-      <NotificationDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-      />
     </div>
   );
 }
