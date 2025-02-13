@@ -23,7 +23,7 @@ function NavigationMenuDemo() {
         {/* Comments Link */}
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/comments">Comments</Link>
+            <Link to="/feedback">Feedback</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 

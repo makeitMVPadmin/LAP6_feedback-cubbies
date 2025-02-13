@@ -1,13 +1,8 @@
-import Comments from "./pages/CommentsPage";
 import HomePage from "./pages/HomePage";
 import NavigationMenuDemo from "@/components/TopNav/TopNav";
-import { Button } from "@/components/ui/button";
-import React from "react";
-import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
-// import fetchPortfolio from "./firebase/functions/fetchPortfolio";
-import fetchUsers from "./firebase/functions/fetchUsers";
+import FeedbackPage from "./pages/FeedbackPage";
 
 function App() {
   return (
@@ -18,15 +13,9 @@ function App() {
             <NavigationMenuDemo />
           </header>
           <main className="flex-grow p-4">
-            <h1>Feedback Cubbies</h1>
-            <Button>Click me</Button>
-
-            <Button>Review Portfolio</Button>
-
-            {/* Define Routes */}
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/comments" element={<Comments />} />
+              <Route path="/feedback" element={<FeedbackPage />} />
             </Routes>
           </main>
         </div>
