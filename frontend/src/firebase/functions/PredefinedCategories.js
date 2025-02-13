@@ -46,7 +46,6 @@ const categoryData = {
         "Game Development",
         "Mobile Development",
     ]
-
 }
 const predefinedCategories = async () => {
     try{
@@ -59,7 +58,6 @@ const predefinedCategories = async () => {
                 userId: "admin",
             })
         }
-
     } catch (error){
         console.error("Error adding predefined categories: ", error)
     }
