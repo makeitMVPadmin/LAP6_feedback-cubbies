@@ -1,5 +1,5 @@
 import { db } from "../firebase.js";
-import { collection, addDoc, serverTimeStamp } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const categoryData = {
     dev: [
@@ -48,8 +48,21 @@ const categoryData = {
     ]
 
 }
-const addPredefinedCategories = async () => {
-    
+const predefinedCategories = async () => {
+    try{
+        for (const [categoryType, subCategories] of Object.entries(categoryData)) {
+            const categoryRef = doc(db, "categories", categoryType);
+
+            await setDoc(categoryRef, {
+                categories: subCategories,
+                createdAt: serverTimestamp(),
+                userId: "admin",
+            })
+        }
+
+    } catch (error){
+        console.error("Error adding predefined categories: ", error)
+    }
 }
 
-export default addPredefinedCategories;
+export default predefinedCategories;
