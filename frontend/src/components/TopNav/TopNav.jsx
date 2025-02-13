@@ -7,23 +7,30 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Link } from "react-router-dom";
 
-function NavigationMenuDemo() {
+function NavigationMenuDemo({ setCurrentPage }) {
   return (
     <NavigationMenu>
       <NavigationMenuList>
         {/* Home Link */}
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/">Home</Link>
+          <NavigationMenuLink
+            asChild
+            className={navigationMenuTriggerStyle()}
+            onClick={() => setCurrentPage("home")}
+          >
+            <button>Home</button>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
-        {/* Comments Link */}
+        {/* Feedback Link */}
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-            <Link to="/feedback">Feedback</Link>
+          <NavigationMenuLink
+            asChild
+            className={navigationMenuTriggerStyle()}
+            onClick={() => setCurrentPage("feedback")}
+          >
+            <button>Feedback</button>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
@@ -34,8 +41,9 @@ function NavigationMenuDemo() {
             <NavigationMenuLink
               asChild
               className={navigationMenuTriggerStyle()}
+              onClick={() => setCurrentPage("notifications")}
             >
-              <Link to="/notifications">Notification 1</Link>
+              <button>Notification 1</button>
             </NavigationMenuLink>
           </NavigationMenuContent>
         </NavigationMenuItem>
