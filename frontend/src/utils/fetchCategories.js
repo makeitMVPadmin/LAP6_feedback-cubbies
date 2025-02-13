@@ -9,7 +9,7 @@ const fetchCategories = async (categoryType) => {
         if (categorySnapshot.exists()) {
             return categorySnapshot.data().categories;
         } else {
-            console.log("No category for selected type found!");
+            console.log("No categories found for category type:", categoryType);
             return [];
         }
     } catch (error) {
