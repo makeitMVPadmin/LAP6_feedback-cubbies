@@ -10,7 +10,7 @@ import {
   updateDoc,
   getDoc,
   orderBy,
-  limit
+  limit,
 } from "firebase/firestore";
 
 // CREATE
@@ -38,7 +38,7 @@ export const createCommentNotification = async (feedbackId) => {
     }
 
     // Fetch the sender
-    const senderDoc = await getDoc(doc(db, "user", feedbackData.userId));
+    const senderDoc = await getDoc(doc(db, "users", feedbackData.userId));
     console.log("feedbackData.userId:", feedbackData.userId);
     if (!senderDoc.exists()) {
       console.error("User not found");
@@ -88,7 +88,7 @@ export const createReactionNotification = async (reactionId) => {
     }
 
     // Fetch the sender
-    const senderDoc = await getDoc(doc(db, "user", reactionData.userId));
+    const senderDoc = await getDoc(doc(db, "users", reactionData.userId));
     if (!senderDoc.exists()) {
       console.error("User not found");
       return null;
@@ -105,7 +105,6 @@ export const createReactionNotification = async (reactionId) => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-
   } catch (err) {
     console.error("Error creating reaction notification:", err);
     throw new Error(
