@@ -10,7 +10,6 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Home, Users, User, Bell } from "lucide-react";
 
 function TopNav({
   setCurrentPage,
@@ -20,10 +19,13 @@ function TopNav({
   username,
 }) {
   const navItems = [
-    { name: "Home", icon: Home, page: "home" },
-    { name: "Communities", icon: Users, page: "communities" },
-    { name: "Coffee Chat", icon: User, page: "coffee-chat" },
+    { name: "Home", icon: "home", page: "home" },
+    { name: "Communities", icon: "group", page: "communities" },
+    { name: "Coffee Chat", icon: "person", page: "coffee-chat" },
   ];
+  const NotificationsIcon = () => (
+    <span className="material-symbols-outlined">notifications</span>
+  );
 
   return (
     <div className="w-[1156px] h-[104px] flex items-center justify-between mx-auto px-6 pt-6 bg-white">
@@ -44,11 +46,7 @@ function TopNav({
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
                 ${currentPage === page ? "bg-gray-300" : "hover:bg-gray-200"}`}
               >
-                <Icon
-                  className="w-6 h-6 mb-1"
-                  stroke={currentPage === page ? "blue" : "black"}
-                  strokeWidth={2}
-                />
+                <span className="material-symbols-outlined">{Icon}</span>
                 <span
                   className={`font-medium ${
                     currentPage === page ? "text-blue-600" : "text-gray-800"
@@ -71,11 +69,7 @@ function TopNav({
                   : "hover:bg-gray-200"
               }`}
             >
-              <Bell
-                className="w-6 h-6 mb-1"
-                stroke={currentPage === "notifications" ? "blue" : "black"}
-                strokeWidth={2}
-              />
+              <NotificationsIcon />
               {/* Notification Badge */}
               {notificationCount > 0 && (
                 <span className="absolute top-0 right-10 -mt-1 -mr-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -124,11 +118,15 @@ function TopNav({
                 {/* Circular User Image */}
                 <img
                   src={userImage}
-                  alt="User Avatar"
+                  alt="User"
                   className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-gray-500 transition"
                 />
                 {/* Dropdown Arrow */}
-                <div className="absolute -bottom-0 right-0 w-4 h-4 rotate-45 bg-white shadow-md border border-gray-200"></div>
+                <div className="absolute -bottom-0 right-0 w-4 h-4">
+                  <span className="material-symbols-outlined">
+                    arrow_drop_down
+                  </span>
+                </div>
               </button>
             </DropdownMenuTrigger>
 
