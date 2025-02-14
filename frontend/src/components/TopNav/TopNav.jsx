@@ -19,9 +19,9 @@ function TopNav({
   username,
 }) {
   const navItems = [
-    { name: "Home", icon: "home", page: "home" },
+    { name: "Home", icon: "house", page: "home" },
     { name: "Communities", icon: "group", page: "communities" },
-    { name: "Coffee Chat", icon: "person", page: "coffee-chat" },
+    { name: "Coffee Chat", icon: "groups", page: "coffee-chat" },
   ];
   const NotificationsIcon = () => (
     <span className="material-symbols-outlined">notifications</span>
