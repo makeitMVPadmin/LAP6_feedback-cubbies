@@ -44,7 +44,8 @@ function App() {
         <TopNav
           setCurrentPage={handlePageChange}
           currentPage={currentPage}
-          setIsDrawerOpen={setIsDrawerOpen}
+          notificationCount="999"
+          username="usernameTest"
         />
       </header>
       <main className="flex-grow p-4">{renderPage()}</main>

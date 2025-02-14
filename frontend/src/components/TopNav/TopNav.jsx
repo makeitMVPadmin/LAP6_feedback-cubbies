@@ -1,5 +1,10 @@
-import NotificationDrawer from "../NotificationDrawer/NotificationDrawer";
 import logo from "/images/logos/communiti_logo.png";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -7,7 +12,13 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Home, Users, User, Bell } from "lucide-react";
 
-function TopNav({ setCurrentPage, currentPage, setIsDrawerOpen }) {
+function TopNav({
+  setCurrentPage,
+  currentPage,
+  notificationCount,
+  userImage,
+  username,
+}) {
   const navItems = [
     { name: "Home", icon: Home, page: "home" },
     { name: "Communities", icon: Users, page: "communities" },
@@ -49,11 +60,11 @@ function TopNav({ setCurrentPage, currentPage, setIsDrawerOpen }) {
             </NavigationMenuItem>
           ))}
 
-          {/* Notifications Button (Opens Drawer & Updates State) */}
+          {/* Notifications Button with Badge */}
           <NavigationMenuItem>
             <button
               onClick={() => setCurrentPage("notifications")}
-              className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
+              className={`relative flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
               ${
                 currentPage === "notifications"
                   ? "bg-gray-300"
@@ -65,6 +76,12 @@ function TopNav({ setCurrentPage, currentPage, setIsDrawerOpen }) {
                 stroke={currentPage === "notifications" ? "blue" : "black"}
                 strokeWidth={2}
               />
+              {/* Notification Badge */}
+              {notificationCount > 0 && (
+                <span className="absolute top-0 right-10 -mt-1 -mr-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {notificationCount > 99 ? "99+" : notificationCount}
+                </span>
+              )}
               <span
                 className={`font-medium ${
                   currentPage === "notifications"
@@ -100,6 +117,47 @@ function TopNav({ setCurrentPage, currentPage, setIsDrawerOpen }) {
               Sign Up
             </button>
           </NavigationMenuItem>
+          {/* User Profile with ShadCN Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="relative flex items-center focus:outline-none">
+                {/* Circular User Image */}
+                <img
+                  src={userImage}
+                  alt="User Avatar"
+                  className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-gray-500 transition"
+                />
+                {/* Dropdown Arrow */}
+                <div className="absolute -bottom-0 right-0 w-4 h-4 rotate-45 bg-white shadow-md border border-gray-200"></div>
+              </button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent
+              align="end"
+              side="bottom"
+              sideOffset={10}
+              className="w-48 bg-white shadow-lg rounded-lg p-2 z-50 relative"
+            >
+              {/* User Info */}
+              <div className="p-2">
+                <p className="font-semibold text-gray-800">{username}</p>
+              </div>
+
+              <DropdownMenuItem
+                onClick={() => setCurrentPage("profile")}
+                className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+              >
+                View Profile
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => setCurrentPage("logout")}
+                className="cursor-pointer text-red-600 hover:bg-gray-100 p-2 rounded-md"
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </NavigationMenuList>
       </NavigationMenu>
     </div>
