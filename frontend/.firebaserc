@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "launchacademyp6"
+  },
+  "targets": {
+    "launchacademyp6": {
+      "hosting": {
+        "app1": [
+          "feedback-cubbies"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
