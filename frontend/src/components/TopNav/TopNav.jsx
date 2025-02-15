@@ -20,8 +20,8 @@ function TopNav({
 }) {
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
-    { name: "Communities", icon: "group", page: "communities" },
-    { name: "Coffee Chat", icon: "groups", page: "coffee-chat" },
+    { name: "Communities", icon: "group", page: "" },
+    { name: "Coffee Chat", icon: "groups", page: "" },
   ];
   const NotificationsIcon = () => (
     <span className="material-symbols-outlined">notifications</span>
@@ -42,7 +42,7 @@ function TopNav({
           {navItems.map(({ name, icon: Icon, page }) => (
             <NavigationMenuItem key={page}>
               <button
-                onClick={() => setCurrentPage(page)}
+                onClick={() => (page != "" ? setCurrentPage(page) : null)}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
                 ${currentPage === page ? "bg-gray-300" : "hover:bg-gray-200"}`}
               >
@@ -147,7 +147,12 @@ function TopNav({
               >
                 View Profile
               </DropdownMenuItem>
-
+              <DropdownMenuItem
+                onClick={() => setCurrentPage("feedback")}
+                className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+              >
+                Debug feedback page
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => setCurrentPage("logout")}
                 className="cursor-pointer text-red-600 hover:bg-gray-100 p-2 rounded-md"
