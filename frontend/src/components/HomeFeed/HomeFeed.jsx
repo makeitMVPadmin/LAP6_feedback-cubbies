@@ -1,3 +1,4 @@
+import PortfolioPage from "../Portfolio/Portfolio.jsx";
 import Post from "../Post/Post.jsx";
 import img1 from "/images/MockImg1.jpg";
 import img2 from "/images/MockImg2.jpg";
@@ -8,6 +9,7 @@ import React from "react";
 // loop through the posted portfolios
 function HomeFeed() {
   // mock data - replace with actual data later
+
   let mockPosts = [
     {
       id: 1,
