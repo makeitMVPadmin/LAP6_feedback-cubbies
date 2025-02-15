@@ -14,7 +14,6 @@ function App() {
             <NavigationMenuDemo />
           </header>
           <main className="flex-grow p-4">
-            {/* <PortfolioPage /> */}
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/feedback" element={<FeedbackPage />} />
