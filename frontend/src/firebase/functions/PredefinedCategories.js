@@ -31,7 +31,7 @@ const categoryData = {
         "User Experience",
         "User Interface",
         "Interaction Design",
-        "User Interface",
+        "Branding",
         "Motion Design",
         "Design Systems"
     ],
@@ -47,7 +47,7 @@ const categoryData = {
         "Mobile Development",
     ]
 }
-const predefinedCategories = async () => {
+const populateCategories = async () => {
     try{
         for (const [categoryType, subCategories] of Object.entries(categoryData)) {
             const categoryRef = doc(db, "categories", categoryType);
@@ -63,4 +63,4 @@ const predefinedCategories = async () => {
     }
 }
 
-export default predefinedCategories;
+export default populateCategories;
