@@ -56,9 +56,9 @@ function PostModal({ isOpen, onClose }) {
             </div>
             <div className=" bg-gray-400 w-10 h-10"></div>
           </div>
-          <div className="flex justify-between gap-4">
+          <div className="flex justify-between">
             <Button variant="secondary">Save Changes</Button>
-            <div>
+            <div className="flex gap-4">
               <Button variant="outline">Cancel</Button>
               <Button>Publish</Button>
             </div>
