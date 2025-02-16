@@ -2,7 +2,7 @@ import { db } from "../firebase.js";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const categoryData = {
-    dev: [
+    devCollection: [
         "Frontend",
         "Backend",
         "Fullstack",
@@ -22,7 +22,7 @@ const categoryData = {
         "Next.js",
         "Java",
     ],
-    design: [
+    designCollection: [
         "UI/UX",
         "Product Design",
         "Wireframing", 
@@ -35,7 +35,7 @@ const categoryData = {
         "Motion Design",
         "Design Systems"
     ],
-    generalTech: [
+    generalTechCollection: [
         "PM",
         "Agile",
         "Scrum",
