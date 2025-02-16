@@ -11,7 +11,11 @@ export default function HomePage() {
       <h1>Welcome to the Home Page</h1>
       <p>This is the main landing page.</p>
       <div>
-        <Button variant="default" onClick={() => setIsModalOpen(true)}>
+        <Button
+          classname="bg-gray-400"
+          variant="default"
+          onClick={() => setIsModalOpen(true)}
+        >
           NEW
         </Button>
         <PostModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
