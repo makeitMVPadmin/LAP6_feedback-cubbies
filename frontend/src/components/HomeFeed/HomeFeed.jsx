@@ -27,7 +27,7 @@ function HomeFeed() {
   
   
   return (
-    <section className="">
+    <section className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
       {mockPosts.map((post) => (
         <Post key={post.id} post={post} />
       ))}
