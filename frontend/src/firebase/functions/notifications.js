@@ -145,10 +145,26 @@ export const getAllNotifications = async (
       notificationQuery = query(notificationQuery, startAfter(lastVisibleDoc));
     }
     const notificationSnapshot = await getDocs(notificationQuery);
-    const notificationList = notificationSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const notificationList = [];
+
+    for (const docSnap of notificationSnapshot.docs) {
+      let notificationData = {
+        id: docSnap.id,
+        ...docSnap.data(),
+      };
+
+      if (notificationData.feedbackId) {
+        const feedbackDoc = await getDoc(
+          doc(db, "feedback", notificationData.feedbackId)
+        );
+        if (feedbackDoc.exists()) {
+          notificationData.feedbackContent = feedbackDoc.data().comment;
+        } else {
+          notificationData.feedbackContent = null;
+        }
+      }
+      notificationList.push(notificationData);
+    }
 
     const lastVisible =
       notificationSnapshot.docs[notificationSnapshot.docs.length - 1];
