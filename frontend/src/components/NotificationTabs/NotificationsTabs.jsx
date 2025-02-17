@@ -220,10 +220,10 @@ const NotificationTabs = ({ ownerUserId }) => {
             {getNotifications.map((notif) => (
               <div
                 key={notif.id}
-                className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm gap-2"
               >
                 <span class="material-symbols-outlined">account_circle</span>
-                <div className="flex-grow text-center">
+                <div className="flex-grow">
                   <h3 className="font-bold">{notif.message}</h3>
                   <p>{notif.feedbackContent}</p>
                   <p className="text-right">
