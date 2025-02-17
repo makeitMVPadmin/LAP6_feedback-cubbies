@@ -1,4 +1,5 @@
 import { db } from "../../firebase/firebase";
+import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import {
   createCommentNotification,
   createReactionNotification,
@@ -230,11 +231,9 @@ const NotificationTabs = ({ ownerUserId }) => {
                   </p>
                 </div>
                 <KebabMenu
-                  isOpen={isMenuOpen}
-                  onClose={() => setIsMenuOpen(false)}
                   onBlock={() => console.log("Block user:", notif.userId)}
                   onMute={() => console.log("Mute user:", notif.userId)}
-                  onDelete={() => console.log("Delete notification:", notif.id)}
+                  onDelete={() => deleteNotification(notif.id)}
                   onPreferences={() =>
                     console.log("Open notification preferences")
                   }
@@ -267,9 +266,7 @@ const NotificationTabs = ({ ownerUserId }) => {
                       console.log("Block user:", unreadNotif.userId)
                     }
                     onMute={() => console.log("Mute user:", unreadNotif.userId)}
-                    onDelete={() =>
-                      console.log("Delete notification:", unreadNotif.id)
-                    }
+                    onDelete={() => deleteNotification(unreadNotif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }
@@ -289,7 +286,10 @@ const NotificationTabs = ({ ownerUserId }) => {
           <section className="flex flex-col gap-2">
             {getUnreadReactions.length > 0 ? (
               getUnreadReactions.map((unreadNotif) => (
-                <div key={unreadNotif.id}>
+                <div
+                  key={unreadNotif.id}
+                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow text-center">
                     <h3 className="font-bold">{unreadNotif.message}</h3>
@@ -304,9 +304,7 @@ const NotificationTabs = ({ ownerUserId }) => {
                       console.log("Block user:", unreadNotif.userId)
                     }
                     onMute={() => console.log("Mute user:", unreadNotif.userId)}
-                    onDelete={() =>
-                      console.log("Delete notification:", unreadNotif.id)
-                    }
+                    onDelete={() => deleteNotification(unreadNotif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }

@@ -139,7 +139,7 @@ export const getAllNotifications = async (
       collection(db, "notification"),
       where("portfolioId", "in", portfolioIds),
       orderBy("createdAt", "desc"),
-      limit(10)
+      limit(5)
     );
     if (lastVisibleDoc) {
       notificationQuery = query(notificationQuery, startAfter(lastVisibleDoc));
@@ -186,7 +186,7 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
       where("reactionId", "==", null),
       where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
-      limit(10)
+      limit(5)
     );
 
     console.log(unreadFeedbackQuery);
