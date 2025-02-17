@@ -200,17 +200,24 @@ const NotificationTabs = ({ ownerUserId }) => {
           <section>
             {/* map through the notifications */}
             {getNotifications.map((notif) => (
-              <div key={notif.id}>
-                <h3>{notif.message}</h3>
-                {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
-                <p>{new Date(notif.createdAt.toDate()).toLocaleDateString()}</p>
-                <p>
-                  {" "}
-                  {new Date(notif.createdAt.toDate()).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+              <div
+                key={notif.id}
+                className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+              >
+                <span class="material-symbols-outlined">account_circle</span>
+                <div className="flex-grow text-center">
+                  <h3 className="font-bold">{notif.message}</h3>
+                  {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
+                  <p className="text-right">
+                    {new Date(notif.createdAt.toDate()).toLocaleDateString()}
+                  </p>
+                </div>
+                <span
+                  class="material-symbols-outlined text-gray-500"
+                  style={{ fontVariationSettings: "'wght' 200" }}
+                >
+                  more_vert
+                </span>
               </div>
             ))}
           </section>
@@ -220,16 +227,25 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="comments">
           {getUnreadComments.length > 0 ? (
             getUnreadComments.map((unreadNotif) => (
-              <div>
-                <h3>{unreadNotif.message}</h3>
-                <p>{new Date(unreadNotif.createdAt.toDate()).toLocaleDateString()}</p>
-                <p>
-                  {" "}
-                  {new Date(unreadNotif.createdAt.toDate()).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+              <div
+                key={unreadNotif.id}
+                className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+              >
+                <span class="material-symbols-outlined">account_circle</span>
+                <div className="flex-grow text-center">
+                  <h3 className="font-bold">{unreadNotif.message}</h3>
+                  <p className="text-right">
+                    {new Date(
+                      unreadNotif.createdAt.toDate()
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+                <span
+                  class="material-symbols-outlined text-gray-500"
+                  style={{ fontVariationSettings: "'wght' 200" }}
+                >
+                  more_vert
+                </span>
               </div>
             ))
           ) : (
@@ -241,16 +257,22 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="reactions">
           {getUnreadReactions.length > 0 ? (
             getUnreadReactions.map((unreadNotif) => (
-              <div>
-                <h3>{unreadNotif.message}</h3>
-                <p>{new Date(unreadNotif.createdAt.toDate()).toLocaleDateString()}</p>
-                <p>
-                  {" "}
-                  {new Date(unreadNotif.createdAt.toDate()).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
+              <div key={unreadNotif.id}>
+                <span class="material-symbols-outlined">account_circle</span>
+                <div className="flex-grow text-center">
+                  <h3 className="font-bold">{unreadNotif.message}</h3>
+                  <p className="text-right">
+                    {new Date(
+                      unreadNotif.createdAt.toDate()
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+                <span
+                  class="material-symbols-outlined text-gray-500"
+                  style={{ fontVariationSettings: "'wght' 200" }}
+                >
+                  more_vert
+                </span>
               </div>
             ))
           ) : (

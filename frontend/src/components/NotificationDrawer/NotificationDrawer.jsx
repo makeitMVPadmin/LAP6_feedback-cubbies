@@ -13,7 +13,7 @@ function NotificationDrawer({ isOpen, onClose }) {
     <>
       {isOpen && <div className="fixed inset-0 z-40" onClick={onClose}></div>}
       <div
-        className={`fixed top-[150px] right-0 h-[calc(100vh-104px)] w-[30%] bg-white shadow-lg p-6 z-50 rounded-tl-lg rounded-bl-lg
+        className={`fixed top-[150px] right-0 h-[calc(100vh-104px)] w-[35%] bg-white shadow-lg p-6 z-50 rounded-tl-lg rounded-bl-lg
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >

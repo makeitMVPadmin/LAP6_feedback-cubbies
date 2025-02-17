@@ -51,7 +51,7 @@ export const createCommentNotification = async (feedbackId) => {
       userId: feedbackData.userId, // Sender
       portfolioId: feedbackData.portfolioId, // Receiver
       feedbackId: feedbackId,
-      message: `${senderName} commented on your portfolio`,
+      message: `@${senderName} commented on your portfolio`,
       readStatus: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
