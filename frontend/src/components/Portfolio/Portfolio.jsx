@@ -43,7 +43,7 @@ const PortfolioPage = () => {
     e.preventDefault();
     await addPortfolio(newPortfolio);
     const updatedData = await fetchPortfolio();
-    setPortfolio(updatedData[0] || null);
+    setPortfolio(updatedData[2] || null);
     setNewPortfolio({
       title: "",
       userId: "",
