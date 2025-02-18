@@ -13,9 +13,8 @@ function App() {
   // Handle navigation selection
   const handlePageChange = (page) => {
     if (page === "notifications") {
-      setLastPage(currentPage);
-      setCurrentPage("notifications");
-      setIsDrawerOpen(true);
+      setLastPage(currentPage); // Store last visited page
+      setIsDrawerOpen(true); // Open notification drawer
     } else {
       setCurrentPage(page);
     }
@@ -24,7 +23,7 @@ function App() {
   // Close the notifications drawer and restore the last page
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
-    setCurrentPage(lastPage);
+    setCurrentPage(lastPage); // Restore last visited page
   };
 
   const renderPage = () => {
@@ -34,7 +33,7 @@ function App() {
       case "feedback":
         return <FeedbackPage />;
       default:
-        return <HomePage />;
+        return <HomePage />; // Fallback
     }
   };
 
@@ -48,9 +47,11 @@ function App() {
           username="usernameTest"
         />
       </header>
-      <main className="flex-grow p-4">{renderPage()}</main>
+      <main className="flex-grow p-4">
+        {renderPage()} {/* Render current page */}
+      </main>
 
-      {/*Close drawer restores previous page */}
+      {/* Notification Drawer */}
       <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
     </div>
   );

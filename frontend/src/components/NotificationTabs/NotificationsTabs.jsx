@@ -185,9 +185,9 @@ const NotificationTabs = ({ ownerUserId }) => {
     return <div>Loading...</div>;
   }
 
-  if (getNotifications.length == 0) {
-    return <div>Loading...</div>;
-  }
+  // if (getNotifications.length == 0) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <>
@@ -217,29 +217,35 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="all">
           <section className="flex flex-col gap-2">
             {/* map through the notifications */}
-            {getNotifications.map((notif) => (
-              <div
-                key={notif.id}
-                className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm gap-2"
-              >
-                <span class="material-symbols-outlined">account_circle</span>
-                <div className="flex-grow">
-                  <h3 className="font-bold">{notif.message}</h3>
-                  <p>{notif.feedbackContent}</p>
-                  <p className="text-right">
-                    {new Date(notif.createdAt.toDate()).toLocaleDateString()}
-                  </p>
+            {getUnreadComments.length > 0 ? (
+              getNotifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm gap-2"
+                >
+                  <span class="material-symbols-outlined">account_circle</span>
+                  <div className="flex-grow">
+                    <h3 className="font-bold">{notif.message}</h3>
+                    <p>{notif.feedbackContent}</p>
+                    <p className="text-right">
+                      {new Date(notif.createdAt.toDate()).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <KebabMenu
+                    onBlock={() => console.log("Block user:", notif.userId)}
+                    onMute={() => console.log("Mute user:", notif.userId)}
+                    onDelete={() => deleteNotification(notif.id)}
+                    onPreferences={() =>
+                      console.log("Open notification preferences")
+                    }
+                  />
                 </div>
-                <KebabMenu
-                  onBlock={() => console.log("Block user:", notif.userId)}
-                  onMute={() => console.log("Mute user:", notif.userId)}
-                  onDelete={() => deleteNotification(notif.id)}
-                  onPreferences={() =>
-                    console.log("Open notification preferences")
-                  }
-                />
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+                No notifications to display.
+              </p>
+            )}
           </section>
         </TabsContent>
 
