@@ -1,4 +1,5 @@
 import { db } from "../../firebase/firebase";
+import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import {
   createCommentNotification,
   createReactionNotification,
@@ -6,6 +7,7 @@ import {
   getUnreadCommentsNotification,
   getUnreadReactionsNotification,
 } from "../../firebase/functions/notifications";
+import KebabMenu from "../KebabMenu/KebabMenu";
 import {
   Tabs,
   TabsList,
@@ -27,6 +29,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [loading, setLoading] = useState(true);
   const [getUnreadComments, setGetUnreadComments] = useState([]);
   const [getUnreadReactions, setGetUnreadReactions] = useState([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Listener for a new feedback created
   const listenForNewFeedback = () => {
@@ -182,80 +185,152 @@ const NotificationTabs = ({ ownerUserId }) => {
     return <div>Loading...</div>;
   }
 
-  if (getNotifications.length == 0) {
-    return <div>Loading...</div>;
-  }
+  // if (getNotifications.length == 0) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <>
       <Tabs defaultValue="all">
-        <TabsList>
-          <TabsTrigger value="all">ALL</TabsTrigger>
-          <TabsTrigger value="comments">COMMENTS</TabsTrigger>
-          <TabsTrigger value="reactions">REACTIONS</TabsTrigger>
+        <TabsList className="bg-[#0954B0] p-2 w-full flex justify-evenly rounded-none h-14">
+          <TabsTrigger
+            value="all"
+            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+          >
+            All
+          </TabsTrigger>
+          <TabsTrigger
+            value="comments"
+            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+          >
+            Comments
+          </TabsTrigger>
+          <TabsTrigger
+            value="reactions"
+            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+          >
+            Reactions
+          </TabsTrigger>
         </TabsList>
 
         {/* ALL Notifications */}
         <TabsContent value="all">
-          <section>
+          <section className="flex flex-col gap-2">
             {/* map through the notifications */}
-            {getNotifications.map((notif) => (
-              <div key={notif.id}>
-                <h3>{notif.message}</h3>
-                {/* <p>{notif.feedbackId}</p> TODO: get the actual feedback */}
-                <p>{new Date(notif.createdAt.toDate()).toLocaleDateString()}</p>
-                <p>
-                  {" "}
-                  {new Date(notif.createdAt.toDate()).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-            ))}
+            {getNotifications.length > 0 ? (
+              getNotifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm gap-2"
+                >
+                  <span class="material-symbols-outlined">account_circle</span>
+                  <div className="flex-grow">
+                    <h3 className="font-bold">{notif.message}</h3>
+                    <p>{notif.feedbackContent}</p>
+                    <p className="text-right">
+                      {notif.createdAt
+                        ? new Date(
+                            notif.createdAt.toDate()
+                          ).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
+                  <KebabMenu
+                    onBlock={() => console.log("Block user:", notif.userId)}
+                    onMute={() => console.log("Mute user:", notif.userId)}
+                    onDelete={() => deleteNotification(notif.id)}
+                    onPreferences={() =>
+                      console.log("Open notification preferences")
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+                No notifications to display.
+              </p>
+            )}
           </section>
         </TabsContent>
 
         {/* Unread Comments */}
         <TabsContent value="comments">
-          {getUnreadComments.length > 0 ? (
-            getUnreadComments.map((unreadNotif) => (
-              <div>
-                <h3>{unreadNotif.message}</h3>
-                <p>{new Date(unreadNotif.createdAt.toDate()).toLocaleDateString()}</p>
-                <p>
-                  {" "}
-                  {new Date(unreadNotif.createdAt.toDate()).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p>No notifications to display.</p>
-          )}
+          <section className="flex flex-col gap-2">
+            {getUnreadComments.length > 0 ? (
+              getUnreadComments.map((unreadNotif) => (
+                <div
+                  key={unreadNotif.id}
+                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                >
+                  <span class="material-symbols-outlined">account_circle</span>
+                  <div className="flex-grow text-center">
+                    <h3 className="font-bold">{unreadNotif.message}</h3>
+                    <p className="text-right">
+                      {notif.createdAt
+                        ? new Date(
+                            notif.createdAt.toDate()
+                          ).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
+                  <KebabMenu
+                    onBlock={() =>
+                      console.log("Block user:", unreadNotif.userId)
+                    }
+                    onMute={() => console.log("Mute user:", unreadNotif.userId)}
+                    onDelete={() => deleteNotification(unreadNotif.id)}
+                    onPreferences={() =>
+                      console.log("Open notification preferences")
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+                No notifications to display.
+              </p>
+            )}
+          </section>
         </TabsContent>
 
         {/* Unread Reactions */}
         <TabsContent value="reactions">
-          {getUnreadReactions.length > 0 ? (
-            getUnreadReactions.map((unreadNotif) => (
-              <div>
-                <h3>{unreadNotif.message}</h3>
-                <p>{new Date(unreadNotif.createdAt.toDate()).toLocaleDateString()}</p>
-                <p>
-                  {" "}
-                  {new Date(unreadNotif.createdAt.toDate()).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p>No notifications to display.</p>
-          )}
+          <section className="flex flex-col gap-2">
+            {getUnreadReactions.length > 0 ? (
+              getUnreadReactions.map((unreadNotif) => (
+                <div
+                  key={unreadNotif.id}
+                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                >
+                  <span class="material-symbols-outlined">account_circle</span>
+                  <div className="flex-grow text-center">
+                    <h3 className="font-bold">{unreadNotif.message}</h3>
+                    <p className="text-right">
+                      {notif.createdAt
+                        ? new Date(
+                            notif.createdAt.toDate()
+                          ).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
+                  <KebabMenu
+                    onBlock={() =>
+                      console.log("Block user:", unreadNotif.userId)
+                    }
+                    onMute={() => console.log("Mute user:", unreadNotif.userId)}
+                    onDelete={() => deleteNotification(unreadNotif.id)}
+                    onPreferences={() =>
+                      console.log("Open notification preferences")
+                    }
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+                No notifications to display.
+              </p>
+            )}
+          </section>
         </TabsContent>
       </Tabs>
     </>
