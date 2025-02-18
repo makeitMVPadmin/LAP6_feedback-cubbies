@@ -51,7 +51,7 @@ export const createCommentNotification = async (feedbackId) => {
       userId: feedbackData.userId, // Sender
       portfolioId: feedbackData.portfolioId, // Receiver
       feedbackId: feedbackId,
-      message: `${senderName} commented on your portfolio`,
+      message: `@${senderName} commented on your portfolio`,
       readStatus: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -139,16 +139,32 @@ export const getAllNotifications = async (
       collection(db, "notification"),
       where("portfolioId", "in", portfolioIds),
       orderBy("createdAt", "desc"),
-      limit(10)
+      limit(5)
     );
     if (lastVisibleDoc) {
       notificationQuery = query(notificationQuery, startAfter(lastVisibleDoc));
     }
     const notificationSnapshot = await getDocs(notificationQuery);
-    const notificationList = notificationSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const notificationList = [];
+
+    for (const docSnap of notificationSnapshot.docs) {
+      let notificationData = {
+        id: docSnap.id,
+        ...docSnap.data(),
+      };
+
+      if (notificationData.feedbackId) {
+        const feedbackDoc = await getDoc(
+          doc(db, "feedback", notificationData.feedbackId)
+        );
+        if (feedbackDoc.exists()) {
+          notificationData.feedbackContent = feedbackDoc.data().comment;
+        } else {
+          notificationData.feedbackContent = null;
+        }
+      }
+      notificationList.push(notificationData);
+    }
 
     const lastVisible =
       notificationSnapshot.docs[notificationSnapshot.docs.length - 1];
@@ -170,7 +186,7 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
       where("reactionId", "==", null),
       where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
-      limit(10)
+      limit(5)
     );
 
     console.log(unreadFeedbackQuery);
