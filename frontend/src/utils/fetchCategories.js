@@ -1,4 +1,4 @@
-import { db } from "../firebase.js";
+import { db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 const fetchCategories = async (categoryType) => {

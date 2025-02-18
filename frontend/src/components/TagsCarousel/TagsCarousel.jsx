@@ -19,9 +19,9 @@ const TagsCarousel = () => {
       const designTagsData = await fetchCategories("designTags");
       const generalTechTagsData = await fetchCategories("generalTechTags");
 
-      setDevTags(devTagsData);
-      setDesignTags(designTagsData);
-      setGeneralTechTags(generalTechTagsData);
+      setDevTags(devTagsData || []); // Default to empty array if no data is returned
+      setDesignTags(designTagsData || []);
+      setGeneralTechTags(generalTechTagsData || []);
     };
     fetchCategoriesData();
   }, []);
@@ -49,25 +49,38 @@ const TagsCarousel = () => {
         <h3 className="text-xl font-semibold mb-2">{categoryName}</h3>
         <Carousel>
           <CarouselContent>
-            {tags.map((tag) => (
-              <CarouselItem key={tag} className="basis-1/4 p-2">
-                <button
-                  onClick={() =>
-                    selectedTags[categoryName]?.includes(tag)
-                      ? handleTagRemoval(categoryName, tag)
-                      : handleTagSelection(categoryName, tag)
-                  }
-                  className={`w-full p-4 border rounded-md ${
-                    selectedTags[categoryName]?.includes(tag)
-                      ? "bg-blue-500 text-white"
-                      : "bg-white text-black"
-                  }`}
-                >
-                  {tag}
-                </button>
-              </CarouselItem>
-            ))}
+            {tags.length > 0 ? (
+              tags.map((tag) => (
+                <CarouselItem key={tag} className="basis-1/4 p-2">
+                  <button
+                    onClick={() =>
+                      selectedTags[categoryName]?.includes(tag)
+                        ? handleTagRemoval(categoryName, tag)
+                        : handleTagSelection(categoryName, tag)
+                    }
+                    className={`w-full p-4 border rounded-md ${
+                      selectedTags[categoryName]?.includes(tag)
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                </CarouselItem>
+              ))
+            ) : (
+              <p>No tags available</p> // Handle case where there are no tags
+            )}
           </CarouselContent>
+
+          <div className="flex justify-center mt-4">
+            <CarouselPrevious className="mr-4">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </CarouselPrevious>
+            <CarouselNext>
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </CarouselNext>
+          </div>
         </Carousel>
       </div>
     );
@@ -78,15 +91,6 @@ const TagsCarousel = () => {
       {renderCategories("Dev Tags", devTags)}
       {renderCategories("Design Tags", designTags)}
       {renderCategories("General Tech Tags", generalTechTags)}
-
-      <div className="flex justify-center mt-4">
-        <CarouselPrevious className="mr-4">
-          <span className="material-symbols-outlined">arrow_back</span>
-        </CarouselPrevious>
-        <CarouselNext>
-          <span className="material-symbols-outlined">arrow_forward</span>
-        </CarouselNext>
-      </div>
     </div>
   );
 };

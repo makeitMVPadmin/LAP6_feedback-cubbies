@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
 import { useState } from "react";
 import "./App.css";
+import TagsCarousel from "./components/TagsCarousel/TagsCarousel";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -49,6 +50,7 @@ function App() {
         />
       </header>
       <main className="flex-grow p-4">{renderPage()}</main>
+      <TagsCarousel />
 
       {/*Close drawer restores previous page */}
       <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
