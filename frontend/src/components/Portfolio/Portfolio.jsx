@@ -218,9 +218,6 @@ const PortfolioPage = () => {
       ) : (
         <p>No portfolios available.</p>
       )}
-      <Button onClick={() => setShowModal(true)} className="mt-6">
-        Add New Portfolio
-      </Button>
 
       {/* .......... Add/Edit Portfolio...................... */}
       {showModal && (
