@@ -217,7 +217,7 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="all">
           <section className="flex flex-col gap-2">
             {/* map through the notifications */}
-            {getUnreadComments.length > 0 ? (
+            {getNotifications.length > 0 ? (
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
@@ -228,7 +228,11 @@ const NotificationTabs = ({ ownerUserId }) => {
                     <h3 className="font-bold">{notif.message}</h3>
                     <p>{notif.feedbackContent}</p>
                     <p className="text-right">
-                      {new Date(notif.createdAt.toDate()).toLocaleDateString()}
+                      {notif.createdAt
+                        ? new Date(
+                            notif.createdAt.toDate()
+                          ).toLocaleDateString()
+                        : ""}
                     </p>
                   </div>
                   <KebabMenu
@@ -262,9 +266,11 @@ const NotificationTabs = ({ ownerUserId }) => {
                   <div className="flex-grow text-center">
                     <h3 className="font-bold">{unreadNotif.message}</h3>
                     <p className="text-right">
-                      {new Date(
-                        unreadNotif.createdAt.toDate()
-                      ).toLocaleDateString()}
+                      {notif.createdAt
+                        ? new Date(
+                            notif.createdAt.toDate()
+                          ).toLocaleDateString()
+                        : ""}
                     </p>
                   </div>
                   <KebabMenu
@@ -300,9 +306,11 @@ const NotificationTabs = ({ ownerUserId }) => {
                   <div className="flex-grow text-center">
                     <h3 className="font-bold">{unreadNotif.message}</h3>
                     <p className="text-right">
-                      {new Date(
-                        unreadNotif.createdAt.toDate()
-                      ).toLocaleDateString()}
+                      {notif.createdAt
+                        ? new Date(
+                            notif.createdAt.toDate()
+                          ).toLocaleDateString()
+                        : ""}
                     </p>
                   </div>
                   <KebabMenu

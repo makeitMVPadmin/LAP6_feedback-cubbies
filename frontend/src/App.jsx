@@ -7,6 +7,7 @@ import "./App.css";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
+  const [currentNavState, setCurrentSetNavState] = useState("home");
   const [lastPage, setLastPage] = useState("home");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -15,8 +16,10 @@ function App() {
     if (page === "notifications") {
       setLastPage(currentPage); // Store last visited page
       setIsDrawerOpen(true); // Open notification drawer
+      setCurrentSetNavState("notifications");
     } else {
       setCurrentPage(page);
+      setCurrentSetNavState(page);
     }
   };
 
@@ -24,6 +27,7 @@ function App() {
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
     setCurrentPage(lastPage); // Restore last visited page
+    setCurrentSetNavState(lastPage);
   };
 
   const renderPage = () => {
@@ -42,7 +46,7 @@ function App() {
       <header className="bg-white shadow-md p-4">
         <TopNav
           setCurrentPage={handlePageChange}
-          currentPage={currentPage}
+          currentPage={currentNavState}
           notificationCount="999"
           username="usernameTest"
         />
