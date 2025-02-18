@@ -7,17 +7,11 @@ import React, { useEffect, useState } from "react";
 
 const PortfolioPage = () => {
   const [portfolio, setPortfolio] = useState(null);
+  const [portfolios, setPortfolios] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [newPortfolio, setNewPortfolio] = useState({
-    title: "",
-    userId: "",
-    description: "",
-    imageUrl: "",
-    link: "",
-  });
-
-  // ..Edit Current Portfolio............................................
-  const [editing, setEditing] = useState(false);
-  const [updatedData, setUpdatedData] = useState({
     title: "",
     userId: "",
     description: "",
@@ -28,155 +22,136 @@ const PortfolioPage = () => {
   useEffect(() => {
     const getData = async () => {
       const data = await fetchPortfolio();
+      setPortfolios(data);
       if (data.length > 0) {
         setPortfolio(data[0]);
       }
+      setLoading(false);
     };
     getData();
   }, []);
 
-  const handleChange = (e) => {
-    setNewPortfolio({ ...newPortfolio, [e.target.name]: e.target.value });
+  const handleNextPortfolio = () => {
+    if (portfolios.length > 0) {
+      const nextIndex = (currentIndex + 1) % portfolios.length;
+      setCurrentIndex(nextIndex);
+      setPortfolio(portfolios[nextIndex]);
+    }
+  };
+
+  const handlePrevPortfolio = () => {
+    if (portfolios.length > 0) {
+      const prevIndex =
+        (currentIndex - 1 + portfolios.length) % portfolios.length;
+      setCurrentIndex(prevIndex);
+      setPortfolio(portfolios[prevIndex]);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await addPortfolio(newPortfolio);
     const updatedData = await fetchPortfolio();
-    setPortfolio(updatedData[2] || null);
+    setPortfolios(updatedData);
+    setPortfolio(updatedData[updatedData.length - 1] || null);
     setNewPortfolio({
       title: "",
       userId: "",
       description: "",
       imageUrl: "",
       link: "",
-      CategoryId: "",
     });
-  };
-  // ..Delete Portfolio............................................
-  const handleDelete = async () => {
-    if (portfolio) {
-      await deletePortfolio(portfolio.id);
-      setPortfolio(null);
-    }
-  };
-  // ..Edit Portfolio............................................
-  const handleEdit = () => {
-    setEditing(true);
-    setUpdatedData({
-      title: portfolio.title,
-      userId: portfolio.userId,
-      description: portfolio.description,
-      imageUrl: portfolio.imageUrl,
-      link: portfolio.link,
-      CategoryId: portfolio.CategoryId,
-    });
-  };
-
-  const handleUpdate = async () => {
-    if (!portfolio) return;
-    await updatePortfolio(portfolio.id, updatedData);
-    setPortfolio({ ...portfolio, ...updatedData });
-    setEditing(false);
+    setShowModal(false);
   };
 
   return (
     <div>
       <h2>Portfolio</h2>
-      {portfolio ? (
+      {loading ? (
+        <p>Loading...</p>
+      ) : portfolio ? (
         <div>
-          {editing ? (
-            <div>
-              <input
-                type="text"
-                name="title"
-                placeholder="New Title"
-                value={updatedData.title}
-                onChange={(e) =>
-                  setUpdatedData({ ...updatedData, title: e.target.value })
-                }
-              />
-              <textarea
-                name="description"
-                placeholder="New Description"
-                value={updatedData.description}
-                onChange={(e) =>
-                  setUpdatedData({
-                    ...updatedData,
-                    description: e.target.value,
-                  })
-                }
-              />
-              <Button onClick={handleUpdate}>Save Changes</Button>
-            </div>
-          ) : (
-            <div>
-              <h2>{portfolio.title}</h2>
-              <p>{portfolio.userId}</p>
-              <p>{portfolio.description}</p>
-              {portfolio.imageUrl && (
-                <img
-                  src={portfolio.imageUrl}
-                  alt={portfolio.title}
-                  width="200"
-                />
-              )}
-              {/* <Button to={portfolio.link}>Review Portfolio</Button> */}
-              <Button variant="default" onClick={handleEdit}>
-                Edit
-              </Button>
-              <Button variant="destructive" onClick={handleDelete}>
-                Delete
-              </Button>
-            </div>
+          <h2>{portfolio.title}</h2>
+          <p>{portfolio.userId}</p>
+          <p>{portfolio.description}</p>
+          {portfolio.imageUrl && (
+            <img src={portfolio.imageUrl} alt={portfolio.title} width="200" />
           )}
+          {portfolio.link && (
+            <Button
+              as="a"
+              href={portfolio.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Portfolio
+            </Button>
+          )}
+          <Button onClick={handlePrevPortfolio}>Previous Portfolio</Button>
+          <Button onClick={handleNextPortfolio}>Next Portfolio</Button>
+          <Button onClick={() => setShowModal(true)}>Add New Portfolio</Button>
         </div>
       ) : (
         <p>No portfolio available.</p>
       )}
-      {/* ADDING PORTFOLIO FORM */}
-      <h2>ADD A NEW PORTFOLIO BELOW</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={newPortfolio.title}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="userId"
-          placeholder="User ID"
-          value={newPortfolio.userId}
-          onChange={handleChange}
-          required
-        />
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={newPortfolio.description}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="imageUrl"
-          placeholder="Image URL"
-          value={newPortfolio.imageUrl}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="link"
-          placeholder="Portfolio Link"
-          value={newPortfolio.link}
-          onChange={handleChange}
-          required
-        />
-        <Button type="submit">Add New Portfolio</Button>
-      </form>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <h3 className="text-lg font-semibold mb-4">Add New Portfolio</h3>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="title"
+                placeholder="Title"
+                value={newPortfolio.title}
+                onChange={(e) =>
+                  setNewPortfolio({ ...newPortfolio, title: e.target.value })
+                }
+                className="border p-2 w-full mb-2"
+              />
+              <textarea
+                name="description"
+                placeholder="Description"
+                value={newPortfolio.description}
+                onChange={(e) =>
+                  setNewPortfolio({
+                    ...newPortfolio,
+                    description: e.target.value,
+                  })
+                }
+                className="border p-2 w-full mb-2"
+              />
+              <input
+                type="text"
+                name="imageUrl"
+                placeholder="Image URL"
+                value={newPortfolio.imageUrl}
+                onChange={(e) =>
+                  setNewPortfolio({ ...newPortfolio, imageUrl: e.target.value })
+                }
+                className="border p-2 w-full mb-2"
+              />
+              <input
+                type="text"
+                name="link"
+                placeholder="Portfolio Link"
+                value={newPortfolio.link}
+                onChange={(e) =>
+                  setNewPortfolio({ ...newPortfolio, link: e.target.value })
+                }
+                className="border p-2 w-full mb-4"
+              />
+              <div className="flex justify-between">
+                <Button type="submit">Submit</Button>
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                  Close
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
