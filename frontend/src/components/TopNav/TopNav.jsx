@@ -40,7 +40,7 @@ function TopNav({
       <NavigationMenu>
         <NavigationMenuList className="flex space-x-6">
           {navItems.map(({ name, icon: Icon, page }) => (
-            <NavigationMenuItem key={page}>
+            <NavigationMenuItem key={page != "" ? page : name}>
               <button
                 onClick={() => (page != "" ? setCurrentPage(page) : null)}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
