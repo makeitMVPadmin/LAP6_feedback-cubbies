@@ -1,20 +1,10 @@
+import placeholder from "../../assets/portfolio-placeholder.jpeg";
 import { Button } from "../ui/button";
-import { ImagePlus, X, Link2 } from "lucide-react";
+import { ImagePlus, Link2 } from "lucide-react";
 import React from "react";
-import { useEffect } from "react";
 
 function PostModal({ isOpen, onClose }) {
   if (!isOpen) return null;
-
-  //   useEffect(() => {
-  //     if (isOpen) {
-  //       document.body.classList.add("overflow-hidden");
-  //     } else {
-  //       document.body.classList.remove("overflow-hidden");
-  //     }
-
-  //     return () => document.body.classList.remove("overflow-hidden");
-  //   }, [isOpen]);
 
   return (
     <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-10">
@@ -66,14 +56,31 @@ function PostModal({ isOpen, onClose }) {
               </div> */}
               <p className="border-t-2 border-gray-300 pb-2">--TAGS HERE--</p>
             </div>
-            <div className=" bg-gray-400 w-10 h-10"></div>
+            <div
+              className="w-[40%] h-[103px] rounded-[8px] bg-cover bg-center flex flex-col justify-between"
+              style={{ backgroundImage: `url(${placeholder})` }}
+            >
+              <img alt="profile photo" />
+              <p
+                className="p-2"
+                style={{
+                  fontFamily: "Fraunces, serif",
+                  fontSize: "16px",
+                  fontStyle: "normal",
+                  fontWeight: "600",
+                  lineHeight: "24px",
+                  color: "#FFF",
+                }}
+              >
+                My Portfolio
+              </p>
+            </div>
           </div>
           <div className="flex justify-between">
-            <Button variant="secondary">Save Changes</Button>
-            <div className="flex gap-4">
-              <Button variant="outline">Cancel</Button>
-              <Button>Publish</Button>
-            </div>
+            <Button variant="outline" className="border-0">
+              Cancel
+            </Button>
+            <Button>Publish</Button>
           </div>
         </form>
       </div>
