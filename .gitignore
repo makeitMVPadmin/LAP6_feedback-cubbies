@@ -6,7 +6,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-firebase-debug.log
 
 node_modules
 dist
@@ -24,9 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-
-.env
-
-
-# Contentlayer
-.contentlayer
+node_modules/*
+frontend/.env
