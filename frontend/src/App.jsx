@@ -1,7 +1,7 @@
-// import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
+import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
 import FeedbackPage from "./pages/FeedbackPage";
 import HomePage from "./pages/HomePage";
-// import TopNav from "@/components/TopNav/TopNav";
+import TopNav from "@/components/TopNav/TopNav";
 import { useState } from "react";
 import "./App.css";
 
@@ -41,17 +41,17 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-md p-4">
-        {/* <TopNav
+        <TopNav
           setCurrentPage={handlePageChange}
           currentPage={currentPage}
           notificationCount="999"
           username="usernameTest"
-        /> */}
+        />
       </header>
       <main className="flex-grow p-4">{renderPage()}</main>
 
       {/*Close drawer restores previous page */}
-      {/* <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} /> */}
+      <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
     </div>
   );
 }
