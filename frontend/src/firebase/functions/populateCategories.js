@@ -2,7 +2,7 @@ import { db } from "../firebase.js";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const categoryData = {
-    devCollection: [
+    devTags: [
         "Frontend",
         "Backend",
         "Fullstack",
@@ -22,7 +22,7 @@ const categoryData = {
         "Next.js",
         "Java",
     ],
-    designCollection: [
+    designTags: [
         "UI/UX",
         "Product Design",
         "Wireframing", 
@@ -35,7 +35,7 @@ const categoryData = {
         "Motion Design",
         "Design Systems"
     ],
-    generalTechCollection: [
+    generalTechTags: [
         "PM",
         "Agile",
         "Scrum",
@@ -62,5 +62,6 @@ const populateCategories = async () => {
         console.error("Error adding predefined categories: ", error)
     }
 }
+populateCategories();
 
 export default populateCategories;
