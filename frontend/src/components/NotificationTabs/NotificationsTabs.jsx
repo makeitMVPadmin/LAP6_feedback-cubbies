@@ -192,22 +192,22 @@ const NotificationTabs = ({ ownerUserId }) => {
   return (
     <>
       <Tabs defaultValue="all">
-        <TabsList className="bg-[#0954B0] p-2 w-full flex justify-evenly rounded-none h-14">
+        <TabsList className="bg-[#0264D4] p-2 w-full flex justify-evenly rounded-none h-14">
           <TabsTrigger
             value="all"
-            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+            className="text-white border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0"
           >
             All
           </TabsTrigger>
           <TabsTrigger
             value="comments"
-            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+            className="text-white border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0"
           >
             Comments
           </TabsTrigger>
           <TabsTrigger
             value="reactions"
-            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+            className="text-white border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0"
           >
             Reactions
           </TabsTrigger>
