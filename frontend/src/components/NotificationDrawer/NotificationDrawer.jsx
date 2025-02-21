@@ -1,8 +1,29 @@
+import { getAllNotifications } from "../../firebase/functions/notifications";
 import NotificationTabs from "../NotificationTabs/NotificationsTabs";
-import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function NotificationDrawer({ isOpen, onClose }) {
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const ownerUserId = "JxgOOscsM9YzL33swFg7";
+
+  // Fetch notifications **in the background when the app loads**
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      setLoading(true);
+      try {
+        const { notificationList } = await getAllNotifications(ownerUserId);
+        setNotifications(notificationList || []);
+      } catch (err) {
+        console.error("Error fetching notifications:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifications();
+  }, []); // Fetch only once when the component mounts
+
   // Prevent background scrolling when drawer is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
@@ -19,7 +40,11 @@ function NotificationDrawer({ isOpen, onClose }) {
       >
         {/* Drawer Header */}
         <div className="flex justify-between items-center border-b pb-3">
-          <NotificationTabs ownerUserId="g0gWhxIqZCWrGzncO6At" />
+          <NotificationTabs
+            ownerUserId={ownerUserId}
+            notifications={notifications} // Pass preloaded notifications
+            loading={loading}
+          />
         </div>
       </div>
     </>

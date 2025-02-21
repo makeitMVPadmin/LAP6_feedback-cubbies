@@ -8,24 +8,27 @@ import TagsCarousel from "./components/TagsCarousel/TagsCarousel";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
+  const [currentNavState, setCurrentSetNavState] = useState("home");
   const [lastPage, setLastPage] = useState("home");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Handle navigation selection
   const handlePageChange = (page) => {
     if (page === "notifications") {
-      setLastPage(currentPage);
-      setCurrentPage("notifications");
-      setIsDrawerOpen(true);
+      setLastPage(currentPage); // Store last visited page
+      setIsDrawerOpen(true); // Open notification drawer
+      setCurrentSetNavState("notifications");
     } else {
       setCurrentPage(page);
+      setCurrentSetNavState(page);
     }
   };
 
   // Close the notifications drawer and restore the last page
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
-    setCurrentPage(lastPage);
+    setCurrentPage(lastPage); // Restore last visited page
+    setCurrentSetNavState(lastPage);
   };
 
   const renderPage = () => {
@@ -35,7 +38,7 @@ function App() {
       case "feedback":
         return <FeedbackPage />;
       default:
-        return <HomePage />;
+        return <HomePage />; // Fallback
     }
   };
 
@@ -44,15 +47,17 @@ function App() {
       <header className="bg-white shadow-md p-4">
         <TopNav
           setCurrentPage={handlePageChange}
-          currentPage={currentPage}
+          currentPage={currentNavState}
           notificationCount="999"
           username="usernameTest"
         />
       </header>
-      <main className="flex-grow p-4">{renderPage()}</main>
+      <main className="flex-grow p-4">{renderPage()}
+        {renderPage()} {/* Render current page */}
+      </main>
       <TagsCarousel />
 
-      {/*Close drawer restores previous page */}
+      {/* Notification Drawer */}
       <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
     </div>
   );
