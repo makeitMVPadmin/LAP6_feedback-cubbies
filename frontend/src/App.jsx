@@ -1,5 +1,5 @@
 import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
-import FeedbackPage from "./pages/FeedbackPage";
+import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
 import { useState } from "react";
@@ -35,7 +35,7 @@ function App() {
       case "home":
         return <HomePage />;
       case "feedback":
-        return <FeedbackPage />;
+        return <PortfolioDetailsPage />;
       default:
         return <HomePage />; // Fallback
     }

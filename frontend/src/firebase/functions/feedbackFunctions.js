@@ -12,8 +12,8 @@ import {
 
 const getPortfolioFeedback = async (portfolioId) => {
   const feedbackQuery = query(
-    collection(db, "feedback"),
-    where("portfolioId", "==", portfolioId)
+    collection(db, "feedbacks"),
+    where("portfolio_id", "==", portfolioId)
   );
   try {
     const feedbackSnapshot = await getDocs(feedbackQuery);
@@ -30,7 +30,7 @@ const getPortfolioFeedback = async (portfolioId) => {
 
 const createFeedback = async (portfolioId, userId, comment) => {
   try {
-    const docRef = await addDoc(collection(db, "feedback"), {
+    const docRef = await addDoc(collection(db, "feedbacks"), {
       portfolioId,
       userId,
       comment,
@@ -45,7 +45,7 @@ const createFeedback = async (portfolioId, userId, comment) => {
 };
 
 const updateFeedback = async (feedbackId, newComment) => {
-  const feedbackDoc = doc(db, "feedback", feedbackId);
+  const feedbackDoc = doc(db, "feedbacks", feedbackId);
   try {
     await updateDoc(feedbackDoc, {
       comment: newComment,
@@ -58,7 +58,7 @@ const updateFeedback = async (feedbackId, newComment) => {
 };
 
 const deleteFeedback = async (feedbackId) => {
-  const feedbackDoc = doc(db, "feedback", feedbackId);
+  const feedbackDoc = doc(db, "feedbacks", feedbackId);
   try {
     await deleteDoc(feedbackDoc);
     console.log("Feedback deleted successfully");
