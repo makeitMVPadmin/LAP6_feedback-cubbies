@@ -1,25 +1,23 @@
 import { db } from "../firebase.js";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 
-
-const fetchTagsByCategory = async (catgeory) => {
-    try{
+const fetchAllTags = async () => {
+    try {
         const getTags = collection(db, "tags");
-        
-        const q = query(getTags, where("category", "==", catgeory));
-        
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(getTags);
 
-        const tagsArray = [];
+        const tagsArray = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
 
-        querySnapshot.forEach((doc) => {
-            tagsArray.push({ id: doc.id, ...doc.data() });
-        });
+        console.log("Fetched Tags:", tagsArray); 
         return tagsArray;
-
-    }catch (error){
-        console.error("Error fetching tags: ", error);
+    } catch (error) {
+        console.error("Error fetching tags:", error);
+        // return as an array to filter in frontend component
+        return []; 
     }
 };
 
-export default fetchTagsByCategory;
+export default fetchAllTags;

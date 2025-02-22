@@ -107,7 +107,8 @@ function PostModal({ isOpen, onClose }) {
             </div>
           </div>
           <section className="border-t border-black pb-2">
-           <TagSelection selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
+            <TagSelection selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
+          
           </section>
           <div className="flex justify-between">
             <Button
