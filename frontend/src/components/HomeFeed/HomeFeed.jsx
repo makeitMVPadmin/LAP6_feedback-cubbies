@@ -1,17 +1,31 @@
 import Post from '../Post/Post.jsx';
 import PostModal from '../PostModal/PostModal.jsx';
+import Portfolio from '../Portfolio/Portfolio.jsx';
+import fetchRoles from '../../firebase/functions/fetchRoles.js';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import ChevronDown from '../ui/chevron-down';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // loop through the posted portfolios
 function HomeFeed() {
   //open modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [roles, setRoles] = useState([]);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+
+  useEffect(() => {
+    const getRoles = async () => {
+      const fetchedRoles = await fetchRoles();
+      setRoles(fetchedRoles);
+    };
+
+    getRoles();
+  }, []);
+ 
 
   return (
     <div className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
@@ -35,10 +49,19 @@ function HomeFeed() {
           </Button>
         </div>
       </Card>
+      {/* <Post /> */}
+      <div>
+        <h2>Roles</h2>
+        <ul>
+          {roles.map((role_name, id) => (
+            <li key={id}>{role_name}</li>
+            
+          ))}
+        </ul>
+      </div>
+      <Portfolio />
       <PostModal isOpen={isModalOpen} onClose={handleCloseModal} />
-      {/* {mockPosts.map((post) => (
-        <Post key={post.id} post={post} />
-      ))} */}
+  
     </div>
   );
 }

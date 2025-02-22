@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 
 const PortfolioPage = () => {
-  const [portfolios, setPortfolios] = useState([]);
+  const [portfolios, setPortfolios] = useState([fetchPortfolio()]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPortfolio, setEditingPortfolio] = useState(null);
   const [portfolioData, setPortfolioData] = useState({
     title: "",
     userId: "",
+    tagId: "",
     description: "",
     imageUrl: "",
     link: "",
@@ -27,6 +28,9 @@ const PortfolioPage = () => {
     };
     getData();
   }, []);
+  
+  console.log(fetchPortfolio());
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (editingPortfolio) {
@@ -82,9 +86,9 @@ const PortfolioPage = () => {
         <p>Loading...</p>
       ) : portfolios.length > 0 ? (
         <div className="flex flex-col gap-6 items-center">
-          {portfolios.slice(3, 5).map((portfolio, index) => (
+          {portfolios.map((portfolio, id) => (
             <div
-              key={index}
+              key={id}
               className="w-[754px] h-[537px] flex-shrink-0 rounded-lg border border-gray-700 border-t border-l border-r-2 border-b-2 p-6 shadow-md flex flex-col gap-6"
             >
               <div className="h-6 px-2.5 w-15 py-1 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex">
@@ -123,8 +127,8 @@ const PortfolioPage = () => {
               </div>
 
               {/* ..........Portfolio title and Id................................  */}
-              {/* <h2>{portfolio.title}</h2>
-              <p>{portfolio.userId}</p> */}
+              <h2>{portfolio.title}</h2>
+              <p>{portfolio.userId}</p>
 
               <div className="text-black text-xl font-bold font-['Montserrat'] leading-loose text-left w-[570px] ml-[70px]">
                 <p>{portfolio.description}</p>
@@ -142,22 +146,22 @@ const PortfolioPage = () => {
               )}
               <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
                 <div className="flex flex-wrap gap-2 border border-gray-300 rounded-lg">
-                  <div class="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-                    <div class="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  <div className="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
+                    <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
                       Python
                     </div>
                   </div>
-                  <div class="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-                    <div class="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
+                    <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
                       Coding{" "}
                     </div>
                   </div>
-                  <div class="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-                    <div class="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
+                    <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
                       UX
                     </div>
                   </div>
-                  <div data-svg-wrapper class="relative">
+                  <div data-svg-wrapper className="relative">
                     <svg
                       width="24"
                       height="25"
@@ -175,8 +179,8 @@ const PortfolioPage = () => {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 border border-gray-300 rounded-lg ">
-                  <Button class="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl shadow-[0px_2.2923977375030518px_1.1461988687515259px_-1.1461988687515259px_rgba(0,0,0,0.20)] shadow-[0px_1.1461988687515259px_1.1461988687515259px_0px_rgba(0,0,0,0.14)] shadow-[0px_1.1461988687515259px_3.438596725463867px_0px_rgba(0,0,0,0.20)] justify-center items-center gap-[9.17px] inline-flex">
-                    <div class="w-[27.51px] h-[27.51px] bg-[#d9d9d9]"></div>
+                  <Button className="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl justify-center items-center gap-[9.17px] inline-flex">
+                    <div className="w-[27.51px] h-[27.51px] bg-[#d9d9d9]"></div>
 
                     <a
                       href={portfolio.link}
@@ -184,7 +188,7 @@ const PortfolioPage = () => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline mt-2 block"
                     >
-                      <div class="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
+                      <div className="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
                         Review Portfolio
                       </div>
                     </a>
