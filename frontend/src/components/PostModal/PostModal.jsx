@@ -4,12 +4,14 @@ import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React from "react";
 import { useState } from "react";
+import TagSelection from "../TagSelection/TagSelection";
 
 function PostModal({ isOpen, onClose }) {
   if (!isOpen) return null;
   const [postMessage, setPostMessage] = useState("");
   const [link, setLink] = useState("");
   const [coverImage, setCoverImage] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -105,7 +107,7 @@ function PostModal({ isOpen, onClose }) {
             </div>
           </div>
           <section className="border-t border-black pb-2">
-            --TAGS HERE--
+           <TagSelection selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
           </section>
           <div className="flex justify-between">
             <Button
