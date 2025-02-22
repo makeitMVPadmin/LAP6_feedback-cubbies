@@ -43,7 +43,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
                                     onClick={() => handleTagClick(tag)}
                                     className="py-[8px] px-[12px] rounded-[6px] bg-[#ddd] text-[black] border-none cursor-pointer"
                                 >
-                                    {tag.name}
+                                    {tag.tagName}
                                 </button>
                             ))}
                         </div>
