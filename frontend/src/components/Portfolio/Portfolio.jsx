@@ -135,7 +135,7 @@ const Portfolio = () => {
                 <div className="flex flex-col w-[298px]">
                   <div className="flex items-center gap-4">
                     <div className="text-slate-950 text-xl font-semibold font-['Montserrat'] leading-7">
-                      {users[portfolio.userId]?.firstName}{' '}{users[portfolio.userId]?.lastName}
+                      {users[portfolio.userId]?.firstName}{users[portfolio.userId]?.lastName}
                     </div>
                     <div className="text-slate-500 text-base font-bold font-['Montserrat'] leading-tight">
                       {users[portfolio.userId]?.email}
