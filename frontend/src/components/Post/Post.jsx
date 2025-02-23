@@ -14,7 +14,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
-// import { useEffect, useState } from "react";
 
 
 

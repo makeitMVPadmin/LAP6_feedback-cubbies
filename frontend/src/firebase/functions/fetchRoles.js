@@ -6,7 +6,7 @@ const fetchRoles = async () => {
   try {
     const rolesCollection = collection(db, "roles");
     const rolesSnapshot = await getDocs(rolesCollection);
-    const rolesList = rolesSnapshot.docs.map(doc => doc.data().role_name);
+    const rolesList = rolesSnapshot.docs.map(doc => doc.data().roleName);
     return rolesList;
   } catch (error) {
     console.error("Error fetching roles:", error);
