@@ -14,20 +14,20 @@ const fetchRoles = async () => {
   }
 };
 
-// const fetchRoleById = async (roleId) => {
-//   try {
-//     const roleDoc = doc(db, "roles", roleId);
-//     const roleSnapshot = await getDoc(roleDoc);
-//     if (roleSnapshot.exists()) {
-//       return roleSnapshot.data();
-//     } else {
-//       console.log("No such role with ID:", roleId);
-//       return null;
-//     }
-//   } catch (error) {
-//     console.error("Error fetching role by ID:", error);
-//     return null;
-//   }
-// };
+const fetchRoleById = async (roleId) => {
+  try {
+    const roleDoc = doc(db, "roles", roleId);
+    const roleSnapshot = await getDoc(roleDoc);
+    if (roleSnapshot.exists()) {
+      return roleSnapshot.data();
+    } else {
+      console.log("No such role with ID:", roleId);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching role by ID:", error);
+    return null;
+  }
+};
 
-export default fetchRoles
+export {fetchRoles, fetchRoleById};

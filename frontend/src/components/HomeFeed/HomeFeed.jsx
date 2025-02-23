@@ -1,5 +1,4 @@
-import img1 from '../../../public/images/MockImg1.jpg';
-import fetchRoles from '../../firebase/functions/fetchRoles.js';
+import { fetchRoles, fetchRoleById } from '../../firebase/functions/index.js';
 import Portfolio from '../Portfolio/Portfolio.jsx';
 import Post from '../Post/Post.jsx';
 import PostModal from '../PostModal/PostModal.jsx';
@@ -16,6 +15,7 @@ function HomeFeed() {
   const [roles, setRoles] = useState([]);
   const [posts, setPosts] = useState([]); // Add state for posts
 
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
@@ -24,8 +24,6 @@ function HomeFeed() {
       const fetchedRoles = await fetchRoles();
       setRoles(fetchedRoles);
     };
-
-    getRoles();
 
     // Add mock data for posts
     const mockPosts = [
@@ -51,6 +49,7 @@ function HomeFeed() {
 
     setPosts(mockPosts);
   }, []);
+
 
   return (
     <div className="grid grid-cols-1 gap-[3.13rem] justify-items-center">

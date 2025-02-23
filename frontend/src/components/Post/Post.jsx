@@ -14,6 +14,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
+// import { useEffect, useState } from "react";
+
 
 
 // rendering a single posted portfolio
@@ -28,7 +30,7 @@ function Post({ post }) {
   return (
     <Card className="flex flex-col items-center text-left w-3xl">
     <CardHeader>
-      <CardTitle>{post?.username || "Unknown User"}</CardTitle>
+      <CardTitle>{'jamie' || "Unknown User"}</CardTitle>
       <CardTitle>{post?.title || "Untitled Post"}</CardTitle>
       <CardDescription>{post?.description || "No description available."}</CardDescription>
     </CardHeader>

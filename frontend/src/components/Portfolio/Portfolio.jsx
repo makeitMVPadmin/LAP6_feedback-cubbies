@@ -1,9 +1,5 @@
-import addPortfolio from "../../firebase/functions/addPortfolio";
-import deletePortfolio from "../../firebase/functions/deletePortfolio";
-import fetchPortfolio from "../../firebase/functions/fetchPortfolio";
-import updatePortfolio from "../../firebase/functions/updatePortfolio";
+import { fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio } from "../../firebase/functions/index";
 import Avatar from '../ui/avatar';
-
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 
