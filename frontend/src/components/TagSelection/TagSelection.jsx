@@ -42,7 +42,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
                         <button
                             onClick={() => setOpenDropdown(isOpen ? null : category)}
                             className="flex justify-between items-center bg-[#fffefe] text-black px-4 py-2 rounded-lg hover:bg-[#ccc] w-[200px] h-[40px] flex-shrink-0 
-                            border-solid radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px] border-gray-800 text-lg font-bold"
+                            border radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px] border-gray-800 text-base font-bold"
                         >
                             {category}
                             <ChevronDown className="w-5 h-5" />
@@ -50,7 +50,8 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
 
                         {/* dropdown Menu */}
                         {isOpen && (
-                            <div className="absolute left-0 w-full bg-white border border-gray-300 shadow-md rounded-lg mt-1 max-h-48 overflow-y-auto z-10">
+                            <div className="absolute left-0 w-full bg-white border radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px]
+                             shadow-md rounded-lg mt-1 max-h-48 overflow-y-auto z-10">
                                 {filteredTags.map((tag) => (
                                     <button
                                         key={tag.id}
@@ -58,7 +59,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
                                             e.stopPropagation();
                                             handleTagClick(tag);
                                         }}
-                                        className={`block w-full text-left px-4 py-2 cursor-pointer 
+                                        className={`block w-full text-left px-4 py-2 cursor-pointer text-[14px] font-400 leading-[20px]
                                             ${
                                                 selectedTags.some((t) => t.id === tag.id)
                                                     ? "bg-[#0099FF] text-white"

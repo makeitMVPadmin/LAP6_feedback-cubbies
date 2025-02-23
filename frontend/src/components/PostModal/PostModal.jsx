@@ -38,7 +38,7 @@ function PostModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-10">
-      <div className="bg-white p-7 rounded-2xl border-2 border-black shadow-md w-[80%] max-w-[1040px] h-[720px] mt-[145px] overflow-hidden pt-[45px] pl-[62px] pr-[62px] pb-[16px]">
+      <div className="bg-white p-7 rounded-2xl border-2 border-black shadow-md w-[80%] max-w-[1014px] h-[730px] mt-[145px] overflow-hidden pt-[45px] pl-[62px] pr-[62px] pb-[16px]">
         <h2
           className="text-2xl font-bold mb-40px"
           style={{
@@ -52,7 +52,7 @@ function PostModal({ isOpen, onClose }) {
             <div className="w-[60%]">
               <div className="flex flex-col gap-2">
                 <label
-                  className="font-bold"
+                  className="font-bold text-base mb-2"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
                   Post message
@@ -108,7 +108,7 @@ function PostModal({ isOpen, onClose }) {
           </div>
 
           <section className="border-t border-black pb-[40px]">
-            <h2 className="text-l font-bold my-[10px]">Select Tags</h2>
+            <h2 className="text-base font-bold my-[0.625rem] my-[1.25rem] ">Choose Tags</h2>
             <TagSelection selectedTags={selectedTags} setSelectedTags={setSelectedTags} onClick={(e) => e.stopPropagation()} />
           </section>
 
