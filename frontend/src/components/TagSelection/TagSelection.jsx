@@ -48,7 +48,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
                 const selectedTag = selectedTags.find((t) => t.category === category);
 
                 return (
-                    <div key={category} className="relative w-1/3 mb-[170px]">
+                    <div key={category} className="relative w-1/3 mb-[200px]">
                         {/* dropdown button */}
                         <button
                             onClick={() =>
@@ -68,7 +68,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
                         {/* dropdown Menu */}
                         {isOpen && (
                             <div className="absolute left-0 w-full bg-white border radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px]
-                             shadow-md rounded-lg mt-1 max-h-48 overflow-y-auto z-10">
+                             shadow-md rounded-lg mt-1 z-10">
                                 {filteredTags.map((tag) => (
                                     <button
                                         key={tag.id}
