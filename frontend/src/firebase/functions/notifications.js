@@ -17,7 +17,7 @@ import {
 export const createCommentNotification = async (feedbackId) => {
   try {
     // Fetch the feedback
-    const feedbackDoc = await getDoc(doc(db, "feedback", feedbackId));
+    const feedbackDoc = await getDoc(doc(db, "feedbacks", feedbackId));
     if (!feedbackDoc.exists()) {
       console.error("Feedback not found");
       return null;
@@ -30,7 +30,7 @@ export const createCommentNotification = async (feedbackId) => {
     }
     // Fetch the portfolio
     const portfolioDoc = await getDoc(
-      doc(db, "portfolio", feedbackData.portfolioId)
+      doc(db, "portfolios", feedbackData.portfolioId)
     );
     if (!portfolioDoc.exists()) {
       console.error("Portfolio not found");
@@ -47,7 +47,7 @@ export const createCommentNotification = async (feedbackId) => {
     const senderName = senderDoc.data().username;
 
     // Create a new notification
-    await addDoc(collection(db, "notification"), {
+    await addDoc(collection(db, "notifications"), {
       userId: feedbackData.userId, // Sender
       portfolioId: feedbackData.portfolioId, // Receiver
       feedbackId: feedbackId,
@@ -80,7 +80,7 @@ export const createReactionNotification = async (reactionId) => {
     }
     // Fetch the portfolio
     const portfolioDoc = await getDoc(
-      doc(db, "portfolio", reactionData.portfolioId)
+      doc(db, "portfolios", reactionData.portfolioId)
     );
     if (!portfolioDoc.exists()) {
       console.error("Portfolio not found");
@@ -96,7 +96,7 @@ export const createReactionNotification = async (reactionId) => {
     const senderName = senderDoc.data().username;
 
     // Create a new notification for the reaction
-    await addDoc(collection(db, "notification"), {
+    await addDoc(collection(db, "notifications"), {
       userId: reactionData.userId,
       portfolioId: reactionData.portfolioId,
       reactionId,
@@ -122,7 +122,7 @@ export const getAllNotifications = async (
   try {
     // Fetch all the portofolios associated with the ownerUserId
     const portfolioQuery = query(
-      collection(db, "portfolio"),
+      collection(db, "portfolios"),
       where("userId", "==", ownerUserId)
     );
     const portfolioSnapshot = await getDocs(portfolioQuery);
@@ -136,7 +136,7 @@ export const getAllNotifications = async (
 
     // Fetch all notifications(paginated) for the ownerUserId's portfolios
     let notificationQuery = query(
-      collection(db, "notification"),
+      collection(db, "notifications"),
       where("portfolioId", "in", portfolioIds),
       orderBy("createdAt", "desc"),
       limit(5)
@@ -155,7 +155,7 @@ export const getAllNotifications = async (
 
       if (notificationData.feedbackId) {
         const feedbackDoc = await getDoc(
-          doc(db, "feedback", notificationData.feedbackId)
+          doc(db, "feedbacks", notificationData.feedbackId)
         );
         if (feedbackDoc.exists()) {
           notificationData.feedbackContent = feedbackDoc.data().comment;
@@ -179,12 +179,12 @@ export const getAllNotifications = async (
 export const getUnreadCommentsNotification = async (ownerUserId) => {
   try {
     // Filtering for unread notifications
-    const notificationsRef = collection(db, "notification");
+    const notificationsRef = collection(db, "notifications");
     const unreadFeedbackQuery = query(
       notificationsRef,
       where("userId", "==", ownerUserId),
       where("reactionId", "==", null),
-      where("readStatus", "==", false),
+      // where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
       limit(5)
     );
@@ -209,12 +209,12 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
 export const getUnreadReactionsNotification = async (ownerUserId) => {
   try {
     // Filtering for unread notifications of the entire collection
-    const notificationsRef = collection(db, "notification");
+    const notificationsRef = collection(db, "notifications");
     const unreadReactionQuery = query(
       notificationsRef,
       where("userId", "==", ownerUserId),
       where("reactionId", "!=", null),
-      where("readStatus", "==", false),
+      // where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
       limit(5)
     );
@@ -237,7 +237,7 @@ export const getUnreadReactionsNotification = async (ownerUserId) => {
 export const markNotificationAsRead = async (notificationId) => {
   try {
     // Reference to a single/specific document
-    const notificationsDocRef = doc(db, "notification", notificationId);
+    const notificationsDocRef = doc(db, "notifications", notificationId);
     await updateDoc(notificationsDocRef, {
       readStatus: true,
       updatedAt: serverTimestamp(),

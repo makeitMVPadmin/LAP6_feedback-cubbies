@@ -3,7 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 const fetchPortfolio = async () => {
   try {
-    const querySnapshot = await getDocs(collection(db, "portfolio"));
+    const querySnapshot = await getDocs(collection(db, "portfolios"));
     const userPortfolio = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -12,7 +12,7 @@ const fetchPortfolio = async () => {
     console.log(userPortfolio);
     return userPortfolio;
   } catch (error) {
-    console.error("Error fetching portfolio: ", error);
+    console.error("Error fetching portfolios: ", error);
     return [];
   }
 };
