@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 import fetchAllTags from "../../firebase/functions/fetchTags";
 
-const categories = ["devTags", "designTags", "generalTechTags"];
+const categories = ["Dev Tags", "General Tags", "Design Tags"];
 
 const TagSelection = ({ selectedTags, setSelectedTags }) => {
     const [tags, setTags] = useState([]);
+    const [openDropdown, setOpenDropdown] = useState(null);
 
     useEffect(() => {
         const fetchTags = async () => {
             try {
                 const allTags = await fetchAllTags();
-                setTags(allTags || []); // make sure it's an array
+                setTags(allTags || []);
             } catch (error) {
                 console.error("Error fetching tags:", error);
-                setTags([]); 
+                setTags([]);
             }
         };
         fetchTags();
@@ -29,32 +31,45 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
     };
 
     return (
-        <section>
+        <section className="flex gap-4">
             {categories.map((category) => {
                 const filteredTags = tags.filter((tag) => tag.category === category);
+                const isOpen = openDropdown === category;
 
                 return (
-                    <div key={category}>
-                        <h3>{category.replace("Tags", "")}</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {filteredTags.map((tag) => (
-                             <button
-                                key={tag.id}
-                                onClick={(e) => {
-                                    e.stopPropagation(); 
-                                    handleTagClick(tag);
-                                }}
-                                className={`py-[8px] px-[12px] rounded-[6px] border-none cursor-pointer
-                                    ${selectedTags.some((t) => t.id === tag.id) 
-                                        ? "bg-[#333] text-[white]" // selected state
-                                        : "bg-[#ddd] text-[black] hover:bg-[#ccc]" // normal state
-                                    }`}
-                            >
-                                {tag.tagName}
-                            </button>
-                         
-                            ))}
-                        </div>
+                    <div key={category} className="relative w-1/3 mb-[170px]">
+                        {/* dropdown button */}
+                        <button
+                            onClick={() => setOpenDropdown(isOpen ? null : category)}
+                            className="flex justify-between items-center bg-[#fffefe] text-black px-4 py-2 rounded-lg hover:bg-[#ccc] w-[200px] h-[40px] flex-shrink-0 
+                            border-solid radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px] border-gray-800 text-lg font-bold"
+                        >
+                            {category}
+                            <ChevronDown className="w-5 h-5" />
+                        </button>
+
+                        {/* dropdown Menu */}
+                        {isOpen && (
+                            <div className="absolute left-0 w-full bg-white border border-gray-300 shadow-md rounded-lg mt-1 max-h-48 overflow-y-auto z-10">
+                                {filteredTags.map((tag) => (
+                                    <button
+                                        key={tag.id}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleTagClick(tag);
+                                        }}
+                                        className={`block w-full text-left px-4 py-2 cursor-pointer 
+                                            ${
+                                                selectedTags.some((t) => t.id === tag.id)
+                                                    ? "bg-[#0099FF] text-white"
+                                                    : "hover:bg-[#0099FF] hover:text-white"
+                                            }`}
+                                    >
+                                        {tag.tagName}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 );
             })}
