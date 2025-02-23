@@ -1,37 +1,64 @@
-# LAP6_feedback-cubbies
+# LAP6_feedback-cubbies 🎉
 
-## About The Project
-This feature is designed to integrate into an existing app, creating a space where users can give and receive constructive feedback. It’s aimed at supporting new grads who want guidance on their work, helping ease the uncertainty of the job search process. By promoting clarity and confidence, it empowers users to grow and move forward in their careers.
+## Table of Contents 📜
+- [About The Project](#about-the-project)
+- [Project Goals](#project-goals)
+- [Tech Stack](#tech-stack)
+- [Project Resources](#project-resources)
+- [Installation](#installation)
+- [Firebase Initialization Steps](#firebase-initialization-steps)
+- [Deploying the App](#deploying-the-app)
+- [Setting Up Firebase API Keys](#setting-up-firebase-api-keys)
 
-## Tech Stack
-- Frontend: React, tailwindCSS, shadcn/ui, HTML
-- Backend: Firebase
+## About The Project 🔎
+This feature is designed to integrate into an existing app, creating a space where users can give and receive constructive feedback. It’s aimed at supporting new grads who want guidance on their work, helping ease the uncertainty of the job search process. By promoting clarity and confidence, it empowers users to grow and move forward in their careers. 🚀
 
-## Project Goals
+## Project Goals 🎯
+
 - Enable members to upload content of their projects/portfolio.
 - Allow members to comment and provide genuine feedback.
 - Display uploaded profiles in a queue or list format for easy access.
 - Allow users to tag their uploads with predefined roles for context.
 
-## Project Resources:
-- Figma
-- VsCode, GitHub
-- Jira, Confluence
+## Tech Stack  💻
+
+- **[React](https://react.dev/):** A JavaScript library for building user interfaces.  
+- **[Vite](https://vitejs.dev/):** A fast build tool and development server for modern web applications.  
+- **[Tailwind CSS](https://tailwindcss.com/):** A utility-first CSS framework for styling.  
+- **[shadcn/ui](https://ui.shadcn.com/):** Pre-built, accessible UI components built on Radix and Tailwind CSS.  
+- **[Firebase](https://firebase.google.com/):** Backend services for authentication, database, and hosting.  
+
+## Project Resources  📚
+
+- **[Figma](https://www.figma.com/):** UI/UX design and prototyping tool.  
+- **[VS Code](https://code.visualstudio.com/):** Source code editor with powerful extensions.  
+- **[GitHub](https://github.com/):** Version control and repository hosting.  
+- **[Jira](https://www.atlassian.com/software/jira):** Project management and issue tracking.  
+- **[Confluence](https://www.atlassian.com/software/confluence):** Documentation and team collaboration.  
+
 ---
 
-## Firebase initialization steps
+## Installation 🛠️  
 
-This guide walks you through setting up Firebase for your project, including installation, authentication, routing configuration, and deployment.
+Follow these steps to set up the project on your local machine:  
 
-### Prerequisites
+### Prerequisites  
 
-Ensure you have the following installed before proceeding:
+Make sure you have the following installed:  
+- **[Node.js](https://nodejs.org/)** (LTS recommended)  
+- **npm** (comes with Node.js)  
 
-- **[Node.js](https://nodejs.org/)** (LTS version recommended)
+### Clone the Repository  
 
-## Installation and Setup
+```sh
+   git clone git@github.com:makeitMVPadmin/LAP6_feedback-cubbies.git
+   ```
+### Install Dependencies
+```sh
+   npm install
+   ```
 
-Follow these steps to initialize Firebase in your project:
+## Firebase Initialization Steps
 
 ### **Install Firebase CLI**
 Install Firebase tools globally using npm:
@@ -39,25 +66,22 @@ Install Firebase tools globally using npm:
 npm install -g firebase-tools
 ```
 ### **Login to Firebase**
-#### Authenticate with Firebase using your Google account
+#### Authenticate With Firebase Using Your Google Account
 ```
 firebase login
 ```
-#### Navigate to your project directory and run
+#### Navigate To Your Project Directory And Run This Command
 ```
 firebase init
 ```
-During initialization, select the following options:
+#### Select The Following Options:
 
-Hosting (for deploying web apps)
+- Hosting (for deploying web apps)
+- Choose dist as the public directory (or your preferred build folder)
+- Configure as a single-page app if applicable (y/n prompt)
+- Skip automatic builds (n)
 
-Choose dist as the public directory (or your preferred build folder)
-
-Configure as a single-page app if applicable (y/n prompt)
-
-Skip automatic builds (n)
-
-Configuring Routing for a New App Link
+#### Configuring Routing For A New App Link
 
 If you need to add a custom app link (e.g., /app1), update your firebase.json file:
 ```
@@ -137,7 +161,6 @@ export { db };
 
 ```
 #### Querying Firebase Firestore (Example)
-Here’s an example query:
 
 ```
 import { db } from "../firebase.js";
