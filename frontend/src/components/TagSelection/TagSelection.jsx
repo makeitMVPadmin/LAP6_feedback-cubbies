@@ -21,7 +21,8 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
         fetchTags();
     }, []);
 
-    const handleTagClick = (tag) => {
+    const handleTagClick = (tag, e) => {
+        e.stopPropagation();
         setSelectedTags((prevSelectedTags) => {
             const isSelected = prevSelectedTags.some((t) => t.id === tag.id);
             return isSelected
