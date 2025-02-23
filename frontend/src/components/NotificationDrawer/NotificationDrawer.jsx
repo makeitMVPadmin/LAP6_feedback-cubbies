@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 function NotificationDrawer({ isOpen, onClose }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const ownerUserId = "JxgOOscsM9YzL33swFg7";
+  const ownerUserId = "2z77IdGFK4Z12ruuYLnq";
 
   // Fetch notifications **in the background when the app loads**
   useEffect(() => {
