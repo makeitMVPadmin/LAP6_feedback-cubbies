@@ -1,11 +1,5 @@
 import {
-  fetchPortfolio,
-  addPortfolio,
-  updatePortfolio,
-  deletePortfolio,
-  fetchRoles,
-  fetchRoleById,
-  fetchUsers,
+  fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
   fetchUserById,
 } from '../../firebase/functions/index';
 import { Button, Card, Avatar } from '../ui/index';
@@ -134,19 +128,19 @@ const Portfolio = () => {
 
                 <div className="flex flex-col w-[298px]">
                   <div className="flex items-center gap-4">
-                    <div className="text-slate-950 text-xl font-semibold font-['Montserrat'] leading-7">
+                    <div className="text-slate-950 text-xl font-bold font-[Corben] leading-7">
                       {users[portfolio.userId]?.firstName}{users[portfolio.userId]?.lastName}
                     </div>
-                    <div className="text-slate-500 text-base font-bold font-['Montserrat'] leading-tight">
+                    <div className="text-slate-500 font-header font-bold font-[Corben] leading-tight">
                       {users[portfolio.userId]?.email}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 mt-1">
-                    <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
+                    <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
                     {roles[users[portfolio.userId]?.roleId]?.roleName}
                     </div>
-                    <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
+                    <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
                       1 day ago
                     </div>
                   </div>
