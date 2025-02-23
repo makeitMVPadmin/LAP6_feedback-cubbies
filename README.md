@@ -4,7 +4,7 @@
 This feature is designed to integrate into an existing app, creating a space where users can give and receive constructive feedback. It’s aimed at supporting new grads who want guidance on their work, helping ease the uncertainty of the job search process. By promoting clarity and confidence, it empowers users to grow and move forward in their careers.
 
 ## Tech Stack
-- Frontend: React, SASS, ShadUI, HTML
+- Frontend: React, tailwindCSS, shadcn/ui, HTML
 - Backend: Firebase
 
 ## Project Goals

@@ -2,6 +2,8 @@ import addPortfolio from "../../firebase/functions/addPortfolio";
 import deletePortfolio from "../../firebase/functions/deletePortfolio";
 import fetchPortfolio from "../../firebase/functions/fetchPortfolio";
 import updatePortfolio from "../../firebase/functions/updatePortfolio";
+import Avatar from '../ui/avatar';
+
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 
@@ -98,11 +100,7 @@ const PortfolioPage = () => {
               </div>
               <div className="w-[342px] h-[60px] flex items-center gap-2">
                 <div className="w-9 h-9 flex justify-center items-center">
-                  <img
-                    className="w-9 h-9 rounded-full"
-                    src="https://s3-alpha-sig.figma.com/img/8757/ea43/56d61cf7bb51515bf9da9c2f34ea9d23?Expires=1740960000&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=lIZuF74W~vHigZ4RccPfTTsvUcjXZI3QYmLos9h-AKERaZtZd71LC0oAptDzu4fUExn46v91WJIk71pklm1W62ZykvwPKu~FZUvD1ylZ1btHfQqlkNVWQh~DG9-pH3ZG7YJhRRGBEdOtJF1N-PwSFIrtAmufTs62Zs5dT6VHlGzzCMMuBsh0tE1~WRFLq9rhXUHJ7scXLYDG06xd9q9H7oDd3qDPr0AmFfwFgrbI1haBvV2nLSDGB8B6TjIDLHns0w3R0xG9Oruuog81fq3ZkVetKIap~v8PvGGo8J5EZ84RHkcH9nj6~Jd5aCNsvDyuHqZkXDcXPaqIl2jgkVkMfA__"
-                    alt="User Profile"
-                  />
+                  <Avatar className="w-12 h-12" />
                 </div>
 
                 <div className="flex flex-col w-[298px]">
@@ -128,7 +126,7 @@ const PortfolioPage = () => {
 
               {/* ..........Portfolio title and Id................................  */}
               <h2>{portfolio.title}</h2>
-              <p>{portfolio.userId}</p>
+              {/* <p>{portfolio.userId}</p> */}
 
               <div className="text-black text-xl font-bold font-['Montserrat'] leading-loose text-left w-[570px] ml-[70px]">
                 <p>{portfolio.description}</p>
@@ -172,8 +170,8 @@ const PortfolioPage = () => {
                       <path
                         d="M12.0001 5.30078L12 19.7008M19.2 12.5008L4.80005 12.5008"
                         stroke="black"
-                        stroke-width="2"
-                        stroke-linecap="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
                       />
                     </svg>
                   </div>
