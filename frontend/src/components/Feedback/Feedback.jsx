@@ -1,19 +1,17 @@
-import { useState, useEffect } from "react";
 import {
   getPortfolioFeedback,
   createFeedback,
   updateFeedback,
   deleteFeedback,
 } from "../../firebase/functions/feedbackFunctions";
-
+import { useState, useEffect } from "react";
 
 const Feedback = () => {
   const [feedbackList, setFeedbackList] = useState([]);
-  const [portfolioId, setPortfolioId] = useState("KoFVGG5ARPOD2kcRT2JN");
+  const [portfolioId, setPortfolioId] = useState("PXKgEDwdVZrWxatSfKDr");
   const [newComment, setNewComment] = useState("");
   const [editingFeedbackId, setEditingFeedbackId] = useState(null);
   const [updatedComments, setUpdatedComments] = useState({});
-
 
   const retrivePortfolioFeedback = async () => {
     const feedback = await getPortfolioFeedback(portfolioId);
@@ -37,7 +35,6 @@ const Feedback = () => {
     setNewComment("");
   };
 
- 
   const handleUpdateFeedback = async (feedbackId) => {
     const updatedComment = updatedComments[feedbackId];
     if (updatedComment.trim() !== "") {

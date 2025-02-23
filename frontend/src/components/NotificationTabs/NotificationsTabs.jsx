@@ -35,7 +35,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const listenForNewFeedback = () => {
     try {
       const feedbackQuery = query(
-        collection(db, "feedback"),
+        collection(db, "feedbacks"),
         orderBy("createdAt", "desc")
       );
 
@@ -64,7 +64,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const listenForNewReaction = () => {
     try {
       const reactionQuery = query(
-        collection(db, "reaction"),
+        collection(db, "reactions"),
         orderBy("createdAt", "desc")
       );
 
@@ -112,7 +112,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const listenForNewNotifications = () => {
     try {
       const notificationQuery = query(
-        collection(db, "notification"),
+        collection(db, "notifications"),
         where("userId", "==", ownerUserId),
         orderBy("createdAt", "desc")
       );
