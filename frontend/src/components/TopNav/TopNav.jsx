@@ -112,6 +112,7 @@ function TopNav({
             </button>
           </NavigationMenuItem>
           {/* User Profile with ShadCN Dropdown */}
+<<<<<<< HEAD
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="relative flex items-center focus:outline-none">
@@ -126,6 +127,71 @@ function TopNav({
                   <span className="material-symbols-outlined">
                     arrow_drop_down
                   </span>
+=======
+          <NavigationMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="cursor-pointer flex items-center space-x-2">
+                <button className="relative flex items-center focus:outline-none">
+                  <div className="w-[72px] h-[72px] justify-center items-center inline-flex">
+                    <img
+                      className="w-[72px] h-[72px] rounded-full border border-black"
+                      src={currentUser?.profilePicture}
+                      alt={currentUser?.firstName}
+                    />
+                  </div>
+                  <div className="absolute -bottom-0 right-0 w-4 h-4">
+                    <div data-svg-wrapper className="relative">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect width="24" height="24" rx="12" fill="#080808" />
+                        <path
+                          d="M6 9L12 15L18 9"
+                          stroke="white"
+                          stroke-width="1.25"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                className="w-[200px]  bg-white rounded-lg shadow-[0px_2px_4px_-1px_rgba(0,0,0,0.20)] shadow-[0px_4px_5px_0px_rgba(0,0,0,0.14)] shadow-[0px_1px_10px_0px_rgba(0,0,0,0.12)] border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-center items-start inline-flex overflow-hidden"
+                align="end"
+                side="bottom"
+                sideOffset={10}
+              >
+                {/* User Info */}
+                <div className="w-full px-3 py-[9px] border-b border-[#d0dce3] flex items-center">
+                  <div className="text-[#28363f] text-base font-bold font-['Montserrat'] leading-tight">
+                    {currentUser?.firstName} {currentUser?.lastName}
+                  </div>
+                </div>
+                {/* Menu Items */}
+                <div className="flex flex-col w-full">
+                  <DropdownMenuItem className="px-3 py-[9px] hover:bg-gray-100">
+                    <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                      View Profile
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="px-3 py-[9px] hover:bg-gray-100">
+                    <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                      Settings
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="px-3 py-[9px] hover:bg-gray-100">
+                    <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                      Posts & Activity
+                    </div>
+                  </DropdownMenuItem>
+>>>>>>> cca59d6 ("Filter Tags" component created for filtering homefeed by selecting tags. Some styling done for it, functionality coming later!)
                 </div>
               </button>
             </DropdownMenuTrigger>

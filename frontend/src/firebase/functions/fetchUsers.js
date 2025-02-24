@@ -33,4 +33,4 @@ const fetchUserById = async (userId) => {
   }
 };
 
-export default { fetchUsers, fetchUserById };
+export { fetchUsers, fetchUserById };

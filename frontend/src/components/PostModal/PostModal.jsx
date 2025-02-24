@@ -1,5 +1,5 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
-import addPortfolio from "../../firebase/functions/addPortfolio";
+import { addPortfolio } from "../../firebase/functions/index.js";
 import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React from "react";
