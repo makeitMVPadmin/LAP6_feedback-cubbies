@@ -1,8 +1,14 @@
 import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
-import FeedbackPage from "./pages/FeedbackPage";
+import {
+  fetchUsersByIds,
+  fetchUserById,
+  emptyUser,
+} from "./firebase/functions/fetchUsers";
+// Import fetchUserById
+import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -10,12 +16,41 @@ function App() {
   const [currentNavState, setCurrentSetNavState] = useState("home");
   const [lastPage, setLastPage] = useState("home");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [usersList, setUsersList] = useState([]); // Store all users
+  const [currentUser, setCurrentUser] = useState(null); // Store logged-in user
 
+  // Fetch specific users by their IDs on mount
+  useEffect(() => {
+    const userIds = [
+      "01x5EDdS2TlLNMPLkiPT",
+      "03E7eZ9ODHyBiguPGXtw",
+      "0U4AlgjUcfgyC23raMTo",
+    ];
+
+    fetchUsersByIds(userIds).then((users) => {
+      setUsersList(users);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (usersList.length > 0 && !currentUser) {
+      setCurrentUser(usersList[0]); // Set first user as logged in
+      console.log("User set:", usersList[0]);
+    }
+  }, [usersList]);
+
+  const handleUserLogin = (userId) => {
+    const user = usersList.find((user) => user.id === userId);
+    if (user) {
+      setCurrentUser(user);
+      console.log("Logged in as:", user);
+    }
+  };
   // Handle navigation selection
   const handlePageChange = (page) => {
     if (page === "notifications") {
-      setLastPage(currentPage); // Store last visited page
-      setIsDrawerOpen(true); // Open notification drawer
+      setLastPage(currentPage);
+      setIsDrawerOpen(true);
       setCurrentSetNavState("notifications");
     } else {
       setCurrentPage(page);
@@ -26,18 +61,18 @@ function App() {
   // Close the notifications drawer and restore the last page
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false);
-    setCurrentPage(lastPage); // Restore last visited page
+    setCurrentPage(lastPage);
     setCurrentSetNavState(lastPage);
   };
 
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <HomePage />;
+        return <HomePage currentUser={currentUser || emptyUser} />;
       case "feedback":
-        return <FeedbackPage />;
+        return <PortfolioDetailsPage currentUser={currentUser || emptyUser}/>;
       default:
-        return <HomePage />; // Fallback
+        return <HomePage currentUser={currentUser || emptyUser} />;
     }
   };
 
@@ -48,15 +83,19 @@ function App() {
           setCurrentPage={handlePageChange}
           currentPage={currentNavState}
           notificationCount="999"
-          username="usernameTest"
+          currentUser={currentUser || emptyUser}
+          usersList={usersList}
+          handleUserLogin={handleUserLogin}
         />
       </header>
-      <main className="flex-grow p-4">
-        {renderPage()} {/* Render current page */}
-      </main>
+      <main className="flex-grow p-4">{renderPage()}</main>
 
       {/* Notification Drawer */}
-      <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
+      <NotificationDrawer
+        currentUser={currentUser || emptyUser}
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+      />
     </div>
   );
 }
