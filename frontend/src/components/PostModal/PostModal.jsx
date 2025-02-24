@@ -19,6 +19,7 @@ function PostModal({ isOpen, onClose , currentUser}) {
 
     // Prepare the portfolio data
     const portfolioData = {
+      userId: auth.currentUser.uid,
       postMessage,
       link,
       coverImage: coverImage || placeholder,

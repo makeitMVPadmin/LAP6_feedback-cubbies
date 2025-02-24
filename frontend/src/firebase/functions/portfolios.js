@@ -1,21 +1,25 @@
 import { db } from '../../firebase/firebase';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-const fetchPortfolio = async () => {
+const fetchPortfolio = async (userId) => {
   try {
-    const querySnapshot = await getDocs(collection(db, 'portfolios'));
+    const q = query(collection(db, "portfolios"), where("userId", "==", userId)); // 🔥 Filter by userId
+    const querySnapshot = await getDocs(q);
+
     const userPortfolio = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    console.log(userPortfolio);
+    console.log("Fetched portfolios:", userPortfolio);
     return userPortfolio;
   } catch (error) {
-    console.error('Error fetching portfolios: ', error);
+    console.error("Error fetching portfolios: ", error);
     return [];
   }
 };
+
 
 const addPortfolio = async (portfolioData) => {
   try {
