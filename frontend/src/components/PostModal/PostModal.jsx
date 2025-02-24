@@ -1,5 +1,4 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
-import { auth } from "../../firebase/firebase";
 import { addPortfolio } from "../../firebase/functions/index.js";
 import TagSelection from "../TagSelection/TagSelection";
 import { Button } from "../ui/button";
@@ -31,19 +30,14 @@ function PostModal({ isOpen, onClose }) {
     e.preventDefault();
 
     // check if the user is logged in
-    if (!auth.currentUser) {
+    if (!currentUser) {
       console.error("User is not authenticated.");
       return;
     }
 
-    //form fiels validation
-    if (!postMessage || !link || !coverImage || selectedTags.length === 0) {
-      setShowError(true);
-      return;
-    }
-
     const portfolioData = {
-      userId: auth.currentUser.uid,
+      userId: currentUser.id,
+      postMessage,
       title: postMessage,
       description: postMessage,
       imageUrl: coverImage,
