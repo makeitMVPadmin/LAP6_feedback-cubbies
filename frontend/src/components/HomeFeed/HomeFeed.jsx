@@ -1,6 +1,8 @@
-// import { fetchRoles, fetchRoleById } from '../../firebase/functions/index.js';
 import CreatePost from "../CreatePost/CreatePost.jsx";
 import Portfolio from "../Portfolio/Portfolio.jsx";
+
+function HomeFeed() {
+
 
 function HomeFeed({ currentUser }) {
   return (

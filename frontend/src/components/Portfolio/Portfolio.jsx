@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { Zap } from 'lucide-react';
 
 const Portfolio = () => {
-  const [portfolios, setPortfolios] = useState([]);
+  const [portfolios, setPortfolios] = useState();
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
