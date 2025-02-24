@@ -1,15 +1,17 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
-import addPortfolio from "../../firebase/functions/addPortfolio";
+import { addPortfolio } from "../../firebase/functions/index.js";
 import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React from "react";
 import { useState } from "react";
+import TagSelection from "../TagSelection/TagSelection";
 
-function PostModal({ isOpen, onClose }) {
+function PostModal({ isOpen, onClose , currentUser}) {
   if (!isOpen) return null;
   const [postMessage, setPostMessage] = useState("");
   const [link, setLink] = useState("");
   const [coverImage, setCoverImage] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -29,6 +31,7 @@ function PostModal({ isOpen, onClose }) {
       postMessage,
       link,
       coverImage: coverImage || placeholder,
+      tags: selectedTags,
     };
 
     // Call Firebase function to add portfolio data
@@ -39,13 +42,20 @@ function PostModal({ isOpen, onClose }) {
     setLink("");
     setCoverImage(null);
 
-    // Close modal after submitting
-    onClose();
+    // Close modal after submitting - affects all the buttons in the modal including the tag dropdowns****
+    // onClose();
+  };
+
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
   };
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-10">
-      <div className="bg-white p-7 rounded-2xl border-2 border-black shadow-md w-[80%] max-w-[1014px] h-[603px] mt-[145px] overflow-hidden pt-[37px] pl-[62px] pr-[62px] pb-[16px]">
+    <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-10"  onClick={handleBackdropClick}>
+      <div className="bg-white p-7 rounded-2xl border-2 border-black shadow-md w-[80%] max-w-[1014px] h-[730px] mt-[145px] overflow-hidden pt-[45px] pl-[62px] pr-[62px] pb-[16px]"  onClick={(e) => e.stopPropagation()} >
         <h2
           className="text-2xl font-bold mb-40px"
           style={{
@@ -59,7 +69,7 @@ function PostModal({ isOpen, onClose }) {
             <div className="w-[60%]">
               <div className="flex flex-col gap-2">
                 <label
-                  className="font-bold"
+                  className="font-bold text-base mb-2"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                 >
                   Post message
@@ -100,9 +110,12 @@ function PostModal({ isOpen, onClose }) {
               </div>
             </div>
           </div>
-          <section className="border-t border-black pb-2">
-            --TAGS HERE--
+
+          <section className="border-t border-black pb-[40px]">
+            <h2 className="text-base font-bold my-[0.625rem] my-[1.25rem] ">Choose Tags</h2>
+            <TagSelection selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
           </section>
+
           <div className="flex justify-between">
             <Button
               variant="outline"
@@ -111,7 +124,7 @@ function PostModal({ isOpen, onClose }) {
             >
               Cancel
             </Button>
-            <Button className="bg-[#0099ff]" type="submit">
+            <Button className="bg-[#0099ff]" type="submit" onClick={onClose}>
               Publish
             </Button>
           </div>
