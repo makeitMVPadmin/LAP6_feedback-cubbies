@@ -2,11 +2,11 @@ import {
   fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
   fetchUserById,
 } from '../../firebase/functions/index';
-import { addBoost, removeBoost, updatedBoostCount, checkIfBoosted } from '../../firebase/functions/boostFunctionality';
+import { addBoost, removeBoost, updatedBoostCount} from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
 import {db} from '../../firebase/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 
 const Portfolio = () => {
   const [portfolios, setPortfolios] = useState([]);
@@ -15,6 +15,7 @@ const Portfolio = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPortfolio, setEditingPortfolio] = useState(null);
+  const [refresh, setRefresh] = useState(false);
   const [portfolioData, setPortfolioData] = useState({
     title: '',
     userId: '',
@@ -68,33 +69,31 @@ const Portfolio = () => {
 
 // boost logic
 const handleBoostClick = async (portfolioId) => {
-  const boostRef = collection(db, "");
-  const q = query(boostRef, where("portfolioId", "==", portfolioId), where("userId", "==", currentUserId));
-  const querySnapshot = await getDocs(q);
-  const boostId = querySnapshot.docs[0]?.id;
+  try {
+    // find the portfolio and get the current boost count (defaulting is 0)
+    const portfolioItem = portfolios.find(p => p.id === portfolioId);
+    const currentBoostCount = portfolioItem?.boostCount || 0; 
 
-  // find the portfolio by ID
-  const updatedPortfolios = portfolios.map((item) => {
-    if (item.id === portfolioId) {
-      const updatedBoostCount = item.boosted ? item.boostCount - 1 : item.boostCount + 1;
-      return { ...item, boosted: !item.boosted, boostCount: updatedBoostCount };
-    }
-    return item;
-  });
+    const newBoostCount = currentBoostCount + 1;
 
-  if (boostId) {
-    // remove boost
-    await removeBoost(boostId);
-  } else {
-    // add boost
-    await addBoost(portfolioId, currentUserId);
+    await addBoost(portfolioId); // directly increment the boost count
+
+    // update Firestore with the new boost count
+    await updatedBoostCount(portfolioId, newBoostCount);
+
+    // update the UI state with the new boost count
+    const updatedPortfolios = portfolios.map((item) => 
+      item.id === portfolioId 
+        ? { ...item, boostCount: newBoostCount, boosted: !item.boosted } 
+        : item
+    );
+
+    setPortfolios([...updatedPortfolios]);  // update portfolio state
+    setRefresh(prev => !prev);
+  } catch (error) {
+    console.error("Error handling boost click:", error);
   }
-
-  setPortfolios(updatedPortfolios);
-  updatedBoostCount(portfolioId, updatedPortfolios.find(p => p.id === portfolioId).boostCount);
 };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -258,7 +257,7 @@ const handleBoostClick = async (portfolioId) => {
                   <Button
                     onClick={() => handleBoostClick(portfolio.id)}
                     className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
-                      {portfolio.boostCount > 0 ? `${portfolio.boostCount} Boosts` : "Boosts"}
+                       {portfolio.boostCount} Boosts
                   </Button>
 
                   <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">

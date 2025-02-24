@@ -19,14 +19,14 @@ function PostModal({ isOpen, onClose , currentUser}) {
     e.preventDefault();
 
     // check if the user is logged in
-    if (!auth.currentUser) {
+    if (!currentUser) {
       console.error('User is not authenticated.');
       return;
     }
 
     // Prepare the portfolio data
     const portfolioData = {
-      userId: auth.currentUser.uid,
+      userId: currentUser,
       postMessage,
       link,
       coverImage: coverImage || placeholder,
