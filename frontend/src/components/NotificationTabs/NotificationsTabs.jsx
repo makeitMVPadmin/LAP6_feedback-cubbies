@@ -192,22 +192,22 @@ const NotificationTabs = ({ ownerUserId }) => {
   return (
     <>
       <Tabs defaultValue="all">
-        <TabsList className="bg-[#0264D4] p-2 w-full flex justify-evenly rounded-none h-14">
+        <TabsList className="bg-[#0264D4] w-full flex justify-start gap-[48px] rounded-none h-14 p-[12px_16px]">
           <TabsTrigger
             value="all"
-            className="text-white border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0 h-[32px] w-[58px] font-inter"
           >
             All
           </TabsTrigger>
           <TabsTrigger
             value="comments"
-            className="text-white border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0 h-[32px] w-[165px] font-inter"
           >
             Comments
           </TabsTrigger>
           <TabsTrigger
             value="reactions"
-            className="text-white border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0 h-[32px] w-[124px] font-inter"
           >
             Reactions
           </TabsTrigger>
@@ -221,13 +221,24 @@ const NotificationTabs = ({ ownerUserId }) => {
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm gap-2"
+                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F4F4F4] p-[16px_24px]"
+                  style={{
+                    borderTop: "1px solid var(--Gray-Gray12, #28363F)",
+                    borderRight: "2px solid var(--Gray-Gray12, #28363F)",
+                    borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
+                    borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
+                    background: "var(--neutral-100, #F5F5F5)",
+                  }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow">
-                    <h3 className="font-bold">{notif.message}</h3>
-                    <p>{notif.feedbackContent}</p>
-                    <p className="text-right">
+                    <h3 className="font-bold font-gilroy text-[16px]">
+                      {notif.message}
+                    </h3>
+                    <p className="font-gilroy text-[16px] h-[24px]">
+                      {notif.feedbackContent}
+                    </p>
+                    <p className="text-right text-[16px]">
                       {notif.createdAt
                         ? new Date(
                             notif.createdAt.toDate()
@@ -246,7 +257,16 @@ const NotificationTabs = ({ ownerUserId }) => {
                 </div>
               ))
             ) : (
-              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+              <p
+                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F4F4F4]"
+                style={{
+                  borderTop: "1px solid var(--Gray-Gray12, #28363F)",
+                  borderRight: "2px solid var(--Gray-Gray12, #28363F)",
+                  borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
+                  borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
+                  background: "var(--neutral-100, #F5F5F5)",
+                }}
+              >
                 No notifications to display.
               </p>
             )}
