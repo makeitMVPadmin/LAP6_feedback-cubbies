@@ -39,14 +39,13 @@ function App() {
     }
   }, [usersList]);
 
-  const handleUserLogin = async (userId) => {
-    const user = await fetchUserById(userId);
+  const handleUserLogin = (userId) => {
+    const user = usersList.find((user) => user.id === userId);
     if (user) {
       setCurrentUser(user);
       console.log("Logged in as:", user);
     }
   };
-
   // Handle navigation selection
   const handlePageChange = (page) => {
     if (page === "notifications") {
@@ -85,6 +84,8 @@ function App() {
           currentPage={currentNavState}
           notificationCount="999"
           currentUser={currentUser || emptyUser}
+          usersList={usersList}
+          handleUserLogin={handleUserLogin}
         />
       </header>
       <main className="flex-grow p-4">{renderPage()}</main>

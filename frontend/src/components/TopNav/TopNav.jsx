@@ -16,6 +16,8 @@ function TopNav({
   currentPage,
   notificationCount,
   currentUser,
+  usersList,
+  handleUserLogin,
 }) {
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
@@ -88,7 +90,7 @@ function TopNav({
           </NavigationMenuItem>
 
           {/*Login Button */}
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <button
               onClick={() => setCurrentPage("login")}
               className={`text-gray-800 font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out
@@ -96,10 +98,10 @@ function TopNav({
             >
               Login
             </button>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
 
           {/*Sign Up Button */}
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <button
               onClick={() => setCurrentPage("signup")}
               className={`bg-black text-white font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out
@@ -109,7 +111,7 @@ function TopNav({
             >
               Sign Up
             </button>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
           {/* User Profile with ShadCN Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -133,33 +135,44 @@ function TopNav({
               align="end"
               side="bottom"
               sideOffset={10}
-              className="w-48 bg-white shadow-lg rounded-lg p-2 z-50 relative"
+              className="w-60 bg-white shadow-lg rounded-lg p-2 z-50 relative"
             >
               {/* User Info */}
               <div className="p-2">
                 <p className="font-semibold text-gray-800">
-                  {currentUser.username}
+                  @{currentUser.username}
                 </p>
+                <p className=" text-gray-800">{currentUser.email}</p>
               </div>
-
-              <DropdownMenuItem
+              {usersList.map((user) =>
+                currentUser?.id === user.id ? null : (
+                  <DropdownMenuItem
+                    key={user.id}
+                    onClick={() => handleUserLogin(user.id)}
+                  >
+                    <span className="text-red-500">Login</span> as{" "}
+                    {user.username}
+                  </DropdownMenuItem>
+                )
+              )}
+              {/* <DropdownMenuItem
                 onClick={() => setCurrentPage("profile")}
                 className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
               >
                 View Profile
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 onClick={() => setCurrentPage("feedback")}
                 className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
               >
                 Debug feedback page
               </DropdownMenuItem>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => setCurrentPage("logout")}
                 className="cursor-pointer text-red-600 hover:bg-gray-100 p-2 rounded-md"
               >
                 Logout
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         </NavigationMenuList>
