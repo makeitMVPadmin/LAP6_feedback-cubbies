@@ -109,7 +109,7 @@ function TopNav({
             <DropdownMenu>
               <DropdownMenuTrigger className="cursor-pointer flex items-center space-x-2">
                 <button className="relative flex items-center focus:outline-none">
-                  <div class="w-[72px] h-[72px] justify-center items-center inline-flex">
+                  <div className="w-[72px] h-[72px] justify-center items-center inline-flex">
                     <img
                       class="w-[72px] h-[72px] rounded-full border border-black"
                       src={currentUser?.profilePicture}

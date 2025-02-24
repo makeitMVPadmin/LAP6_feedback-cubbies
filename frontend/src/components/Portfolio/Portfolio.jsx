@@ -2,7 +2,7 @@ import {
   fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
   fetchUserById,
 } from '../../firebase/functions/index';
-import { addBoost, removeBoost, updatedBoostCount } from '../../firebase/functions/boostFunctionality';
+import { addBoost, removeBoost, updatedBoostCount, checkIfBoosted } from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
 
@@ -56,6 +56,37 @@ const Portfolio = () => {
     };
     getData();
   }, []);
+
+
+// boost logic
+const handleBoostClick = async (portfolioId) => {
+  const boostRef = collection(db, "");
+  const q = query(boostRef, where("portfolioId", "==", portfolioId), where("userId", "==", currentUserId));
+  const querySnapshot = await getDocs(q);
+  const boostId = querySnapshot.docs[0]?.id;
+
+  // find the portfolio by ID
+  const updatedPortfolios = portfolios.map((item) => {
+    if (item.id === portfolioId) {
+      const updatedBoostCount = item.boosted ? item.boostCount - 1 : item.boostCount + 1;
+      return { ...item, boosted: !item.boosted, boostCount: updatedBoostCount };
+    }
+    return item;
+  });
+
+  if (boostId) {
+    // remove boost
+    await removeBoost(boostId);
+  } else {
+    // add boost
+    await addBoost(portfolioId, currentUserId);
+  }
+
+  setPortfolios(updatedPortfolios);
+  updatedBoostCount(portfolioId, updatedPortfolios.find(p => p.id === portfolioId).boostCount);
+};
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,8 +246,11 @@ const Portfolio = () => {
                       </div>
                     </a>
                   </Button>
-                  <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
-                    Boosts
+
+                  <Button
+                    onClick={() => handleBoostClick(portfolio.id)}
+                    className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+                      {portfolio.boostCount > 0 ? `${portfolio.boostCount} Boosts` : "Boosts"}
                   </Button>
 
                   <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">

@@ -18,7 +18,7 @@ const addBoost = async (portfolioId, userId) => {
 };
 
 // remove a boost
-const removeBoost = async (portfolioId, userId) => {
+const removeBoost = async (boostId) => {
     try{
         await deleteDoc(doc(db, "boosts", boostId));
         console.log("Boost removed!");
@@ -41,4 +41,12 @@ const updatedBoostCount = async (portfolioId, increment) => {
     }
 }
 
-export { addBoost, removeBoost, updatedBoostCount };
+// check if user already boosted the post
+const checkIfBoosted = async (portfolioId, userId) => {
+    const boostRef = collection(db, "boosts");
+    const q = query(boostRef, where("portfolioId", "==", portfolioId), where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.length > 0 ? querySnapshot.docs[0].id : null; // Return boostId if boosted, else null
+};
+
+export { addBoost, removeBoost, updatedBoostCount, checkIfBoosted };
