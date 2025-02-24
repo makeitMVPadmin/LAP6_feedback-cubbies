@@ -5,8 +5,7 @@ import {
 import { addBoost, removeBoost, updatedBoostCount} from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
-import {db} from '../../firebase/firebase';
-import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
+import { Zap } from 'lucide-react';
 
 const Portfolio = () => {
   const [portfolios, setPortfolios] = useState([]);
@@ -256,7 +255,9 @@ const handleBoostClick = async (portfolioId) => {
 
                   <Button
                     onClick={() => handleBoostClick(portfolio.id)}
-                    className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+                    className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex 
+                    justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+                      <Zap size={20}/>
                        {portfolio.boostCount} Boosts
                   </Button>
 
