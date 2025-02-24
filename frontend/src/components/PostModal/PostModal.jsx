@@ -104,10 +104,10 @@ function PostModal({ isOpen, onClose, currentUser }) {
                 />
               </div>
               {/* Input for inserting a portfolio link */}
-              <div className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[42px] mb-4 w-[384px]">
+              <div className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[42px] mb-4 w-[384px] focus-within:border-gray-500 focus-within:ring-2 focus-within:ring-gray-400">
                 <Link2 className="w-4 h-4 rotate-[45deg]" />
                 <input
-                  className="flex-1 rounded-lg p-2 placeholder-gray-500 "
+                  className="flex-1 rounded-lg p-2 placeholder-gray-500 outline-none "
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                   placeholder="Insert Link"
                   value={link}
