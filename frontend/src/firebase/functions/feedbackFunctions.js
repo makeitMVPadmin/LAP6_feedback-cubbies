@@ -14,27 +14,33 @@ import {
 const getPortfolioFeedback = async (portfolioId) => {
   const feedbackQuery = query(
     collection(db, "feedbacks"),
-    where("portfolio_id", "==", portfolioId)
+    where("portfolioId", "==", portfolioId)
   );
   try {
     const feedbackSnapshot = await getDocs(feedbackQuery);
     const feedbackList = [];
 
-    for (const docSnapshot of feedbackSnapshot.docs) {
+    const userPromises = feedbackSnapshot.docs.map(async (docSnapshot) => {
       const feedbackData = docSnapshot.data();
-      const userId = feedbackData.user_id;
+      const userId = feedbackData.userId;
 
       const userDoc = await getDoc(doc(db, "users", userId));
-      const userData = userDoc.exists() ? userDoc.data() : { user_name: "Unknown", user_profilePicture: "" };
-      console.log(userData);
+      const userData = userDoc.exists() ? userDoc.data() : { username: "Unknown", profilePhoto: "" };
+      
+      return { docSnapshot, userData };
+    });
 
+    const userFeedbacks = await Promise.all(userPromises);
+
+    userFeedbacks.forEach(({ docSnapshot, userData }) => {
+      const feedbackData = docSnapshot.data();
       feedbackList.push({
-        id: doc.id,
+        id: docSnapshot.id,
         ...feedbackData,
-        user_name: userData.username,
-        user_profilePicture: userData.profile_photo,
+        username: userData.username,
+        profilePhoto: userData.profilePhoto,
       });
-    }
+    });
 
     return feedbackList;
   } catch (err) {
