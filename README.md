@@ -17,6 +17,33 @@ This feature is designed to integrate into an existing app, creating a space whe
 - Figma
 - VsCode, GitHub
 - Jira, Confluence
+
+## Contributors
+
+Our team consists of two main groups: **Developers** and **Designers**.  
+
+- **Designers** handle all aspects of design, including user research, wireframing, prototyping, and creating detailed Figma files for developers.  
+- **Developers** had the opportunity to work across the entire stack, gaining experience in both backend and frontend development.
+
+### 🎨 Designers  
+- [Anthony Kazman](https://www.linkedin.com/in/anthony-kazman/)  
+- [Kery Mauvais](https://www.linkedin.com/in/kery-mauvais/)  
+
+### 💻 Developers  
+- [Darius Fang](https://www.linkedin.com/in/dariusfang/)  
+- [Jamie Ingalls](https://www.linkedin.com/in/jamieingalls/)  
+- [Maria Lukowich](https://www.linkedin.com/in/maria-lukowich/)  
+- [Matie Baida](https://www.linkedin.com/in/maitebaida/)  
+- [Nyakuma Wal](https://www.linkedin.com/in/nyakuma-wal-3-120/)  
+- Rouene Medina  
+- [Tetiana Vezyr](https://www.linkedin.com/in/tetiana-vezyr/)  
+
+### 🏆 Product Manager  
+- [Abigayle LeFranc](https://www.linkedin.com/in/abigaylelefranc/)  
+
+### 🚀 Team Lead  
+- Helen  
+
 ---
 
 ## Firebase initialization steps
