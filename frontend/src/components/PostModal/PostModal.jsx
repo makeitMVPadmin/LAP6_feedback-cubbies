@@ -22,7 +22,7 @@ function PostModal({ isOpen, onClose , currentUser}) {
       postMessage,
       link,
       coverImage: coverImage || placeholder,
-      tags: selectedTags,
+      tags: selectedTags.map(tag => tag.id),
     };
 
     // Call Firebase function to add portfolio data
