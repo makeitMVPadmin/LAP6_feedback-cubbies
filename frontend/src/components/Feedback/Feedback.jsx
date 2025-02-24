@@ -6,7 +6,7 @@ import {
 } from "../../firebase/functions/feedbackFunctions";
 import { useState, useEffect } from "react";
 
-const Feedback = () => {
+const Feedback = ({ currentUser }) => {
   const [feedbackList, setFeedbackList] = useState([]);
   const [portfolioId, setPortfolioId] = useState("PXKgEDwdVZrWxatSfKDr");
   const [newComment, setNewComment] = useState("");
@@ -19,7 +19,7 @@ const Feedback = () => {
   };
 
   const handleCreateFeedback = async () => {
-    const userId = "wJMvwRo2mqYo59LRA1hT";
+    const userId = currentUser.id;
     const docRef = await createFeedback(portfolioId, userId, newComment);
     setFeedbackList((prevFeedbackList) => [
       ...prevFeedbackList,

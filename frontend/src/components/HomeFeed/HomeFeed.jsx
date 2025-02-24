@@ -10,7 +10,7 @@ import ChevronDown from '../ui/chevron-down';
 import React, { useState, useEffect } from 'react';
 
 // loop through the posted portfolios
-function HomeFeed() {
+function HomeFeed({currentUser}) {
   //open modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [roles, setRoles] = useState([]);
@@ -75,7 +75,7 @@ function HomeFeed() {
       ))}
       <Portfolio />
 
-      <PostModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <PostModal currentUser={currentUser} isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   );
 }

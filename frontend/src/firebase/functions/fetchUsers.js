@@ -1,7 +1,7 @@
 import { db } from "../firebase.js";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 
-const fetchUsers = async (params) => {
+export const fetchUsers = async (params) => {
   try {
     const querySnapshot = await getDocs(collection(db, "users"));
     const userArray = querySnapshot.docs.map((doc) => ({
@@ -16,7 +16,7 @@ const fetchUsers = async (params) => {
   }
 };
 
-const fetchUserById = async (userId) => {
+export const fetchUserById = async (userId) => {
   try {
     const userDoc = await getDoc(doc(db, "users", userId));
     if (userDoc.exists()) {
@@ -32,5 +32,37 @@ const fetchUserById = async (userId) => {
     return null;
   }
 };
+export const fetchUsersByIds = async (userIds) => {
+  try {
+    const userPromises = userIds.map(async (userId) => {
+      const userDoc = await getDoc(doc(db, "users", userId));
+      return userDoc.exists() ? { id: userDoc.id, ...userDoc.data() } : null;
+    });
 
-export default { fetchUsers, fetchUserById };
+    const usersList = (await Promise.all(userPromises)).filter(
+      (user) => user !== null
+    );
+    console.log(usersList); // List of user objects
+    return usersList;
+  } catch (error) {
+    console.error("Error fetching users: ", error);
+    return [];
+  }
+};
+
+export const emptyUser = {
+  id: null, // Primary key (integer)
+  username: "", // String (varchar)
+  roleId: null, // Foreign key reference to roles.id
+  city: "", // String
+  country: "", // String
+  state: "", // String
+  discipline: "", // String
+  interests: [], // Array of strings
+  email: "", // String
+  firstName: "", // String
+  lastName: "", // String
+  profilePhoto: "", // String (URL to profile picture)
+  createdAt: null, // Timestamp
+  updatedAt: null, // Timestamp
+};

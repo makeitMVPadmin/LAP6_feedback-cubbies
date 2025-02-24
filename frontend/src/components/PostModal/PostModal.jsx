@@ -5,7 +5,7 @@ import { ImagePlus, Link2 } from "lucide-react";
 import React from "react";
 import { useState } from "react";
 
-function PostModal({ isOpen, onClose }) {
+function PostModal({ isOpen, onClose , currentUser}) {
   if (!isOpen) return null;
   const [postMessage, setPostMessage] = useState("");
   const [link, setLink] = useState("");

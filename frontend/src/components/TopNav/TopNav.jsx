@@ -15,8 +15,7 @@ function TopNav({
   setCurrentPage,
   currentPage,
   notificationCount,
-  userImage,
-  username,
+  currentUser,
 }) {
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
@@ -117,7 +116,7 @@ function TopNav({
               <button className="relative flex items-center focus:outline-none">
                 {/* Circular User Image */}
                 <img
-                  src={userImage}
+                  src={currentUser.profilePhoto}
                   alt="User"
                   className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-gray-500 transition"
                 />
@@ -138,7 +137,9 @@ function TopNav({
             >
               {/* User Info */}
               <div className="p-2">
-                <p className="font-semibold text-gray-800">{username}</p>
+                <p className="font-semibold text-gray-800">
+                  {currentUser.username}
+                </p>
               </div>
 
               <DropdownMenuItem
