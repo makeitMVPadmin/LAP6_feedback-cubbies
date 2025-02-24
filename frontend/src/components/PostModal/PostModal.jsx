@@ -6,7 +6,7 @@ import React from "react";
 import { useState } from "react";
 import TagSelection from "../TagSelection/TagSelection";
 
-function PostModal({ isOpen, onClose }) {
+function PostModal({ isOpen, onClose , currentUser}) {
   if (!isOpen) return null;
   const [postMessage, setPostMessage] = useState("");
   const [link, setLink] = useState("");

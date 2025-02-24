@@ -2,10 +2,10 @@ import { getAllNotifications } from "../../firebase/functions/notifications";
 import NotificationTabs from "../NotificationTabs/NotificationsTabs";
 import { useEffect, useState } from "react";
 
-function NotificationDrawer({ isOpen, onClose }) {
+function NotificationDrawer({ isOpen, onClose, currentUser }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const ownerUserId = "2z77IdGFK4Z12ruuYLnq";
+  const ownerUserId = currentUser.id;
 
   // Fetch notifications **in the background when the app loads**
   useEffect(() => {
