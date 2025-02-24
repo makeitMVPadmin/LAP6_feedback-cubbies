@@ -3,8 +3,6 @@ import sendIcon from "../../assets/send.svg";
 import {
   getPortfolioFeedback,
   createFeedback,
-  updateFeedback,
-  deleteFeedback,
 } from "../../firebase/functions/feedbackFunctions";
 import { useState, useEffect } from "react";
 
@@ -12,8 +10,6 @@ const Feedback = () => {
   const [feedbackList, setFeedbackList] = useState([]);
   const [portfolioId, setPortfolioId] = useState("U3LLN8Jtc4JYgdYICZi6");
   const [newComment, setNewComment] = useState("");
-  const [editingFeedbackId, setEditingFeedbackId] = useState(null);
-  const [updatedComments, setUpdatedComments] = useState({});
 
   const retrivePortfolioFeedback = async () => {
     const feedback = await getPortfolioFeedback(portfolioId);
@@ -37,55 +33,6 @@ const Feedback = () => {
     setNewComment("");
   };
 
-  const handleUpdateFeedback = async (feedbackId) => {
-    const updatedComment = updatedComments[feedbackId];
-    if (updatedComment.trim() !== "") {
-      setFeedbackList((prevFeedbackList) =>
-        prevFeedbackList.map((feedback) =>
-          feedback.id === feedbackId
-            ? {
-                ...feedback,
-                comment: updatedComment,
-                updatedAt: new Date().toISOString(),
-              }
-            : feedback
-        )
-      );
-
-      try {
-        await updateFeedback(feedbackId, updatedComment);
-      } catch (err) {
-        console.error("Error updating feedback:", err);
-      }
-
-      setEditingFeedbackId(null);
-    }
-  };
-
-  const handleDeleteFeedback = async (feedbackId) => {
-    try {
-      await deleteFeedback(feedbackId);
-      setFeedbackList((prevFeedbackList) =>
-        prevFeedbackList.filter((feedback) => feedback.id !== feedbackId)
-      );
-    } catch (err) {
-      console.error("Error deleting feedback:", err);
-    }
-  };
-
-  const handleEditClick = (feedbackId) => {
-    setEditingFeedbackId(feedbackId);
-    setUpdatedComments((prev) => ({
-      ...prev,
-      [feedbackId]: feedbackList.find((feedback) => feedback.id === feedbackId)
-        .comment,
-    }));
-  };
-
-  const handleCancelEdit = () => {
-    setEditingFeedbackId(null);
-  };
-
   useEffect(() => {
     retrivePortfolioFeedback();
   }, [portfolioId]);
@@ -105,34 +52,7 @@ const Feedback = () => {
               </div>
               <div>
                 <p className="font-bold">@{feedback.username}</p>
-                {editingFeedbackId === feedback.id ? (
-                  <div>
-                    <input
-                      type="text"
-                      value={updatedComments[feedback.id] || feedback.comment}
-                      onChange={(e) =>
-                        setUpdatedComments((prev) => ({
-                          ...prev,
-                          [feedback.id]: e.target.value,
-                        }))
-                      }
-                    />
-                    <button onClick={() => handleUpdateFeedback(feedback.id)}>
-                      Save
-                    </button>
-                    <button onClick={handleCancelEdit}>Cancel</button>
-                  </div>
-                ) : (
-                  <div>
-                    <p onClick={() => handleEditClick(feedback.id)}>
-                      {feedback.comment}
-                    </p>
-                  </div>
-                )}
-
-                {/* <button onClick={() => handleDeleteFeedback(feedback.id)}>
-                Delete
-              </button> */}
+                <p>{feedback.comment}</p>
               </div>
             </div>
           ))}
