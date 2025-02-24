@@ -1,6 +1,6 @@
 import React from 'react';
 
-const profilePic = () => {
+const Avatar = () => {
   return (
     <img
       className="w-9 h-9 rounded-full"
@@ -9,4 +9,4 @@ const profilePic = () => {
   );
 };
 
-export default profilePic;
+export default Avatar;

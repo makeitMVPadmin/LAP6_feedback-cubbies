@@ -1,37 +1,60 @@
-import addPortfolio from "../../firebase/functions/addPortfolio";
-import deletePortfolio from "../../firebase/functions/deletePortfolio";
-import fetchPortfolio from "../../firebase/functions/fetchPortfolio";
-import updatePortfolio from "../../firebase/functions/updatePortfolio";
-import Avatar from '../ui/avatar';
+import {
+  fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
+  fetchUserById,
+} from '../../firebase/functions/index';
+import { Button, Card, Avatar } from '../ui/index';
+import React, { useEffect, useState } from 'react';
 
-import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from "react";
-
-const PortfolioPage = () => {
-  const [portfolios, setPortfolios] = useState([fetchPortfolio()]);
+const Portfolio = () => {
+  const [portfolios, setPortfolios] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingPortfolio, setEditingPortfolio] = useState(null);
   const [portfolioData, setPortfolioData] = useState({
-    title: "",
-    userId: "",
-    tagId: "",
-    description: "",
-    imageUrl: "",
-    link: "",
+    title: '',
+    userId: '',
+    tagId: '',
+    description: '',
+    imageUrl: '',
+    link: '',
   });
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
-      const data = await fetchPortfolio();
-      setPortfolios(data);
-      setLoading(false);
+      try {
+        const portfolioData = await fetchPortfolio();
+        setPortfolios(portfolioData);
+
+        // Fetch user and role data for each portfolio
+        const usersData = {};
+        const rolesData = {};
+        for (const portfolio of portfolioData) {
+          if (!usersData[portfolio.userId]) {
+            const userData = await fetchUserById(portfolio.userId);
+            if (userData) {
+              usersData[portfolio.userId] = userData;
+              if (userData.roleId && !rolesData[userData.roleId]) {
+                const roleData = await fetchRoleById(userData.roleId);
+                if (roleData) {
+                  rolesData[userData.roleId] = roleData;
+                }
+              }
+            }
+          }
+        }
+        setUsers(usersData);
+        setRoles(rolesData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     getData();
   }, []);
-  
-  console.log(fetchPortfolio());
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,19 +75,19 @@ const PortfolioPage = () => {
   const handleEdit = (portfolio) => {
     setEditingPortfolio(portfolio);
     setPortfolioData({
-      title: portfolio.title || "",
-      userId: portfolio.userId || "",
-      description: portfolio.description || "",
-      imageUrl: portfolio.imageUrl || "",
-      link: portfolio.link || "",
+      title: portfolio.title || '',
+      userId: portfolio.userId || '',
+      description: portfolio.description || '',
+      imageUrl: portfolio.imageUrl || '',
+      link: portfolio.link || '',
     });
     setShowModal(true);
   };
 
   const handleDelete = async (id) => {
-    console.log("Deleting Portfolio ID:", id);
+    console.log('Deleting Portfolio ID:', id);
     if (!id) {
-      console.error("No ID found, delete failed.");
+      console.error('No ID found, delete failed.');
       return;
     }
     await deletePortfolio(id);
@@ -73,26 +96,26 @@ const PortfolioPage = () => {
 
   const resetForm = () => {
     setPortfolioData({
-      title: "",
-      userId: "",
-      description: "",
-      imageUrl: "",
-      link: "",
+      title: '',
+      userId: '',
+      description: '',
+      imageUrl: '',
+      link: '',
     });
     setEditingPortfolio(null);
     setShowModal(false);
   };
+
   return (
     <div className="flex flex-col items-center justify-center h-auto text-center gap-6">
       {loading ? (
         <p>Loading...</p>
       ) : portfolios.length > 0 ? (
-        <div className="flex flex-col gap-6 items-center">
+        <Card className="flex flex-col gap-6 items-center">
           {portfolios.map((portfolio, id) => (
-            <div
+            <Card
               key={id}
-              className="w-[754px] h-[537px] flex-shrink-0 rounded-lg border border-gray-700 border-t border-l border-r-2 border-b-2 p-6 shadow-md flex flex-col gap-6"
-            >
+              className="w-[754px] h-[537px] flex-shrink-0 rounded-lg border border-gray-700 border-t border-l border-r-2 border-b-2 p-6 shadow-md flex flex-col gap-6">
               <div className="h-6 px-2.5 w-15 py-1 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex">
                 <div className="text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
                   New
@@ -105,19 +128,19 @@ const PortfolioPage = () => {
 
                 <div className="flex flex-col w-[298px]">
                   <div className="flex items-center gap-4">
-                    <div className="text-slate-950 text-xl font-semibold font-['Montserrat'] leading-7">
-                      Jackson Lee
+                    <div className="text-slate-950 text-xl font-bold font-[Corben] leading-7">
+                      {users[portfolio.userId]?.firstName}{users[portfolio.userId]?.lastName}
                     </div>
-                    <div className="text-slate-500 text-base font-bold font-['Montserrat'] leading-tight">
-                      @jacksonlee487
+                    <div className="text-slate-500 font-header font-bold font-[Corben] leading-tight">
+                      {users[portfolio.userId]?.email}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 mt-1">
-                    <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
-                      New Grad
+                    <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
+                    {roles[users[portfolio.userId]?.roleId]?.roleName}
                     </div>
-                    <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
+                    <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
                       1 day ago
                     </div>
                   </div>
@@ -151,7 +174,7 @@ const PortfolioPage = () => {
                   </div>
                   <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
                     <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-                      Coding{" "}
+                      Coding{' '}
                     </div>
                   </div>
                   <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
@@ -165,8 +188,7 @@ const PortfolioPage = () => {
                       height="25"
                       viewBox="0 0 24 25"
                       fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
+                      xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M12.0001 5.30078L12 19.7008M19.2 12.5008L4.80005 12.5008"
                         stroke="black"
@@ -184,8 +206,7 @@ const PortfolioPage = () => {
                       href={portfolio.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 hover:underline mt-2 block"
-                    >
+                      className="text-blue-500 hover:underline mt-2 block">
                       <div className="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
                         Review Portfolio
                       </div>
@@ -201,22 +222,20 @@ const PortfolioPage = () => {
                   <div className="flex gap-4">
                     <Button
                       onClick={() => handleEdit(portfolio)}
-                      className="bg-blue-500 text-white"
-                    >
+                      className="bg-blue-500 text-white">
                       Edit
                     </Button>
                     <Button
                       onClick={() => handleDelete(portfolio.id)}
-                      className="bg-red-500 text-white"
-                    >
+                      className="bg-red-500 text-white">
                       Delete
                     </Button>
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
-        </div>
+        </Card>
       ) : (
         <p>No portfolios available.</p>
       )}
@@ -226,7 +245,7 @@ const PortfolioPage = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
             <h3 className="text-lg font-semibold mb-6">
-              {editingPortfolio ? "Edit Portfolio" : "Add New Portfolio"}
+              {editingPortfolio ? 'Edit Portfolio' : 'Add New Portfolio'}
             </h3>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <input
@@ -289,7 +308,7 @@ const PortfolioPage = () => {
               />
               <div className="flex justify-between">
                 <Button type="submit">
-                  {editingPortfolio ? "Update" : "Submit"}
+                  {editingPortfolio ? 'Update' : 'Submit'}
                 </Button>
                 <Button variant="secondary" onClick={resetForm}>
                   Cancel
@@ -303,4 +322,4 @@ const PortfolioPage = () => {
   );
 };
 
-export default PortfolioPage;
+export default Portfolio;
