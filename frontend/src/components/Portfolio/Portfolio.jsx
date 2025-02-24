@@ -5,6 +5,8 @@ import {
 import { addBoost, removeBoost, updatedBoostCount, checkIfBoosted } from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
+import {db} from '../../firebase/firebase';
+import { collection, query, where } from 'firebase/firestore';
 
 const Portfolio = () => {
   const [portfolios, setPortfolios] = useState([]);
@@ -27,25 +29,31 @@ const Portfolio = () => {
       setLoading(true);
       try {
         const portfolioData = await fetchPortfolio();
+        console.log('Fetched portfolios:', portfolioData);
         setPortfolios(portfolioData);
 
         // Fetch user and role data for each portfolio
-        const usersData = {};
-        const rolesData = {};
         for (const portfolio of portfolioData) {
-          if (!usersData[portfolio.userId]) {
-            const userData = await fetchUserById(portfolio.userId);
-            if (userData) {
-              usersData[portfolio.userId] = userData;
-              if (userData.roleId && !rolesData[userData.roleId]) {
-                const roleData = await fetchRoleById(userData.roleId);
-                if (roleData) {
-                  rolesData[userData.roleId] = roleData;
+          // only fetch user data if userId is available (new posts should have userId)
+          if (portfolio.userId) {
+            if (!usersData[portfolio.userId]) {
+              const userData = await fetchUserById(portfolio.userId);
+              if (userData) {
+                usersData[portfolio.userId] = userData;
+                if (userData.roleId && !rolesData[userData.roleId]) {
+                  const roleData = await fetchRoleById(userData.roleId);
+                  if (roleData) {
+                    rolesData[userData.roleId] = roleData;
+                  }
                 }
               }
             }
+          } else {
+            // handle the case for old posts without userId if needed
+            console.log(`No userId for portfolio with id: ${portfolio.id}`);
           }
         }
+
         setUsers(usersData);
         setRoles(rolesData);
       } catch (error) {

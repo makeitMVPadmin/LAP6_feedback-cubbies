@@ -3,7 +3,7 @@ import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firesto
 
 const fetchPortfolio = async (userId) => {
   try {
-    const q = query(collection(db, "portfolios"), where("userId", "==", userId));
+    const q = query(collection(db, "portfolios"));
     const querySnapshot = await getDocs(q);
 
     const userPortfolio = querySnapshot.docs.map((doc) => ({
