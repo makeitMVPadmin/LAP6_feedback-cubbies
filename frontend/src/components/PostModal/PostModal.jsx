@@ -15,6 +15,15 @@ function PostModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation checks
+    if (!postMessage || !link || !coverImage) {
+      alert("All fields are required.");
+      return;
+    }
+
+    // Clear any previous error
+    setError("");
+
     // Prepare the portfolio data
     const portfolioData = {
       postMessage,
@@ -77,20 +86,7 @@ function PostModal({ isOpen, onClose }) {
               <div
                 className="w-full h-[103px] rounded-[8px] bg-cover bg-center flex flex-col justify-between"
                 style={{ backgroundImage: `url(${placeholder})` }}
-              >
-                {/* <img alt="profile photo" /> */}
-                {/* <p
-                  className="p-2"
-                  style={{
-                    fontFamily: "Fraunces, serif",
-                    fontSize: "16px",
-                    lineHeight: "24px",
-                    color: "#FFF",
-                  }}
-                >
-                  My Portfolio
-                </p> */}
-              </div>
+              ></div>
               <div className="flex items-center border border-[#0F172A] rounded-lg px-3">
                 <ImagePlus className="w-4 h-4" />
                 <input
