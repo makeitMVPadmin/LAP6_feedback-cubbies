@@ -1,11 +1,12 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
+import { auth } from "../../firebase/firebase";
 import { addPortfolio } from "../../firebase/functions/index.js";
 import TagSelection from "../TagSelection/TagSelection";
 import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
-function PostModal({ isOpen, onClose, currentUser }) {
+function PostModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const [postMessage, setPostMessage] = useState("");
@@ -29,18 +30,25 @@ function PostModal({ isOpen, onClose, currentUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // check if the user is logged in
+    if (!auth.currentUser) {
+      console.error("User is not authenticated.");
+      return;
+    }
+
+    //form fiels validation
     if (!postMessage || !link || !coverImage || selectedTags.length === 0) {
       setShowError(true);
       return;
     }
 
     const portfolioData = {
-      userId: currentUser?.id,
+      userId: auth.currentUser.uid,
       title: postMessage,
       description: postMessage,
       imageUrl: coverImage,
       link,
-      tagId: selectedTags[0]?.id || null,
+      tagId: selectedTags.map((tag) => tag.id),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

@@ -2,6 +2,7 @@ import { db } from "../firebase.js";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   addDoc,
   updateDoc,
@@ -17,10 +18,30 @@ const getPortfolioFeedback = async (portfolioId) => {
   );
   try {
     const feedbackSnapshot = await getDocs(feedbackQuery);
-    const feedbackList = feedbackSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const feedbackList = [];
+
+    const userPromises = feedbackSnapshot.docs.map(async (docSnapshot) => {
+      const feedbackData = docSnapshot.data();
+      const userId = feedbackData.userId;
+
+      const userDoc = await getDoc(doc(db, "users", userId));
+      const userData = userDoc.exists() ? userDoc.data() : { username: "Unknown", profilePhoto: "" };
+      
+      return { docSnapshot, userData };
+    });
+
+    const userFeedbacks = await Promise.all(userPromises);
+
+    userFeedbacks.forEach(({ docSnapshot, userData }) => {
+      const feedbackData = docSnapshot.data();
+      feedbackList.push({
+        id: docSnapshot.id,
+        ...feedbackData,
+        username: userData.username,
+        profilePhoto: userData.profilePhoto,
+      });
+    });
+
     return feedbackList;
   } catch (err) {
     console.error("Error getting feedback: ", err);
