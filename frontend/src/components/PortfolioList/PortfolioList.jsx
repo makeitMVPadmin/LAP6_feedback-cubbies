@@ -85,16 +85,6 @@ const PortfolioList = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    console.log('Deleting Portfolio ID:', id);
-    if (!id) {
-      console.error('No ID found, delete failed.');
-      return;
-    }
-    await deletePortfolio(id);
-    setPortfolios((prev) => prev.filter((portfolio) => portfolio.id !== id));
-  };
-
   const resetForm = () => {
     setPortfolioData({
       title: '',
@@ -119,8 +109,6 @@ const PortfolioList = () => {
               portfolio={portfolio} 
               user={users[portfolio.userId]} 
               role={roles[portfolio.userId?.roleId]?.roleName}
-              handleEdit={handleEdit} 
-              handleDelete={handleDelete} 
             />
           ))}
         </Card>

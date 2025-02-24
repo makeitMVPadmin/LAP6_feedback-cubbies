@@ -1,6 +1,6 @@
 import { Button, Card, Avatar } from "../ui/index";
 
-const PortfolioCard = ({ portfolio, user, role, handleEdit, handleDelete }) => {
+const PortfolioCard = ({ portfolio, user, role}) => {
   return (
     <Card
       key={portfolio.id}
@@ -113,20 +113,6 @@ const PortfolioCard = ({ portfolio, user, role, handleEdit, handleDelete }) => {
           <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
             Comments
           </Button>
-          <div className="flex gap-4">
-            <Button
-              onClick={() => handleEdit(portfolio)}
-              className="bg-blue-500 text-white"
-            >
-              Edit
-            </Button>
-            <Button
-              onClick={() => handleDelete(portfolio.id)}
-              className="bg-red-500 text-white"
-            >
-              Delete
-            </Button>
-          </div>
         </div>
       </div>
     </Card>
