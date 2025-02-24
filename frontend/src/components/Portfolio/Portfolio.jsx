@@ -142,22 +142,22 @@ const PortfolioPage = () => {
               )}
               <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
                 <div className="flex flex-wrap gap-2 border border-gray-300 rounded-lg">
-                  <div class="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-                    <div class="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  <div className="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
+                    <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
                       Python
                     </div>
                   </div>
-                  <div class="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-                    <div class="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
+                    <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
                       Coding{" "}
                     </div>
                   </div>
-                  <div class="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-                    <div class="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
+                    <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
                       UX
                     </div>
                   </div>
-                  <div data-svg-wrapper class="relative">
+                  <div data-svg-wrapper className="relative">
                     <svg
                       width="24"
                       height="25"
@@ -168,15 +168,15 @@ const PortfolioPage = () => {
                       <path
                         d="M12.0001 5.30078L12 19.7008M19.2 12.5008L4.80005 12.5008"
                         stroke="black"
-                        stroke-width="2"
-                        stroke-linecap="round"
+                        // stroke-width="2"
+                        // stroke-linecap="round"
                       />
                     </svg>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 border border-gray-300 rounded-lg ">
-                  <Button class="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl shadow-[0px_2.2923977375030518px_1.1461988687515259px_-1.1461988687515259px_rgba(0,0,0,0.20)] shadow-[0px_1.1461988687515259px_1.1461988687515259px_0px_rgba(0,0,0,0.14)] shadow-[0px_1.1461988687515259px_3.438596725463867px_0px_rgba(0,0,0,0.20)] justify-center items-center gap-[9.17px] inline-flex">
-                    <div class="w-[27.51px] h-[27.51px] bg-[#d9d9d9]"></div>
+                  <Button className="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl shadow-[0px_2.2923977375030518px_1.1461988687515259px_-1.1461988687515259px_rgba(0,0,0,0.20)] shadow-[0px_1.1461988687515259px_1.1461988687515259px_0px_rgba(0,0,0,0.14)] shadow-[0px_1.1461988687515259px_3.438596725463867px_0px_rgba(0,0,0,0.20)] justify-center items-center gap-[9.17px] inline-flex">
+                    <div className="w-[27.51px] h-[27.51px] bg-[#d9d9d9]"></div>
 
                     <a
                       href={portfolio.link}
@@ -184,7 +184,7 @@ const PortfolioPage = () => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline mt-2 block"
                     >
-                      <div class="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
+                      <div className="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
                         Review Portfolio
                       </div>
                     </a>
