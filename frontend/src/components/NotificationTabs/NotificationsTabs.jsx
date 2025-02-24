@@ -280,12 +280,21 @@ const NotificationTabs = ({ ownerUserId }) => {
               getUnreadComments.map((unreadNotif) => (
                 <div
                   key={unreadNotif.id}
-                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F4F4F4] p-[16px_24px]"
+                  style={{
+                    borderTop: "1px solid var(--Gray-Gray12, #28363F)",
+                    borderRight: "2px solid var(--Gray-Gray12, #28363F)",
+                    borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
+                    borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
+                    background: "var(--neutral-100, #F5F5F5)",
+                  }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow text-center">
-                    <h3 className="font-bold">{unreadNotif.message}</h3>
-                    <p className="text-right">
+                    <h3 className="font-bold font-gilroy text-[16px]">
+                      {unreadNotif.message}
+                    </h3>
+                    <p className="text-right text-[16px]">
                       {notif.createdAt
                         ? new Date(
                             notif.createdAt.toDate()
@@ -306,7 +315,16 @@ const NotificationTabs = ({ ownerUserId }) => {
                 </div>
               ))
             ) : (
-              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+              <p
+                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F4F4F4]"
+                style={{
+                  borderTop: "1px solid var(--Gray-Gray12, #28363F)",
+                  borderRight: "2px solid var(--Gray-Gray12, #28363F)",
+                  borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
+                  borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
+                  background: "var(--neutral-100, #F5F5F5)",
+                }}
+              >
                 No notifications to display.
               </p>
             )}
@@ -320,12 +338,21 @@ const NotificationTabs = ({ ownerUserId }) => {
               getUnreadReactions.map((unreadNotif) => (
                 <div
                   key={unreadNotif.id}
-                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F4F4F4] p-[16px_24px]"
+                  style={{
+                    borderTop: "1px solid var(--Gray-Gray12, #28363F)",
+                    borderRight: "2px solid var(--Gray-Gray12, #28363F)",
+                    borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
+                    borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
+                    background: "var(--neutral-100, #F5F5F5)",
+                  }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow text-center">
-                    <h3 className="font-bold">{unreadNotif.message}</h3>
-                    <p className="text-right">
+                    <h3 className="font-bold font-gilroy text-[16px]">
+                      {unreadNotif.message}
+                    </h3>
+                    <p className="text-right text-[16px]">
                       {notif.createdAt
                         ? new Date(
                             notif.createdAt.toDate()
@@ -346,7 +373,16 @@ const NotificationTabs = ({ ownerUserId }) => {
                 </div>
               ))
             ) : (
-              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+              <p
+                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F4F4F4]"
+                style={{
+                  borderTop: "1px solid var(--Gray-Gray12, #28363F)",
+                  borderRight: "2px solid var(--Gray-Gray12, #28363F)",
+                  borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
+                  borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
+                  background: "var(--neutral-100, #F5F5F5)",
+                }}
+              >
                 No notifications to display.
               </p>
             )}
