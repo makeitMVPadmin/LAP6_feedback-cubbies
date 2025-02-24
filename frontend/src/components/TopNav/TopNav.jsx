@@ -15,8 +15,9 @@ function TopNav({
   setCurrentPage,
   currentPage,
   notificationCount,
-  userImage,
-  username,
+  currentUser,
+  usersList,
+  handleUserLogin,
 }) {
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
@@ -28,29 +29,28 @@ function TopNav({
   );
 
   return (
-    <div className="w-[1156px] h-[104px] flex items-center justify-between mx-auto px-6 pt-6 bg-white">
+    <div className="w-[1070px] h-[104px] flex items-center justify-between mx-auto px-6  py-6 bg-white">
       {/* Logo */}
       <img
         src={logo}
         alt="Communiti Logo"
-        className="w-[248px] h-[48px] py-2 px-1"
+        className="w-[240px] h-[48px] py-2 px-1"
       />
 
       {/* Navigation Menu */}
       <NavigationMenu>
-        <NavigationMenuList className="flex space-x-6">
+        <NavigationMenuList className="flex gap-8 pl-4">
           {navItems.map(({ name, icon: Icon, page }) => (
-            <NavigationMenuItem key={page != "" ? page : name}>
+            <NavigationMenuItem key={page !== "" ? page : name}>
               <button
-                onClick={() => (page != "" ? setCurrentPage(page) : null)}
+                onClick={() => (page !== "" ? setCurrentPage(page) : null)}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
                 ${currentPage === page ? "bg-gray-300" : "hover:bg-gray-200"}`}
               >
                 <span className="material-symbols-outlined">{Icon}</span>
                 <span
-                  className={`font-medium ${
-                    currentPage === page ? "text-blue-600" : "text-gray-800"
-                  }`}
+                  className={`text-black text-base font-semibold font-['Fraunces'] leading-normal whitespace-nowrap w-auto
+                  ${currentPage === page ? "text-blue-600" : "text-gray-800"}`}
                 >
                   {name}
                 </span>
@@ -63,25 +63,18 @@ function TopNav({
             <button
               onClick={() => setCurrentPage("notifications")}
               className={`relative flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
-              ${
-                currentPage === "notifications"
-                  ? "bg-gray-300"
-                  : "hover:bg-gray-200"
-              }`}
+      ${currentPage === "notifications" ? "bg-gray-300" : "hover:bg-gray-200"}`}
             >
               <NotificationsIcon />
               {/* Notification Badge */}
               {notificationCount > 0 && (
                 <span className="absolute top-0 right-10 -mt-1 -mr-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {notificationCount > 99 ? "99+" : notificationCount}
+                  {notificationCount > 9 ? "9+" : notificationCount}
                 </span>
               )}
               <span
-                className={`font-medium ${
-                  currentPage === "notifications"
-                    ? "text-blue-600"
-                    : "text-gray-800"
-                }`}
+                className={`text-black text-base font-semibold font-['Fraunces'] leading-normal 
+        ${currentPage === "notifications" ? "text-blue-600" : "text-gray-800"}`}
               >
                 Notifications
               </span>
@@ -89,7 +82,7 @@ function TopNav({
           </NavigationMenuItem>
 
           {/*Login Button */}
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <button
               onClick={() => setCurrentPage("login")}
               className={`text-gray-800 font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out
@@ -97,10 +90,10 @@ function TopNav({
             >
               Login
             </button>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
 
           {/*Sign Up Button */}
-          <NavigationMenuItem>
+          {/* <NavigationMenuItem>
             <button
               onClick={() => setCurrentPage("signup")}
               className={`bg-black text-white font-medium px-4 py-2 rounded-md transition-colors duration-200 ease-in-out
@@ -110,57 +103,113 @@ function TopNav({
             >
               Sign Up
             </button>
-          </NavigationMenuItem>
+          </NavigationMenuItem> */}
           {/* User Profile with ShadCN Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="relative flex items-center focus:outline-none">
-                {/* Circular User Image */}
-                <img
-                  src={userImage}
-                  alt="User"
-                  className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-gray-500 transition"
-                />
-                {/* Dropdown Arrow */}
-                <div className="absolute -bottom-0 right-0 w-4 h-4">
-                  <span className="material-symbols-outlined">
-                    arrow_drop_down
-                  </span>
+          <NavigationMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="cursor-pointer flex items-center space-x-2">
+                <button className="relative flex items-center focus:outline-none">
+                  <div class="w-[72px] h-[72px] justify-center items-center inline-flex">
+                    <img
+                      class="w-[72px] h-[72px] rounded-full border border-black"
+                      src={currentUser?.profilePicture}
+                      alt={currentUser?.firstName}
+                    />
+                  </div>
+                  <div className="absolute -bottom-0 right-0 w-4 h-4">
+                    <div data-svg-wrapper class="relative">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <rect width="24" height="24" rx="12" fill="#080808" />
+                        <path
+                          d="M6 9L12 15L18 9"
+                          stroke="white"
+                          stroke-width="1.25"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                className="w-[200px]  bg-white rounded-lg shadow-[0px_2px_4px_-1px_rgba(0,0,0,0.20)] shadow-[0px_4px_5px_0px_rgba(0,0,0,0.14)] shadow-[0px_1px_10px_0px_rgba(0,0,0,0.12)] border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-center items-start inline-flex overflow-hidden"
+                align="end"
+                side="bottom"
+                sideOffset={10}
+              >
+                {/* User Info */}
+                <div className="w-full px-3 py-[9px] border-b border-[#d0dce3] flex items-center">
+                  <div className="text-[#28363f] text-base font-bold font-['Montserrat'] leading-tight">
+                    {currentUser?.firstName} {currentUser?.lastName}
+                  </div>
                 </div>
-              </button>
-            </DropdownMenuTrigger>
+                {/* Menu Items */}
+                <div className="flex flex-col w-full">
+                  <DropdownMenuItem className="px-3 py-[9px] hover:bg-gray-100">
+                    <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                      View Profile
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="px-3 py-[9px] hover:bg-gray-100">
+                    <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                      Settings
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="px-3 py-[9px] hover:bg-gray-100">
+                    <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                      Posts & Activity
+                    </div>
+                  </DropdownMenuItem>
+                </div>
 
-            <DropdownMenuContent
-              align="end"
-              side="bottom"
-              sideOffset={10}
-              className="w-48 bg-white shadow-lg rounded-lg p-2 z-50 relative"
-            >
-              {/* User Info */}
-              <div className="p-2">
-                <p className="font-semibold text-gray-800">{username}</p>
-              </div>
+                {/* Divider (Now full-width) */}
+                <div className="w-full border-b border-[#d0dce3]" />
 
-              <DropdownMenuItem
+                {/* User Switching */}
+                {usersList.map((user) =>
+                  currentUser?.id === user.id ? null : (
+                    <DropdownMenuItem
+                      key={user.id}
+                      onClick={() => handleUserLogin(user.id)}
+                      className=" cursor-pointer w-full px-3 py-[9px] flex items-center hover:bg-gray-100"
+                    >
+                      <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
+                        <span className="text-red-500">Login</span> as{" "}
+                        {user.username}
+                      </div>
+                    </DropdownMenuItem>
+                  )
+                )}
+
+                {/* <DropdownMenuItem
                 onClick={() => setCurrentPage("profile")}
                 className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
               >
                 View Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setCurrentPage("feedback")}
-                className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
-              >
-                Debug feedback page
-              </DropdownMenuItem>
-              <DropdownMenuItem
+              </DropdownMenuItem> */}
+                <DropdownMenuItem
+                  onClick={() => setCurrentPage("feedback")}
+                  className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
+                >
+                  Debug feedback page
+                </DropdownMenuItem>
+                {/* <DropdownMenuItem
                 onClick={() => setCurrentPage("logout")}
                 className="cursor-pointer text-red-600 hover:bg-gray-100 p-2 rounded-md"
               >
                 Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </DropdownMenuItem> */}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
     </div>
