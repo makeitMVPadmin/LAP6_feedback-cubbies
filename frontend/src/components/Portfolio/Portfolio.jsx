@@ -2,6 +2,7 @@ import {
   fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
   fetchUserById,
 } from '../../firebase/functions/index';
+import { addBoost, removeBoost, updatedBoostCount } from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
 
