@@ -77,6 +77,7 @@ const Portfolio = () => {
     setPortfolioData({
       title: portfolio.title || '',
       userId: portfolio.userId || '',
+      tagId: portfolio.tagId || '',
       description: portfolio.description || '',
       imageUrl: portfolio.imageUrl || '',
       link: portfolio.link || '',
@@ -98,6 +99,7 @@ const Portfolio = () => {
     setPortfolioData({
       title: '',
       userId: '',
+      tagId: '',
       description: '',
       imageUrl: '',
       link: '',

@@ -1,10 +1,9 @@
 import { db } from '../../firebase/firebase';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 
 const fetchPortfolio = async (userId) => {
   try {
-    const q = query(collection(db, "portfolios"), where("userId", "==", userId)); // 🔥 Filter by userId
+    const q = query(collection(db, "portfolios"), where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
 
     const userPortfolio = querySnapshot.docs.map((doc) => ({

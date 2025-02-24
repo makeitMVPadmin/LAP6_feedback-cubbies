@@ -3,6 +3,7 @@ import { addPortfolio } from "../../firebase/functions/index.js";
 import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React from "react";
+import { auth } from "../../firebase/firebase";
 import { useState } from "react";
 import TagSelection from "../TagSelection/TagSelection";
 
@@ -16,6 +17,12 @@ function PostModal({ isOpen, onClose , currentUser}) {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // check if the user is logged in
+    if (!auth.currentUser) {
+      console.error('User is not authenticated.');
+      return;
+    }
 
     // Prepare the portfolio data
     const portfolioData = {
