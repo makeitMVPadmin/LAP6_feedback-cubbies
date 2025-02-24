@@ -6,15 +6,10 @@ import {
 } from "../../firebase/functions/feedbackFunctions";
 import { useState, useEffect } from "react";
 
-const Feedback = () => {
-import { useState, useEffect } from "react";
-
 const Feedback = ({ currentUser }) => {
   const [feedbackList, setFeedbackList] = useState([]);
   const [portfolioId, setPortfolioId] = useState("PXKgEDwdVZrWxatSfKDr");
   const [newComment, setNewComment] = useState("");
-  const [editingFeedbackId, setEditingFeedbackId] = useState(null);
-  const [updatedComments, setUpdatedComments] = useState({});
 
   const retrivePortfolioFeedback = async () => {
     const feedback = await getPortfolioFeedback(portfolioId);
@@ -36,56 +31,6 @@ const Feedback = ({ currentUser }) => {
       },
     ]);
     setNewComment("");
-  };
-
-
-  const handleUpdateFeedback = async (feedbackId) => {
-    const updatedComment = updatedComments[feedbackId];
-    if (updatedComment.trim() !== "") {
-      setFeedbackList((prevFeedbackList) =>
-        prevFeedbackList.map((feedback) =>
-          feedback.id === feedbackId
-            ? {
-                ...feedback,
-                comment: updatedComment,
-                updatedAt: new Date().toISOString(),
-              }
-            : feedback
-        )
-      );
-
-      try {
-        await updateFeedback(feedbackId, updatedComment);
-      } catch (err) {
-        console.error("Error updating feedback:", err);
-      }
-
-      setEditingFeedbackId(null);
-    }
-  };
-
-  const handleDeleteFeedback = async (feedbackId) => {
-    try {
-      await deleteFeedback(feedbackId);
-      setFeedbackList((prevFeedbackList) =>
-        prevFeedbackList.filter((feedback) => feedback.id !== feedbackId)
-      );
-    } catch (err) {
-      console.error("Error deleting feedback:", err);
-    }
-  };
-
-  const handleEditClick = (feedbackId) => {
-    setEditingFeedbackId(feedbackId);
-    setUpdatedComments((prev) => ({
-      ...prev,
-      [feedbackId]: feedbackList.find((feedback) => feedback.id === feedbackId)
-        .comment,
-    }));
-  };
-
-  const handleCancelEdit = () => {
-    setEditingFeedbackId(null);
   };
 
   useEffect(() => {

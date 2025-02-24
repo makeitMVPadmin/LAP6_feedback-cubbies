@@ -5,7 +5,6 @@ import {
   emptyUser,
 } from "./firebase/functions/fetchUsers";
 // Import fetchUserById
-import FeedbackPage from "./pages/FeedbackPage";
 import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
@@ -71,8 +70,7 @@ function App() {
       case "home":
         return <HomePage currentUser={currentUser || emptyUser} />;
       case "feedback":
-        return <FeedbackPage currentUser={currentUser || emptyUser} />;
-        return <PortfolioDetailsPage />;
+        return <PortfolioDetailsPage currentUser={currentUser || emptyUser}/>;
       default:
         return <HomePage currentUser={currentUser || emptyUser} />;
     }
