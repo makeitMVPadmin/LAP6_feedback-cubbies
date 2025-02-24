@@ -195,19 +195,22 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsList className="bg-[#0264D4] w-full flex justify-start gap-[48px] rounded-none h-14 p-[12px_16px]">
           <TabsTrigger
             value="all"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0 h-[32px] w-[58px] font-inter"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[58px]"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
           </TabsTrigger>
           <TabsTrigger
             value="comments"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0 h-[32px] w-[165px] font-inter"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[165px]"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Comments
           </TabsTrigger>
           <TabsTrigger
             value="reactions"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500 py-0 h-[32px] w-[124px] font-inter"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[124px]"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Reactions
           </TabsTrigger>
@@ -221,7 +224,7 @@ const NotificationTabs = ({ ownerUserId }) => {
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F4F4F4] p-[16px_24px]"
+                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -232,13 +235,22 @@ const NotificationTabs = ({ ownerUserId }) => {
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow">
-                    <h3 className="font-bold font-gilroy text-[16px]">
+                    <h3
+                      className="font-bold text-[16px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {notif.message}
                     </h3>
-                    <p className="font-gilroy text-[16px] h-[24px]">
+                    <p
+                      className=" text-[14px] h-[24px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {notif.feedbackContent}
                     </p>
-                    <p className="text-right text-[16px]">
+                    <p
+                      className="text-right text-[16px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {notif.createdAt
                         ? new Date(
                             notif.createdAt.toDate()
@@ -258,13 +270,14 @@ const NotificationTabs = ({ ownerUserId }) => {
               ))
             ) : (
               <p
-                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F4F4F4]"
+                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F5F5F5]"
                 style={{
                   borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                   borderRight: "2px solid var(--Gray-Gray12, #28363F)",
                   borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
                   borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                   background: "var(--neutral-100, #F5F5F5)",
+                  fontFamily: "Montserrat, sans-serif",
                 }}
               >
                 No notifications to display.
@@ -280,7 +293,7 @@ const NotificationTabs = ({ ownerUserId }) => {
               getUnreadComments.map((unreadNotif) => (
                 <div
                   key={unreadNotif.id}
-                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F4F4F4] p-[16px_24px]"
+                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -291,10 +304,16 @@ const NotificationTabs = ({ ownerUserId }) => {
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow text-center">
-                    <h3 className="font-bold font-gilroy text-[16px]">
+                    <h3
+                      className="font-bold text-[16px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {unreadNotif.message}
                     </h3>
-                    <p className="text-right text-[16px]">
+                    <p
+                      className="text-right text-[14px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {notif.createdAt
                         ? new Date(
                             notif.createdAt.toDate()
@@ -316,13 +335,14 @@ const NotificationTabs = ({ ownerUserId }) => {
               ))
             ) : (
               <p
-                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F4F4F4]"
+                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F5F5F5]"
                 style={{
                   borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                   borderRight: "2px solid var(--Gray-Gray12, #28363F)",
                   borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
                   borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                   background: "var(--neutral-100, #F5F5F5)",
+                  fontFamily: "Montserrat, sans-serif",
                 }}
               >
                 No notifications to display.
@@ -338,7 +358,7 @@ const NotificationTabs = ({ ownerUserId }) => {
               getUnreadReactions.map((unreadNotif) => (
                 <div
                   key={unreadNotif.id}
-                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F4F4F4] p-[16px_24px]"
+                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -349,10 +369,16 @@ const NotificationTabs = ({ ownerUserId }) => {
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow text-center">
-                    <h3 className="font-bold font-gilroy text-[16px]">
+                    <h3
+                      className="font-bold text-[16px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {unreadNotif.message}
                     </h3>
-                    <p className="text-right text-[16px]">
+                    <p
+                      className="text-right text-[46px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
                       {notif.createdAt
                         ? new Date(
                             notif.createdAt.toDate()
@@ -374,13 +400,14 @@ const NotificationTabs = ({ ownerUserId }) => {
               ))
             ) : (
               <p
-                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F4F4F4]"
+                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F5F5F5]"
                 style={{
                   borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                   borderRight: "2px solid var(--Gray-Gray12, #28363F)",
                   borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
                   borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                   background: "var(--neutral-100, #F5F5F5)",
+                  fontFamily: "Montserrat, sans-serif",
                 }}
               >
                 No notifications to display.

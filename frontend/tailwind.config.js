@@ -8,10 +8,6 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        gilroy: ["Gilroy", "sans-serif"],
-        inter: ["Inter", "sans-serif"],
-      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
