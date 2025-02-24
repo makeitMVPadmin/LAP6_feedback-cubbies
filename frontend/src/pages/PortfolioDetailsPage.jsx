@@ -1,10 +1,10 @@
 import Feedback from "@/components/Feedback/Feedback";
-// import PortfolioCard
+import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
 
-export default function FeedbackPage() {
+export default function PortfolioDetailsPage() {
   return (
     <div>
-       {/* PortfolioCard goes here */}
+       {/* <PortfolioCard /> */}
        <Feedback />
     </div>  
   );

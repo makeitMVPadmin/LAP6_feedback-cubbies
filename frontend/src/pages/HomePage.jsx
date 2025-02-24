@@ -1,4 +1,4 @@
-import PortfolioPage from "../components/Portfolio/Portfolio";
+import PortfolioPage from "../components/PortfolioList/PortfolioList";
 import PostModal from "../components/PostModal/PostModal";
 import { Button } from "../components/ui/button";
 import HomeFeed from "@/components/HomeFeed/HomeFeed";
