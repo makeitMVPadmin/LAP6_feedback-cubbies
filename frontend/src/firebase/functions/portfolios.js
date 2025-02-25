@@ -19,13 +19,14 @@ const fetchPortfolio = async (userId) => {
   }
 };
 
-
 const addPortfolio = async (portfolioData) => {
   try {
-    await addDoc(collection(db, 'portfolios'), portfolioData);
-    console.log('Portfolio added successfully!');
+    const docRef = await addDoc(collection(db, 'portfolios'), portfolioData);
+    console.log('Portfolio added successfully with ID:', docRef.id);
+    return { id: docRef.id }; 
   } catch (error) {
     console.error('Error adding portfolio:', error);
+    throw error; 
   }
 };
 

@@ -9,7 +9,7 @@ import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
 import { useState, useEffect } from "react";
-// import { addBoost, removeBoost, checkIfBoosted } from "./firebase/functions/boostFunctionality";
+import { fetchUserBoosts } from "./firebase/functions/boostFunctionality";
 import "./App.css";
 
 function App() {
@@ -35,46 +35,38 @@ function App() {
     });
   }, []);
 
-  // handle user login and reset boosts when the user is changed
-  // const handleBoost = (portfolioId, userId) => {
-  //   // Check if the user has already boosted the portfolio
-  //   const userHasBoosted = userBoosts.some(
-  //     (boost) => boost.userId === userId && boost.portfolioId === portfolioId
-  //   );
-    
-  //   if (userHasBoosted) {
-  //     // If the user has already boosted, remove the boost
-  //     removeBoost(portfolioId, userId).then(() => {
-  //       // Update userBoosts state after removal
-  //       setUserBoosts(userBoosts.filter(
-  //         (boost) => boost.userId !== userId || boost.portfolioId !== portfolioId
-  //       ));
-  //       console.log("Boost removed");
-  //     });
-  //   } else {
-  //     // If the user has not boosted, add a boost
-  //     addBoost(portfolioId, userId).then(() => {
-  //       // Add to userBoosts state
-  //       setUserBoosts([...userBoosts, { portfolioId, userId }]);
-  //       console.log("Boost added");
-  //     });
-  //   }
-  // };
 
   useEffect(() => {
     if (usersList.length > 0 && !currentUser) {
-      setCurrentUser(usersList[0]); // Set first user as logged in
-      console.log("User set:", usersList[0]);
+      const storedUser = localStorage.getItem("currentUser");
+      if (storedUser) {
+        setCurrentUser(JSON.parse(storedUser));
+      } else {
+        setCurrentUser(usersList[0]); // Default to first user
+      }
     }
   }, [usersList]);
+  
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    }
+  }, [currentUser]);
 
-  const handleUserLogin = (userId) => {
+  const handleUserLogin = async (userId) => {
     const user = usersList.find((user) => user.id === userId);
+    console.log(user);
     if (user) {
       setCurrentUser(user);
+      setUserBoosts([]); 
       console.log("Logged in as:", user);
+      
+      // Fetch boosts for the user
+      const boosts = await fetchUserBoosts(user.id); 
+      setUserBoosts(boosts); 
     }
   };
+  
   // Handle navigation selection
   const handlePageChange = (page) => {
     if (page === "notifications") {

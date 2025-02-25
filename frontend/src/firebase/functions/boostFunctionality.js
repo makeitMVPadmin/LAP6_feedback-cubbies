@@ -5,8 +5,7 @@ const addBoost = async (portfolioId, userId) => {
   try {
     const docRef = doc(db, "boosts", `${portfolioId}-${userId}`);
     await setDoc(docRef, { portfolioId, userId });
-    const portfolioRef = doc(db, "portfolios", portfolioId);
-    await setDoc(portfolioRef, { boostCount: increment(1) }, { merge: true });
+    await updatedBoostCount(portfolioId, 1);
     console.log("Boost added");
   } catch (error) {
     console.error("Error adding boost:", error);
@@ -16,19 +15,10 @@ const addBoost = async (portfolioId, userId) => {
 const removeBoost = async (boostId) => {
   try {
     await deleteDoc(doc(db, "boosts", boostId));
+    await updatedBoostCount(boostId.split("-")[0], -1); // Decrease boost count for portfolio
     console.log("Boost removed");
   } catch (error) {
     console.error("Error removing boost:", error);
-  }
-};
-
-const updatedBoostCount = async (portfolioId, increment) => {
-  try {
-    const portfolioRef = doc(db, "portfolios", portfolioId);
-    await setDoc(portfolioRef, { boostCount: increment(increment) }, { merge: true });
-    console.log("Boost count updated");
-  } catch (error) {
-    console.error("Error updating boost count:", error);
   }
 };
 
@@ -39,4 +29,12 @@ const checkIfBoosted = async (portfolioId, userId) => {
   return querySnapshot.docs.length > 0 ? querySnapshot.docs[0].id : null; // Return boostId if boosted, else null
 };
 
-export { addBoost, removeBoost, updatedBoostCount, checkIfBoosted };
+const fetchUserBoosts = async (userId) => {
+  const boostsRef = collection(db, "boosts");
+  const q = query(boostsRef, where("userId", "==", userId));
+  const querySnapshot = await getDocs(q);
+  const boosts = querySnapshot.docs.map((doc) => doc.data());
+  return boosts; // Return boost data
+};
+
+export { addBoost, removeBoost, checkIfBoosted, fetchUserBoosts };

@@ -4,9 +4,9 @@ import {
 } from '../../firebase/functions/index';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
-import BoostButton from '../BoostsBtn/BoostsBtn';
+import BoostsBtn from '../BoostsBtn/BoostsBtn';
 
-const Portfolio = ({ currentUser, usersData }) => {
+const Portfolio = ({ currentUser, portfolioId, usersData, rolesData }) => {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
@@ -224,12 +224,8 @@ const Portfolio = ({ currentUser, usersData }) => {
                     </a>
                   </Button>
 
-                  <BoostButton
-                    currentUser={currentUser}
-                    portfolioId={portfolio.id}
-                    portfolios={portfolios}
-                    setPortfolios={setPortfolios}
-                  />
+                  <BoostsBtn currentUser={currentUser} portfolioId={portfolioId}  />
+
 
 
                   <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
