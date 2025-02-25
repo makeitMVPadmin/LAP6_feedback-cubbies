@@ -20,7 +20,6 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null); // Store logged-in user
   const [userBoosts, setUserBoosts] = useState([]);
 
-
   // Fetch specific users by their IDs on mount
   useEffect(() => {
     const userIds = [
