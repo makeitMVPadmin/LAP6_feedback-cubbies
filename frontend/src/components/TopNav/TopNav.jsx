@@ -20,7 +20,8 @@ function TopNav({
   usersList,
   handleUserLogin,
 }) {
-  const { goToProfileDetails, goToHome, toggleDrawer } = useNavigation();
+  const { goToProfileDetails, goToHome, toggleDrawer, isDrawerOpen } =
+    useNavigation();
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
     { name: "Communities", icon: "group", page: "" },
@@ -51,12 +52,20 @@ function TopNav({
                   }
                 }}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
-                ${currentPage === page ? "bg-gray-300" : "hover:bg-gray-200"}`}
+                ${
+                  currentPage === page && !isDrawerOpen
+                    ? "bg-gray-300"
+                    : "hover:bg-gray-200"
+                }`}
               >
                 <span className="material-symbols-outlined">{Icon}</span>
                 <span
                   className={`text-black text-base font-semibold font-['Fraunces'] leading-normal whitespace-nowrap w-auto
-                  ${currentPage === page ? "text-blue-600" : "text-gray-800"}`}
+                  ${
+                    currentPage === page && !isDrawerOpen
+                      ? "text-blue-600"
+                      : "text-gray-800"
+                  }`}
                 >
                   {name}
                 </span>
@@ -71,7 +80,7 @@ function TopNav({
                 toggleDrawer();
               }}
               className={`relative flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
-      ${currentPage === "notifications" ? "bg-gray-300" : "hover:bg-gray-200"}`}
+      ${isDrawerOpen ? "bg-gray-300" : "hover:bg-gray-200"}`}
             >
               <NotificationsIcon />
               {/* Notification Badge */}
@@ -82,7 +91,7 @@ function TopNav({
               )}
               <span
                 className={`text-black text-base font-semibold font-['Fraunces'] leading-normal 
-        ${currentPage === "notifications" ? "text-blue-600" : "text-gray-800"}`}
+        ${isDrawerOpen ? "text-blue-600" : "text-gray-800"}`}
               >
                 Notifications
               </span>

@@ -13,7 +13,7 @@ import {
 } from "../firebase/functions/index";
 import { useEffect, useState } from "react";
 
-function HomePage({ currentUser }) {
+function HomePage() {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
