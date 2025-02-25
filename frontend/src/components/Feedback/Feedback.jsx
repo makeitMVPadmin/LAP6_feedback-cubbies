@@ -38,23 +38,27 @@ const Feedback = ({ currentUser, portfolioId }) => {
 
   return (
     <div>
-      <section className="grid grid-cols-1 gap-[3.13rem] pl-[3.13rem] justify-items-center">
+      <section className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
         <div className="flex flex-col items-start gap-[1.5rem] p-[1.5rem] w-[47.125rem] rounded-lg border-t border-r-2 border-b-2 border-l border-gray-600">
-          {feedbackList.map((feedback) => (
-            <div
-              key={feedback.id}
-              className="inline-flex items-start gap-[0.25rem] px-[0.75rem] self-stretch"
-            >
-              <div>
-                <img src={avatar} alt="user avatar" />
-                {/* <img src={feedback.profilePhoto || avatar} alt="user avatar" /> */}
+          {feedbackList.length === 0 ? (
+            <p>There are no comments yet.</p>
+          ) : (
+            feedbackList.map((feedback) => (
+              <div
+                key={feedback.id}
+                className="inline-flex items-start gap-[0.25rem] px-[0.75rem] self-stretch"
+              >
+                <div>
+                  <img src={avatar} alt="user avatar" />
+                  {/* <img src={feedback.profilePhoto || avatar} alt="user avatar" /> */}
+                </div>
+                <div>
+                  <p className="font-bold">@{feedback.username}</p>
+                  <p>{feedback.comment}</p>
+                </div>
               </div>
-              <div>
-                <p className="font-bold">@{feedback.username}</p>
-                <p>{feedback.comment}</p>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         <div className="w-[47.125rem]">
           <div className="flex items-center gap-[0.625rem] w-[36.875rem] h-[2.5rem] px-[1px] rounded-lg border-t border-r-2 border-b-2 border-l border-gray-600 bg-white">
