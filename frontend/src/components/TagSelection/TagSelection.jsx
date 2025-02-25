@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
-import fetchAllTags from "../../firebase/functions/fetchTags";
+import { fetchAllTags } from "../../firebase/functions/index.js";
 
 const categories = ["Dev Tags", "General Tags", "Design Tags"];
 

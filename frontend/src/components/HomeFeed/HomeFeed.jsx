@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import CreatePost from "../CreatePost/CreatePost.jsx";
 import Portfolio from "../Portfolio/Portfolio.jsx";
-import { fetchPortfolio, fetchRoleById, fetchUserById } from '../../firebase/functions/index';
+import FilterTags from '../FilterTags';
+import { Card, Avatar } from '../ui';
+import { fetchPortfolio, fetchRoleById, fetchUserById, fetchAllTags, fetchTagsById } from '../../firebase/functions/index';
+
 
 function HomeFeed({ currentUser }) {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
+  const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTag, setSelectedTag] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -40,6 +45,9 @@ function HomeFeed({ currentUser }) {
 
         setUsers(usersData);
         setRoles(rolesData);
+
+        const tagsData = await fetchAllTags();
+        setTags(tagsData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -49,15 +57,26 @@ function HomeFeed({ currentUser }) {
     getData();
   }, []);
 
+  const filteredPortfolios = selectedTag
+    ? portfolios.filter(portfolio => portfolio.tagId === selectedTag)
+    : portfolios;
+
   return (
-    <div className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
-      <CreatePost />
+    <section className="grid grid-cols-1 gap-[3.13rem] justify-items-center overflow-hidden">
+      <div className="flex w-[47.125rem] justify-start">
+        <Card className="h-24 p-6 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-start gap-6 inline-flex">
+          <Avatar className="w-12 h-12" />
+          <CreatePost />
+          <FilterTags selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+        </Card>
+      </div>
+
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <Portfolio portfolios={portfolios} users={users} roles={roles} />
+        <Portfolio portfolios={filteredPortfolios} users={users} roles={roles} />
       )}
-    </div>
+    </section>
   );
 }
 
