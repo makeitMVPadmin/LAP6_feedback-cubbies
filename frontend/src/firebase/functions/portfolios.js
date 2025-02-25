@@ -5,7 +5,7 @@ import {
   getDoc,
   getDocs,
   query,
-  where,
+  limit,
   addDoc,
   deleteDoc,
   updateDoc,
@@ -13,7 +13,7 @@ import {
 
 const fetchPortfolio = async () => {
   try {
-    const q = query(collection(db, "portfolios"));
+    const q = query(collection(db, "portfolios"), limit(3));
     const querySnapshot = await getDocs(q);
 
     const userPortfolio = querySnapshot.docs.map((doc) => ({
