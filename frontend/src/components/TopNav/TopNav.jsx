@@ -1,3 +1,4 @@
+import { useNavigation } from "../../context/NavigationContext";
 import logo from "/images/logos/communiti_logo.png";
 import {
   DropdownMenu,
@@ -19,6 +20,7 @@ function TopNav({
   usersList,
   handleUserLogin,
 }) {
+  const { goToProfileDetails } = useNavigation();
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
     { name: "Communities", icon: "group", page: "" },
@@ -109,7 +111,7 @@ function TopNav({
             <DropdownMenu>
               <DropdownMenuTrigger className="cursor-pointer flex items-center space-x-2">
                 <button className="relative flex items-center focus:outline-none">
-                  <div class="w-[72px] h-[72px] justify-center items-center inline-flex">
+                  <div className="w-[72px] h-[72px] justify-center items-center inline-flex">
                     <img
                       class="w-[72px] h-[72px] rounded-full border border-black"
                       src={currentUser?.profilePicture}
@@ -196,7 +198,7 @@ function TopNav({
                 View Profile
               </DropdownMenuItem> */}
                 <DropdownMenuItem
-                  onClick={() => setCurrentPage("feedback")}
+                  onClick={() => goToProfileDetails("PXKgEDwdVZrWxatSfKDr")}
                   className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                 >
                   Debug feedback page

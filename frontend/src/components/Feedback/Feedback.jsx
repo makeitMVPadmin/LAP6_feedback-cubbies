@@ -6,9 +6,8 @@ import {
 } from "../../firebase/functions/feedbackFunctions";
 import { useState, useEffect } from "react";
 
-const Feedback = ({ currentUser }) => {
+const Feedback = ({ currentUser, portfolioId }) => {
   const [feedbackList, setFeedbackList] = useState([]);
-  const [portfolioId, setPortfolioId] = useState("PXKgEDwdVZrWxatSfKDr");
   const [newComment, setNewComment] = useState("");
 
   const retrivePortfolioFeedback = async () => {

@@ -1,11 +1,29 @@
+import { useNavigation } from "../context/NavigationContext";
 import Feedback from "@/components/Feedback/Feedback";
-import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
 
-export default function PortfolioDetailsPage() {
+export default function PortfolioDetailsPage(userId) {
+  const { portfolioId, goToHome } = useNavigation();
+
   return (
     <div>
-       {/* <PortfolioCard /> */}
-       <Feedback />
-    </div>  
+      {/* Home Button */}
+      <button
+        onClick={goToHome}
+        style={{
+          marginTop: "20px",
+          padding: "10px",
+          background: "#007BFF",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        Home
+      </button>
+      {/* PortfolioCard goes here */}
+      <p>Portfolio ID: {portfolioId}</p>
+
+      <Feedback portfolioId={portfolioId} />
+    </div>
   );
 }

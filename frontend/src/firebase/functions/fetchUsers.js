@@ -16,22 +16,52 @@ export const fetchUsers = async (params) => {
   }
 };
 
+// export const fetchUserById = async (userId) => {
+//   try {
+//     const userDoc = await getDoc(doc(db, "users", userId));
+//     if (userDoc.exists()) {
+//       const userData = { id: userDoc.id, ...userDoc.data() };
+//       console.log(userData);
+//       return userData;
+//     } else {
+//       console.log("No such user!");
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user: ", error);
+//     return null;
+//   }
+// };
+
 export const fetchUserById = async (userId) => {
   try {
+    // check if userId is missing
+    if (!userId) {
+      throw new Error("fetchUserById called without a valid userId");
+    }
+
     const userDoc = await getDoc(doc(db, "users", userId));
+
     if (userDoc.exists()) {
       const userData = { id: userDoc.id, ...userDoc.data() };
       console.log(userData);
+      
+      // make sure arrays of user data are valid
+      if (!userData.someArrayField) {
+        userData.someArrayField = []; 
+      }
+
       return userData;
     } else {
       console.log("No such user!");
-      return null;
+      return null; // return null if the user doesn't exist
     }
   } catch (error) {
     console.error("Error fetching user: ", error);
-    return null;
+    return null; // return null if an error occurs
   }
 };
+
 export const fetchUsersByIds = async (userIds) => {
   try {
     const userPromises = userIds.map(async (userId) => {
