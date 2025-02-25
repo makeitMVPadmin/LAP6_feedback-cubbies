@@ -224,7 +224,7 @@ const Portfolio = ({ currentUser, portfolioId, usersData, rolesData }) => {
                     </a>
                   </Button>
 
-                  <BoostsBtn currentUser={currentUser} portfolioId={portfolioId}  />
+                  <BoostsBtn portfolioId={portfolio.id}  />
 
 
 
