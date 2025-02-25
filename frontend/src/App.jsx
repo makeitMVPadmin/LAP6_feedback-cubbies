@@ -6,6 +6,7 @@ import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import TopNav from "@/components/TopNav/TopNav";
 import { useState, useEffect } from "react";
 import "./App.css";
+import { Toaster } from "sonner";
 
 function AppContent() {
   const { currentPage, goToProfileDetails } = useNavigation();
@@ -77,9 +78,14 @@ function AppContent() {
 
 function App() {
   return (
-    <NavigationProvider>
-      <AppContent />
-    </NavigationProvider>
+    <>
+      <NavigationProvider>
+        <AppContent />
+      </NavigationProvider>
+      <div className="min-h-screen flex flex-col">
+        <Toaster position="bottom-right" richColors />
+      </div>
+    </>
   );
 }
 
