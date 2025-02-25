@@ -9,8 +9,13 @@ import "./App.css";
 import { Toaster } from "sonner";
 
 function AppContent() {
-  const { currentPage, goToProfileDetails } = useNavigation();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const {
+    currentPage,
+    goToProfileDetails,
+    isDrawerOpen,
+    openDrawer,
+    closeDrawer,
+  } = useNavigation();
   const [usersList, setUsersList] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -33,14 +38,6 @@ function AppContent() {
     }
   }, [usersList]);
 
-  const handleUserLogin = (userId) => {
-    const user = usersList.find((user) => user.id === userId);
-    if (user) {
-      setCurrentUser(user);
-      console.log("Logged in as:", user);
-    }
-  };
-
   const renderPage = () => {
     switch (currentPage) {
       case "home":
@@ -56,12 +53,11 @@ function AppContent() {
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-md p-4">
         <TopNav
-          setCurrentPage={goToProfileDetails}
           currentPage={currentPage}
           notificationCount="999"
           currentUser={currentUser || emptyUser}
           usersList={usersList}
-          handleUserLogin={handleUserLogin}
+          openDrawer={openDrawer} // Pass function to TopNav
         />
       </header>
       <main className="flex-grow p-4">{renderPage()}</main>
@@ -70,7 +66,7 @@ function AppContent() {
       <NotificationDrawer
         currentUser={currentUser || emptyUser}
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={closeDrawer}
       />
     </div>
   );

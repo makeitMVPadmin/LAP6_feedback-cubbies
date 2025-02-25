@@ -20,7 +20,7 @@ function TopNav({
   usersList,
   handleUserLogin,
 }) {
-  const { goToProfileDetails } = useNavigation();
+  const { goToProfileDetails, goToHome, toggleDrawer } = useNavigation();
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
     { name: "Communities", icon: "group", page: "" },
@@ -45,7 +45,11 @@ function TopNav({
           {navItems.map(({ name, icon: Icon, page }) => (
             <NavigationMenuItem key={page !== "" ? page : name}>
               <button
-                onClick={() => (page !== "" ? setCurrentPage(page) : null)}
+                onClick={() => {
+                  if (page === "home") {
+                    goToHome();
+                  }
+                }}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
                 ${currentPage === page ? "bg-gray-300" : "hover:bg-gray-200"}`}
               >
@@ -63,7 +67,9 @@ function TopNav({
           {/* Notifications Button with Badge */}
           <NavigationMenuItem>
             <button
-              onClick={() => setCurrentPage("notifications")}
+              onClick={() => {
+                toggleDrawer();
+              }}
               className={`relative flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
       ${currentPage === "notifications" ? "bg-gray-300" : "hover:bg-gray-200"}`}
             >
