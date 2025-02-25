@@ -32,7 +32,7 @@ const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
 
           <div className="flex items-center gap-4 mt-1">
             <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
-              {role}
+            {role?.roleName}
             </div>
             <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
               1 day ago

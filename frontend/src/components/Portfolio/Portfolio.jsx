@@ -56,6 +56,7 @@ const Portfolio = () => {
         }
 
         setUsers(usersData);
+        console.log("usersData", usersData)
         setRoles(rolesData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -158,7 +159,7 @@ const handleBoostClick = async (portfolioId) => {
               key={id} 
               portfolio={portfolio} 
               user={users[portfolio.userId]} 
-              role={roles[portfolio.userId?.roleId]?.roleName}
+              role={roles[portfolio.userId?.roleId]}
               handleBoostClick={handleBoostClick}
             />
           ))}
