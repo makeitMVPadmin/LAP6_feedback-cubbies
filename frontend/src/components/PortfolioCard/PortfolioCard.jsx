@@ -1,6 +1,7 @@
 import { Button, Card, Avatar } from "../ui/index";
+import { Zap } from "lucide-react";
 
-const PortfolioCard = ({ portfolio, user, role}) => {
+const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
   return (
     <Card
       key={portfolio.id}
@@ -106,8 +107,14 @@ const PortfolioCard = ({ portfolio, user, role}) => {
               </div>
             </a>
           </Button>
-          <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
-            Boosts
+
+          <Button
+            onClick={() => handleBoostClick(portfolio.id)}
+            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex 
+                              justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
+          >
+            <Zap size={20} />
+            {portfolio.boostCount} Boosts
           </Button>
 
           <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
