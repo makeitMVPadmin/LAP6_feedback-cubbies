@@ -197,12 +197,12 @@ function TopNav({
               >
                 View Profile
               </DropdownMenuItem> */}
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   onClick={() => goToProfileDetails("PXKgEDwdVZrWxatSfKDr")}
                   className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                 >
                   Debug feedback page
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 {/* <DropdownMenuItem
                 onClick={() => setCurrentPage("logout")}
                 className="cursor-pointer text-red-600 hover:bg-gray-100 p-2 rounded-md"

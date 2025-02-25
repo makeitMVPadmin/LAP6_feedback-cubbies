@@ -1,7 +1,9 @@
+import { useNavigation } from "../../context/NavigationContext";
 import { Button, Card, Avatar } from "../ui/index";
 import { Zap } from "lucide-react";
 
 const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
+  const {goToProfileDetails } = useNavigation();
   return (
     <Card
       key={portfolio.id}
@@ -117,7 +119,8 @@ const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
             {portfolio.boostCount} Boosts
           </Button>
 
-          <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+          <Button onClick={() => goToProfileDetails(portfolio.id)}
+          className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
             Comments
           </Button>
         </div>
