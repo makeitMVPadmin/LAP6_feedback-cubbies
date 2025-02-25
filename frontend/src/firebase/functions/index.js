@@ -21,3 +21,4 @@ export {
   updateFeedback,
   deleteFeedback,
 } from './feedbackFunctions';
+export { default as fetchAllTags } from './fetchTags';
