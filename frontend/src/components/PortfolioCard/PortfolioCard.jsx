@@ -3,7 +3,7 @@ import { Button, Card, Avatar } from "../ui/index";
 import { Zap } from "lucide-react";
 
 const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
-  const {goToProfileDetails } = useNavigation();
+  const { goToProfileDetails } = useNavigation();
   return (
     <Card
       key={portfolio.id}
@@ -32,7 +32,7 @@ const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
 
           <div className="flex items-center gap-4 mt-1">
             <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
-            {role?.roleName}
+              {role?.roleName}
             </div>
             <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
               1 day ago
@@ -119,8 +119,10 @@ const PortfolioCard = ({ portfolio, user, role, handleBoostClick }) => {
             {portfolio.boostCount} Boosts
           </Button>
 
-          <Button onClick={() => goToProfileDetails(portfolio.id)}
-          className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+          <Button
+            onClick={() => goToProfileDetails(portfolio.id)}
+            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
+          >
             Comments
           </Button>
         </div>

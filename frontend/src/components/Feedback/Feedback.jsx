@@ -38,7 +38,7 @@ const Feedback = ({ currentUser, portfolioId }) => {
 
   return (
     <div>
-      <section className="grid grid-cols-1 gap-[3.13rem] pl-[3.13rem] justify-items-center">
+      <section className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
         <div className="flex flex-col items-start gap-[1.5rem] p-[1.5rem] w-[47.125rem] rounded-lg border-t border-r-2 border-b-2 border-l border-gray-600">
           {feedbackList.length === 0 ? (
             <p>There are no comments yet.</p>

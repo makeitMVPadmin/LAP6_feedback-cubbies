@@ -1,12 +1,12 @@
+import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
 import { useNavigation } from "../context/NavigationContext";
-import { useState, useEffect} from "react";
 import { getPortfolioById } from "../firebase/functions/portfolios";
 import Feedback from "@/components/Feedback/Feedback";
-import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
+import { useState, useEffect } from "react";
 
 function PortfolioDetailsPage() {
   const { portfolioId, goToHome } = useNavigation();
-  const [ selectedPortfolio, setSelectedPortfolio ] = useState({});
+  const [selectedPortfolio, setSelectedPortfolio] = useState({});
   const [loading, setLoading] = useState(true);
 
   const retrivePortfoliobyId = async () => {
@@ -50,9 +50,14 @@ function PortfolioDetailsPage() {
       >
         Home
       </button>
-      <p>Portfolio ID: {portfolioId}</p>
-      <PortfolioCard portfolio={selectedPortfolio.portfolio} user={selectedPortfolio.user} role={selectedPortfolio.role} />
-      <Feedback portfolioId={portfolioId} />
+      <div className="flex flex-col items-center justify-center h-auto text-center gap-6">
+        <PortfolioCard
+          portfolio={selectedPortfolio.portfolio}
+          user={selectedPortfolio.user}
+          role={selectedPortfolio.role}
+        />
+        <Feedback portfolioId={portfolioId} />
+      </div>
     </div>
   );
 }
