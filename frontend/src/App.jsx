@@ -4,7 +4,6 @@ import {
   fetchUserById,
   emptyUser,
 } from "./firebase/functions/fetchUsers";
-// Import fetchUserById
 import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
@@ -55,13 +54,13 @@ function App() {
 
   const handleUserLogin = async (userId) => {
     const user = usersList.find((user) => user.id === userId);
-    console.log(user);
     if (user) {
       setCurrentUser(user);
       setUserBoosts([]); 
+      localStorage.setItem("userId", user.id);
       console.log("Logged in as:", user);
-      
-      // Fetch boosts for the user
+     
+      // fetch boosts for the user
       const boosts = await fetchUserBoosts(user.id); 
       setUserBoosts(boosts); 
     }
