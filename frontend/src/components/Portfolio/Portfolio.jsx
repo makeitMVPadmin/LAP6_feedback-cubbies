@@ -2,12 +2,11 @@ import {
   fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
   fetchUserById,
 } from '../../firebase/functions/index';
-import { addBoost, removeBoost, updatedBoostCount} from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
 import React, { useEffect, useState } from 'react';
-import { Zap } from 'lucide-react';
+import BoostButton from '../BoostsBtn/BoostsBtn';
 
-const Portfolio = () => {
+const Portfolio = ({ currentUser, usersData }) => {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
@@ -65,34 +64,6 @@ const Portfolio = () => {
     getData();
   }, []);
 
-
-// boost logic
-const handleBoostClick = async (portfolioId) => {
-  try {
-    // find the portfolio and get the current boost count (defaulting is 0)
-    const portfolioItem = portfolios.find(p => p.id === portfolioId);
-    const currentBoostCount = portfolioItem?.boostCount || 0; 
-
-    const newBoostCount = currentBoostCount + 1;
-
-    await addBoost(portfolioId); // directly increment the boost count
-
-    // update Firestore with the new boost count
-    await updatedBoostCount(portfolioId, newBoostCount);
-
-    // update the UI state with the new boost count
-    const updatedPortfolios = portfolios.map((item) => 
-      item.id === portfolioId 
-        ? { ...item, boostCount: newBoostCount, boosted: !item.boosted } 
-        : item
-    );
-
-    setPortfolios([...updatedPortfolios]);  // update portfolio state
-    setRefresh(prev => !prev);
-  } catch (error) {
-    console.error("Error handling boost click:", error);
-  }
-};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -253,13 +224,13 @@ const handleBoostClick = async (portfolioId) => {
                     </a>
                   </Button>
 
-                  <Button
-                    onClick={() => handleBoostClick(portfolio.id)}
-                    className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex 
-                    justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
-                      <Zap size={20}/>
-                       {portfolio.boostCount} Boosts
-                  </Button>
+                  <BoostButton
+                    currentUser={currentUser}
+                    portfolioId={portfolio.id}
+                    portfolios={portfolios}
+                    setPortfolios={setPortfolios}
+                  />
+
 
                   <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
                     Comments

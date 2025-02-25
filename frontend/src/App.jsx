@@ -9,6 +9,7 @@ import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import HomePage from "./pages/HomePage";
 import TopNav from "@/components/TopNav/TopNav";
 import { useState, useEffect } from "react";
+// import { addBoost, removeBoost, checkIfBoosted } from "./firebase/functions/boostFunctionality";
 import "./App.css";
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [usersList, setUsersList] = useState([]); // Store all users
   const [currentUser, setCurrentUser] = useState(null); // Store logged-in user
+  const [userBoosts, setUserBoosts] = useState([]);
+
 
   // Fetch specific users by their IDs on mount
   useEffect(() => {
@@ -31,6 +34,32 @@ function App() {
       setUsersList(users);
     });
   }, []);
+
+  // handle user login and reset boosts when the user is changed
+  // const handleBoost = (portfolioId, userId) => {
+  //   // Check if the user has already boosted the portfolio
+  //   const userHasBoosted = userBoosts.some(
+  //     (boost) => boost.userId === userId && boost.portfolioId === portfolioId
+  //   );
+    
+  //   if (userHasBoosted) {
+  //     // If the user has already boosted, remove the boost
+  //     removeBoost(portfolioId, userId).then(() => {
+  //       // Update userBoosts state after removal
+  //       setUserBoosts(userBoosts.filter(
+  //         (boost) => boost.userId !== userId || boost.portfolioId !== portfolioId
+  //       ));
+  //       console.log("Boost removed");
+  //     });
+  //   } else {
+  //     // If the user has not boosted, add a boost
+  //     addBoost(portfolioId, userId).then(() => {
+  //       // Add to userBoosts state
+  //       setUserBoosts([...userBoosts, { portfolioId, userId }]);
+  //       console.log("Boost added");
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     if (usersList.length > 0 && !currentUser) {
@@ -66,11 +95,12 @@ function App() {
   };
 
   const renderPage = () => {
+
     switch (currentPage) {
       case "home":
         return <HomePage currentUser={currentUser || emptyUser} />;
       case "feedback":
-        return <PortfolioDetailsPage currentUser={currentUser || emptyUser}/>;
+        return <PortfolioDetailsPage currentUser={currentUser || emptyUser} />;
       default:
         return <HomePage currentUser={currentUser || emptyUser} />;
     }
