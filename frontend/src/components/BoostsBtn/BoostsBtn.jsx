@@ -14,11 +14,9 @@ const BoostButton = ({ portfolioId }) => {
     }
 
     if (isBoosted) {
-      // Remove boost if already boosted
       await removeBoost(portfolioId);
       setIsBoosted(false);
     } else {
-      // Add boost if not boosted
       await addBoost(portfolioId);
       setIsBoosted(true);
     }
@@ -43,23 +41,20 @@ const BoostButton = ({ portfolioId }) => {
     // Fetch boost data when portfolioId changes
     const fetchBoostData = async () => {
       try {
-        // Fetch the boost count from the backend
         const count = await fetchUserBoosts(portfolioId);
         setBoostCount(count);
 
-        // Check if the portfolio is already boosted
         const existingBoost = await checkIfBoosted(portfolioId);
-        setIsBoosted(!!existingBoost); // Set isBoosted based on whether the portfolio is boosted
+        setIsBoosted(!!existingBoost);
       } catch (error) {
         console.error("Error fetching boost data:", error);
       }
     };
 
-    // Reset state and fetch new boost data on portfolioId change
     resetState();
     fetchBoostData();
     
-  }, [portfolioId]); // This effect runs whenever portfolioId changes
+  }, [portfolioId]);
 
   return (
     <Button
