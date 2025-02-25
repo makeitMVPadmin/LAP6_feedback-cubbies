@@ -1,11 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
 import { fetchUsersByIds, emptyUser } from "../firebase/functions/fetchUsers";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [usersList, setUsersList] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(emptyUser);
 
   useEffect(() => {
     const userIds = [

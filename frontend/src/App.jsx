@@ -16,11 +16,11 @@ function AppContent() {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <HomePage currentUser={currentUser || emptyUser} />;
+        return <HomePage/>;
       case "feedback":
-        return <PortfolioDetailsPage currentUser={currentUser || emptyUser} />;
+        return <PortfolioDetailsPage/>;
       default:
-        return <HomePage currentUser={currentUser || emptyUser} />;
+        return <HomePage/>;
     }
   };
 
