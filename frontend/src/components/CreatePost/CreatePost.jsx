@@ -1,9 +1,7 @@
+import React, { useState } from 'react';
 import FilterTags from '../FilterTags';
 import PostModal from '../PostModal/PostModal.jsx';
-
 import { Button, Card, Avatar } from '../ui/index';
-import React from 'react';
-import { useState } from 'react';
 
 function CreatePost() {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,20 +1,14 @@
 import {
-  fetchPortfolio, addPortfolio, updatePortfolio, deletePortfolio,fetchRoleById,
-  fetchUserById,
+  addPortfolio, updatePortfolio, deletePortfolio,
 } from '../../firebase/functions/index';
-import { addBoost, removeBoost, updatedBoostCount} from '../../firebase/functions/boostFunctionality';
+import { addBoost, removeBoost, updatedBoostCount } from '../../firebase/functions/boostFunctionality';
 import { Button, Card, Avatar } from '../ui/index';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Zap } from 'lucide-react';
 
-const Portfolio = () => {
-  const [portfolios, setPortfolios] = useState();
-  const [roles, setRoles] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Portfolio = ({ portfolios, users, roles }) => {
   const [showModal, setShowModal] = useState(false);
   const [editingPortfolio, setEditingPortfolio] = useState(null);
-  const [refresh, setRefresh] = useState(false);
   const [portfolioData, setPortfolioData] = useState({
     title: '',
     userId: '',
@@ -24,75 +18,26 @@ const Portfolio = () => {
     link: '',
   });
 
-  useEffect(() => {
-    const getData = async () => {
-      setLoading(true);
-      try {
-        const portfolioData = await fetchPortfolio();
-        console.log('Fetched portfolios:', portfolioData);
-        setPortfolios(portfolioData);
+  const handleBoostClick = async (portfolioId) => {
+    try {
+      const portfolioItem = portfolios.find(p => p.id === portfolioId);
+      const currentBoostCount = portfolioItem?.boostCount || 0;
+      const newBoostCount = currentBoostCount + 1;
 
-        // Fetch user and role data for each portfolio
-        for (const portfolio of portfolioData) {
-          // only fetch user data if userId is available (new posts should have userId)
-          if (portfolio.userId) {
-            if (!usersData[portfolio.userId]) {
-              const userData = await fetchUserById(portfolio.userId);
-              if (userData) {
-                usersData[portfolio.userId] = userData;
-                if (userData.roleId && !rolesData[userData.roleId]) {
-                  const roleData = await fetchRoleById(userData.roleId);
-                  if (roleData) {
-                    rolesData[userData.roleId] = roleData;
-                  }
-                }
-              }
-            }
-          } else {
-            // handle the case for old posts without userId if needed
-            console.log(`No userId for portfolio with id: ${portfolio.id}`);
-          }
-        }
+      await addBoost(portfolioId);
+      await updatedBoostCount(portfolioId, newBoostCount);
 
-        setUsers(usersData);
-        setRoles(rolesData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getData();
-  }, []);
+      const updatedPortfolios = portfolios.map((item) =>
+        item.id === portfolioId
+          ? { ...item, boostCount: newBoostCount, boosted: !item.boosted }
+          : item
+      );
 
-
-// boost logic
-const handleBoostClick = async (portfolioId) => {
-  try {
-    // find the portfolio and get the current boost count (defaulting is 0)
-    const portfolioItem = portfolios.find(p => p.id === portfolioId);
-    const currentBoostCount = portfolioItem?.boostCount || 0; 
-
-    const newBoostCount = currentBoostCount + 1;
-
-    await addBoost(portfolioId); // directly increment the boost count
-
-    // update Firestore with the new boost count
-    await updatedBoostCount(portfolioId, newBoostCount);
-
-    // update the UI state with the new boost count
-    const updatedPortfolios = portfolios.map((item) => 
-      item.id === portfolioId 
-        ? { ...item, boostCount: newBoostCount, boosted: !item.boosted } 
-        : item
-    );
-
-    setPortfolios([...updatedPortfolios]);  // update portfolio state
-    setRefresh(prev => !prev);
-  } catch (error) {
-    console.error("Error handling boost click:", error);
-  }
-};
+      setPortfolios([...updatedPortfolios]);
+    } catch (error) {
+      console.error("Error handling boost click:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,9 +93,7 @@ const handleBoostClick = async (portfolioId) => {
 
   return (
     <div className="flex flex-col items-center justify-center h-auto text-center gap-6">
-      {loading ? (
-        <p>Loading...</p>
-      ) : portfolios.length > 0 ? (
+      {portfolios.length > 0 ? (
         <Card className="flex flex-col gap-6 items-center">
           {portfolios.map((portfolio, id) => (
             <Card
@@ -169,7 +112,7 @@ const handleBoostClick = async (portfolioId) => {
                 <div className="flex flex-col w-[298px]">
                   <div className="flex items-center gap-4">
                     <div className="text-slate-950 text-xl font-bold font-[Corben] leading-7">
-                      {users[portfolio.userId]?.firstName}{users[portfolio.userId]?.lastName}
+                      {users[portfolio.userId]?.firstName} {users[portfolio.userId]?.lastName}
                     </div>
                     <div className="text-slate-500 font-header font-bold font-[Corben] leading-tight">
                       {users[portfolio.userId]?.email}
@@ -178,7 +121,7 @@ const handleBoostClick = async (portfolioId) => {
 
                   <div className="flex items-center gap-4 mt-1">
                     <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
-                    {roles[users[portfolio.userId]?.roleId]?.roleName}
+                      {roles[users[portfolio.userId]?.roleId]?.roleName}
                     </div>
                     <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
                       1 day ago
@@ -187,9 +130,7 @@ const handleBoostClick = async (portfolioId) => {
                 </div>
               </div>
 
-              {/* ..........Portfolio title and Id................................  */}
               <h2>{portfolio.title}</h2>
-              {/* <p>{portfolio.userId}</p> */}
 
               <div className="text-black text-xl font-bold font-['Montserrat'] leading-loose text-left w-[570px] ml-[70px]">
                 <p>{portfolio.description}</p>
@@ -252,13 +193,11 @@ const handleBoostClick = async (portfolioId) => {
                       </div>
                     </a>
                   </Button>
-
                   <Button
                     onClick={() => handleBoostClick(portfolio.id)}
-                    className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex 
-                    justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
-                      <Zap size={20}/>
-                       {portfolio.boostCount} Boosts
+                    className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+                    <Zap size={20} />
+                    {portfolio.boostCount} Boosts
                   </Button>
 
                   <Button className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
@@ -285,7 +224,6 @@ const handleBoostClick = async (portfolioId) => {
         <p>No portfolios available.</p>
       )}
 
-      {/* .......... Add/Edit Portfolio...................... */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">

@@ -1,6 +1,6 @@
-import PortfolioPage from "../components/Portfolio/Portfolio";
-import PostModal from "../components/PostModal/PostModal";
-import { Button } from "../components/ui/button";
+// import PortfolioPage from "../components/Portfolio/Portfolio";
+// import PostModal from "../components/PostModal/PostModal";
+// import { Button } from "../components/ui/button";
 import HomeFeed from "@/components/HomeFeed/HomeFeed";
 import { useState } from "react";
 
