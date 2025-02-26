@@ -1,62 +1,63 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   addBoost,
   removeBoost,
   checkIfBoosted,
-  fetchUserBoosts,
+  fetchBoostCount,
 } from "../../firebase/functions/boostFunctionality";
 import { Button } from "../ui";
-import { UserContext } from "../../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import { Zap } from "lucide-react";
 
 const BoostButton = ({ portfolioId }) => {
-  const { currentUser } = useContext(UserContext); 
-  const userId = currentUser?.id; 
+  const { currentUser } = useUser();
+
   const [isBoosted, setIsBoosted] = useState(false);
   const [boostCount, setBoostCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const handleBoostClick = async () => {
-    if (!portfolioId) {
-      console.error("[BoostButton] Missing portfolioId.");
-      return;
-    }
+  const handleBoostClick = async (e) => {
+    e.preventDefault();
+  
+    const userId = currentUser?.id;
+  
     if (!userId) {
-      console.error("[BoostButton] No logged-in user.");
+      console.error("[BoostButton] No user ID found");
       return;
     }
-
+  
     try {
       if (isBoosted) {
-        console.log("[BoostButton] Removing boost...");
+        // remove the boost
         await removeBoost(portfolioId, userId);
         setIsBoosted(false);
       } else {
-        console.log("[BoostButton] Adding boost...");
+        // add the boost
         await addBoost(portfolioId, userId);
         setIsBoosted(true);
       }
-
-      const updatedCount = await fetchUserBoosts(portfolioId);
+  
+      // fetch the updated boost count after adding/removing the boost
+      const updatedCount = await fetchBoostCount(portfolioId); 
       setBoostCount(updatedCount);
     } catch (error) {
       console.error("[BoostButton] Error updating boost:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!portfolioId) {
-      console.error("[BoostButton] portfolioId is missing.");
-      return;
-    }
+    if (!portfolioId || !currentUser?.id) return;
 
     const fetchBoostData = async () => {
       try {
-        console.log("[BoostButton] Fetching boost count...");
-        const count = await fetchUserBoosts(portfolioId);
+        const count = await fetchBoostCount(portfolioId); 
         setBoostCount(count);
 
+        const userId = currentUser?.id;
+
         if (userId) {
-          console.log("[BoostButton] Checking if user has boosted...");
           const existingBoost = await checkIfBoosted(portfolioId, userId);
           setIsBoosted(!!existingBoost);
         }
@@ -66,15 +67,16 @@ const BoostButton = ({ portfolioId }) => {
     };
 
     fetchBoostData();
-  }, [portfolioId, userId]);
+  }, [portfolioId, currentUser?.id]);
 
   return (
     <Button
       onClick={handleBoostClick}
+      disabled={loading}
       className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7 hover:bg-[#e6b800]"
     >
       <Zap size={30} />
-      {isBoosted ? `${boostCount} Boosts` : "Boosts"}
+      <span>{boostCount} Boost{boostCount !== 1 ? 's' : ''}</span>
     </Button>
   );
 };

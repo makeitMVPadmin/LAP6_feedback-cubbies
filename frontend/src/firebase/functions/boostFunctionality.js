@@ -2,31 +2,46 @@ import { db } from "../firebase";
 import { 
   doc, setDoc, deleteDoc, collection, 
   query, where, getDocs, increment, 
-  updateDoc, Timestamp 
+  updateDoc, Timestamp, getDoc 
 } from "firebase/firestore";
 
 // add boost (user-specific boost)
 const addBoost = async (portfolioId, userId) => {
+  console.log("Adding Boost - Portfolio ID:", portfolioId, "User ID:", userId);
+
   if (!userId) {
     console.error("User ID is missing.");
     return;
   }
+
   try {
-    const boostRef = doc(db, "boosts", `${portfolioId}_${userId}`);
-    const createdAt = Timestamp.now();
-    const boostSnapshot = await getDocs(query(collection(db, "boosts"), where("portfolioId", "==", portfolioId), where("userId", "==", userId)));
+    // Check if the user has already boosted the portfolio
+    const boostQuery = query(
+      collection(db, "boosts"),
+      where("portfolioId", "==", portfolioId),
+      where("userId", "==", userId)
+    );
+    const boostSnapshot = await getDocs(boostQuery);
+
+    console.log("Boost Snapshot Size:", boostSnapshot.size);
 
     if (!boostSnapshot.empty) {
       console.log("User has already boosted this portfolio.");
       return;
     }
 
-    await setDoc(boostRef, { 
+    // Add a new boost document with createdAt and updatedAt
+    const boostRef = doc(db, "boosts", `${portfolioId}_${userId}`);
+    console.log("Document Path:", boostRef.path);
+
+    await setDoc(boostRef, {
       portfolioId,
       userId,
-      createdAt,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
     });
 
+    // Update the boost count in the portfolio
     await updatedBoostCount(portfolioId, 1);
     console.log("Boost added successfully.");
   } catch (error) {
@@ -40,13 +55,24 @@ const removeBoost = async (portfolioId, userId) => {
     console.error("User ID is missing.");
     return;
   }
+
   try {
-    const boostQuery = query(collection(db, "boosts"), where("portfolioId", "==", portfolioId), where("userId", "==", userId));
+    // Query to find the user's boost
+    const boostQuery = query(
+      collection(db, "boosts"),
+      where("portfolioId", "==", portfolioId),
+      where("userId", "==", userId)
+    );
     const querySnapshot = await getDocs(boostQuery);
 
     if (!querySnapshot.empty) {
       const boostDoc = querySnapshot.docs[0];
+      console.log("Boost document ID to remove:", boostDoc.id);
+
+      // Delete the boost document
       await deleteDoc(doc(db, "boosts", boostDoc.id));
+
+      // Decrement the boost count
       await updatedBoostCount(portfolioId, -1);
       console.log("Boost removed successfully.");
     } else {
@@ -61,9 +87,8 @@ const removeBoost = async (portfolioId, userId) => {
 const updatedBoostCount = async (portfolioId, incrementValue) => {
   try {
     const portfolioRef = doc(db, "portfolios", portfolioId);
-    await updateDoc(portfolioRef, {
-      boostCount: increment(incrementValue),
-    });
+    await updateDoc(portfolioRef, { boostCount: increment(incrementValue) });
+    console.log(`Boost count updated for ${portfolioId} by ${incrementValue}`);
   } catch (error) {
     console.error("Error updating boost count:", error);
   }
@@ -74,7 +99,11 @@ const checkIfBoosted = async (portfolioId, userId) => {
   if (!userId) return false;
 
   try {
-    const boostQuery = query(collection(db, "boosts"), where("portfolioId", "==", portfolioId), where("userId", "==", userId));
+    const boostQuery = query(
+      collection(db, "boosts"),
+      where("portfolioId", "==", portfolioId),
+      where("userId", "==", userId)
+    );
     const querySnapshot = await getDocs(boostQuery);
     return !querySnapshot.empty;
   } catch (error) {
@@ -87,7 +116,7 @@ const checkIfBoosted = async (portfolioId, userId) => {
 const fetchBoostCount = async (portfolioId) => {
   try {
     const portfolioRef = doc(db, "portfolios", portfolioId);
-    const portfolioSnap = await getDocs(portfolioRef);
+    const portfolioSnap = await getDoc(portfolioRef); 
     
     if (portfolioSnap.exists()) {
       return portfolioSnap.data().boostCount || 0;
