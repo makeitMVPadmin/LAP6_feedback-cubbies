@@ -4,11 +4,13 @@ import {
   getPortfolioFeedback,
   createFeedback,
 } from "../../firebase/functions/feedbackFunctions";
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
+import { useUser } from "../../context/UserContext";
 
-const Feedback = ({ currentUser, portfolioId }) => {
+const Feedback = ({ portfolioId }) => {
   const [feedbackList, setFeedbackList] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const { currentUser } = useUser(); 
 
   const retrivePortfolioFeedback = async () => {
     const feedback = await getPortfolioFeedback(portfolioId);
@@ -16,7 +18,7 @@ const Feedback = ({ currentUser, portfolioId }) => {
   };
 
   const handleCreateFeedback = async () => {
-    const userId = currentUser.id;
+    const userId = currentUser?.id;
     const docRef = await createFeedback(portfolioId, userId, newComment);
     setFeedbackList((prevFeedbackList) => [
       ...prevFeedbackList,
