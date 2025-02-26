@@ -19,6 +19,7 @@ const Feedback = ({ portfolioId }) => {
 
   const handleCreateFeedback = async () => {
     const userId = currentUser?.id;
+    const username = currentUser?.username;
     const docRef = await createFeedback(portfolioId, userId, newComment);
     setFeedbackList((prevFeedbackList) => [
       ...prevFeedbackList,
@@ -26,7 +27,7 @@ const Feedback = ({ portfolioId }) => {
         id: docRef.id,
         comment: newComment,
         portfolioId,
-        userId,
+        username,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
