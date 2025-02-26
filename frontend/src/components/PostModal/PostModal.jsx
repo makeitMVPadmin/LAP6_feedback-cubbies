@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
-function PostModal({ isOpen, onClose }) {
+function PostModal({ isOpen, onClose, currentUser }) {
   if (!isOpen) return null;
 
   const [postMessage, setPostMessage] = useState("");
@@ -28,13 +28,13 @@ function PostModal({ isOpen, onClose }) {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // check if the user is logged in
+  
+    // Check if the user is logged in
     if (!currentUser) {
       console.error("User is not authenticated.");
       return;
     }
-
+  
     const portfolioData = {
       userId: currentUser.id,
       postMessage,
@@ -46,18 +46,26 @@ function PostModal({ isOpen, onClose }) {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-
-    await addPortfolio(portfolioData);
-
-    setPostMessage("");
-    setLink("");
-    setCoverImage(null);
-    setSelectedTags([]);
-    setShowError(false);
-
-    onClose();
+  
+    try {
+      // Add portfolio and get the portfolioId
+      const addedPortfolio = await addPortfolio(portfolioData);
+      const portfolioId = addedPortfolio.id;
+  
+      console.log("Portfolio Created with ID:", portfolioId);
+  
+      setPostMessage("");
+      setLink("");
+      setCoverImage(null);
+      setSelectedTags([]);
+      setShowError(false);
+      onClose();
+    } catch (error) {
+      console.error("Error adding portfolio:", error);
+    }
   };
-
+  
+  
   // Handle closing the modal when clicking outside of it
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
