@@ -1,7 +1,3 @@
-import {
-  addBoost,
-  updatedBoostCount,
-} from "../firebase/functions/boostFunctionality";
 import CreatePost from "../components/CreatePost/CreatePost";
 import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
 import { Card } from "../components/ui/index";
@@ -58,26 +54,6 @@ function HomePage() {
     getData();
   }, []);
 
-  const handleBoostClick = async (portfolioId) => {
-    try {
-      const portfolioItem = portfolios.find((p) => p.id === portfolioId);
-      const currentBoostCount = portfolioItem?.boostCount || 0;
-      const newBoostCount = currentBoostCount + 1;
-
-      await addBoost(portfolioId);
-      await updatedBoostCount(portfolioId, newBoostCount);
-
-      const updatedPortfolios = portfolios.map((item) =>
-        item.id === portfolioId
-          ? { ...item, boostCount: newBoostCount, boosted: !item.boosted }
-          : item
-      );
-
-      setPortfolios([...updatedPortfolios]);
-    } catch (error) {
-      console.error("Error handling boost click:", error);
-    }
-  };
 
   return (
     <div className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
@@ -93,7 +69,6 @@ function HomePage() {
                 portfolio={portfolio}
                 user={users[portfolio.userId]}
                 role={roles[portfolio.userId?.roleId]}
-                handleBoostClick={handleBoostClick}
               />
             ))}
           </Card>
