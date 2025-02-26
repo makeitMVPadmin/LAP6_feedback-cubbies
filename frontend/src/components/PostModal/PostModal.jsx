@@ -50,7 +50,7 @@ function PostModal({ isOpen, onClose }) {
       postMessage,
       title: postMessage,
       description: postMessage,
-      imageUrl: coverImage,
+      imageUrl: coverImage, // Use the coverImage URL directly
       link,
       tagId: selectedTags.map((tag) => tag.id),
       createdAt: new Date().toISOString(),
@@ -80,7 +80,7 @@ function PostModal({ isOpen, onClose }) {
   };
 
   const handleCoverImageChange = (e) => {
-    setCoverImage(URL.createObjectURL(e.target.files[0]));
+    setCoverImage(e.target.value);
     if (showError) setShowError(false);
   };
 
@@ -153,16 +153,12 @@ function PostModal({ isOpen, onClose }) {
               <div className="h-[40px]">
                 <label className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[19px] w-full h-full">
                   <ImagePlus className="w-4 h-4" />
-                  <span
-                    className="text-gray-500 ml-2"
-                    style={{ fontFamily: "Montserrat, sans-serif" }}
-                  >
-                    {coverImage ? "File selected" : "Edit cover image"}
-                  </span>
                   <input
-                    className="hidden"
-                    type="file"
+                    className="flex-1 rounded-lg p-2 placeholder-gray-500 outline-none"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
                     onChange={handleCoverImageChange}
+                    value={coverImage || ""}
+                    placeholder="Insert image link"
                   />
                 </label>
               </div>
