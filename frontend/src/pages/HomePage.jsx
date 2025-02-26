@@ -1,6 +1,5 @@
 import {
   addBoost,
-  removeBoost,
   updatedBoostCount,
 } from "../firebase/functions/boostFunctionality";
 import CreatePost from "../components/CreatePost/CreatePost";
