@@ -14,7 +14,6 @@ const BoostButton = ({ portfolioId }) => {
 
   const [isBoosted, setIsBoosted] = useState(false);
   const [boostCount, setBoostCount] = useState(0);
-  const [loading, setLoading] = useState(false);
 
   const handleBoostClick = async (e) => {
     e.preventDefault();
@@ -28,27 +27,22 @@ const BoostButton = ({ portfolioId }) => {
   
     try {
       if (isBoosted) {
-        // remove the boost
         await removeBoost(portfolioId, userId);
         setIsBoosted(false);
       } else {
-        // add the boost
         await addBoost(portfolioId, userId);
         setIsBoosted(true);
       }
-  
-      // fetch the updated boost count after adding/removing the boost
+
       const updatedCount = await fetchBoostCount(portfolioId); 
       setBoostCount(updatedCount);
     } catch (error) {
       console.error("[BoostButton] Error updating boost:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!portfolioId || !currentUser?.id) return;
+    if (!portfolioId || !currentUser) return;
 
     const fetchBoostData = async () => {
       try {
@@ -56,7 +50,6 @@ const BoostButton = ({ portfolioId }) => {
         setBoostCount(count);
 
         const userId = currentUser?.id;
-
         if (userId) {
           const existingBoost = await checkIfBoosted(portfolioId, userId);
           setIsBoosted(!!existingBoost);
@@ -67,16 +60,15 @@ const BoostButton = ({ portfolioId }) => {
     };
 
     fetchBoostData();
-  }, [portfolioId, currentUser?.id]);
+  }, [portfolioId, currentUser]);
 
   return (
     <Button
       onClick={handleBoostClick}
-      disabled={loading}
       className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7 hover:bg-[#e6b800]"
     >
       <Zap size={30} />
-      <span>{boostCount} Boost{boostCount !== 1 ? 's' : ''}</span>
+      <span>{boostCount} Boost{boostCount !== 1 ? "s" : ""}</span>
     </Button>
   );
 };

@@ -7,15 +7,13 @@ import {
 
 // add boost (user-specific boost)
 const addBoost = async (portfolioId, userId) => {
-  console.log("Adding Boost - Portfolio ID:", portfolioId, "User ID:", userId);
-
   if (!userId) {
     console.error("User ID is missing.");
     return;
   }
 
   try {
-    // Check if the user has already boosted the portfolio
+    // check if the user has already boosted the portfolio
     const boostQuery = query(
       collection(db, "boosts"),
       where("portfolioId", "==", portfolioId),
@@ -23,14 +21,10 @@ const addBoost = async (portfolioId, userId) => {
     );
     const boostSnapshot = await getDocs(boostQuery);
 
-    console.log("Boost Snapshot Size:", boostSnapshot.size);
-
     if (!boostSnapshot.empty) {
       console.log("User has already boosted this portfolio.");
       return;
     }
-
-    // Add a new boost document with createdAt and updatedAt
     const boostRef = doc(db, "boosts", `${portfolioId}_${userId}`);
     console.log("Document Path:", boostRef.path);
 
@@ -41,9 +35,8 @@ const addBoost = async (portfolioId, userId) => {
       updatedAt: Timestamp.now(),
     });
 
-    // Update the boost count in the portfolio
+    // update the boost count in the portfolio
     await updatedBoostCount(portfolioId, 1);
-    console.log("Boost added successfully.");
   } catch (error) {
     console.error("Error adding boost:", error);
   }
@@ -69,10 +62,8 @@ const removeBoost = async (portfolioId, userId) => {
       const boostDoc = querySnapshot.docs[0];
       console.log("Boost document ID to remove:", boostDoc.id);
 
-      // Delete the boost document
       await deleteDoc(doc(db, "boosts", boostDoc.id));
 
-      // Decrement the boost count
       await updatedBoostCount(portfolioId, -1);
       console.log("Boost removed successfully.");
     } else {
