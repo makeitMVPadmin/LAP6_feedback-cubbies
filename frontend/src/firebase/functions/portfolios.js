@@ -5,6 +5,7 @@ const fetchPortfolio = async (userId) => {
   try {
     const q = query(collection(db, "portfolios"));
     const querySnapshot = await getDocs(q);
+    limit(10)
 
     const userPortfolio = querySnapshot.docs.map((doc) => ({
       id: doc.id,
