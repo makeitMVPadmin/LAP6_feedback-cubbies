@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useState } from 'react';
+import FilterTags from '../FilterTags';
 import PostModal from '../PostModal/PostModal.jsx';
-import { Button, ChevronDown, Card, Avatar } from '../ui/index';
-import { useState } from 'react';
+import { Button, Card, Avatar } from '../ui/index';
 
 function CreatePost() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    const handleOpenModal = () => setIsModalOpen(true);
-    const handleCloseModal = () => setIsModalOpen(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
   return (
     <>
       <Card className="h-24 p-6 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-start gap-6 inline-flex overflow-hidden">
@@ -18,19 +18,12 @@ function CreatePost() {
             onClick={handleOpenModal}>
             Start Creating A Post
           </Button>
-          <Button
-            variant="outline"
-            className="h-12 pl-4 pr-5 bg-[#ffd22f] hover:bg-[#e6b800] rounded-[10px] justify-center items-center gap-2 inline-flex text-center text-[#28363f] text-xl font-medium leading-7 ">
-            <ChevronDown className="w-3 h-3" />
-            Tags
-          </Button>
+          <FilterTags />
         </div>
       </Card>
       <PostModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </>
-    
-    
-  )
+  );
 }
 
-export default CreatePost
+export default CreatePost;

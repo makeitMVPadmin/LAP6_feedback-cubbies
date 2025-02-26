@@ -1,98 +1,27 @@
 import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
-import {
-  fetchUsersByIds,
-  fetchUserById,
-  emptyUser,
-} from "./firebase/functions/fetchUsers";
-import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
+import { NavigationProvider, useNavigation } from "./context/NavigationContext";
+import { UserProvider, useUser } from "./context/UserContext";
 import HomePage from "./pages/HomePage";
+import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import TopNav from "@/components/TopNav/TopNav";
-import { useState, useEffect } from "react";
-import { fetchUserBoosts } from "./firebase/functions/boostFunctionality";
 import "./App.css";
+import { emptyUser } from "./firebase/functions/fetchUsers";
+import { Toaster } from "sonner";
 
-function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [currentNavState, setCurrentSetNavState] = useState("home");
-  const [lastPage, setLastPage] = useState("home");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [usersList, setUsersList] = useState([]); // Store all users
-  const [currentUser, setCurrentUser] = useState(null); // Store logged-in user
-  const [userBoosts, setUserBoosts] = useState([]);
-
-  // Fetch specific users by their IDs on mount
-  useEffect(() => {
-    const userIds = [
-      "01x5EDdS2TlLNMPLkiPT",
-      "03E7eZ9ODHyBiguPGXtw",
-      "0U4AlgjUcfgyC23raMTo",
-    ];
-
-    fetchUsersByIds(userIds).then((users) => {
-      setUsersList(users);
-    });
-  }, []);
-
-
-  useEffect(() => {
-    if (usersList.length > 0 && !currentUser) {
-      const storedUser = localStorage.getItem("currentUser");
-      if (storedUser) {
-        setCurrentUser(JSON.parse(storedUser));
-      } else {
-        setCurrentUser(usersList[0]); // Default to first user
-      }
-    }
-  }, [usersList]);
-  
-  useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem("currentUser", JSON.stringify(currentUser));
-    }
-  }, [currentUser]);
-
-  const handleUserLogin = async (userId) => {
-    const user = usersList.find((user) => user.id === userId);
-    if (user) {
-      setCurrentUser(user);
-      setUserBoosts([]); 
-      localStorage.setItem("userId", user.id);
-      console.log("Logged in as:", user);
-     
-      // fetch boosts for the user
-      const boosts = await fetchUserBoosts(user.id); 
-      setUserBoosts(boosts); 
-    }
-  };
-  
-  // Handle navigation selection
-  const handlePageChange = (page) => {
-    if (page === "notifications") {
-      setLastPage(currentPage);
-      setIsDrawerOpen(true);
-      setCurrentSetNavState("notifications");
-    } else {
-      setCurrentPage(page);
-      setCurrentSetNavState(page);
-    }
-  };
-
-  // Close the notifications drawer and restore the last page
-  const handleCloseDrawer = () => {
-    setIsDrawerOpen(false);
-    setCurrentPage(lastPage);
-    setCurrentSetNavState(lastPage);
-  };
+function AppContent() {
+  const { currentPage, goToProfileDetails, isDrawerOpen, closeDrawer } =
+    useNavigation();
+  const { usersList, currentUser, handleUserLogin } = useUser();
 
   const renderPage = () => {
 
     switch (currentPage) {
       case "home":
-        return <HomePage currentUser={currentUser || emptyUser} />;
+        return <HomePage/>;
       case "feedback":
-        return <PortfolioDetailsPage currentUser={currentUser || emptyUser} />;
+        return <PortfolioDetailsPage/>;
       default:
-        return <HomePage currentUser={currentUser || emptyUser} />;
+        return <HomePage/>;
     }
   };
 
@@ -100,12 +29,12 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-md p-4">
         <TopNav
-          setCurrentPage={handlePageChange}
-          currentPage={currentNavState}
+          setCurrentPage={goToProfileDetails}
+          currentPage={currentPage}
           notificationCount="999"
           currentUser={currentUser || emptyUser}
           usersList={usersList}
-          handleUserLogin={handleUserLogin}
+          handleUserLogin={handleUserLogin} // Pass login function
         />
       </header>
       <main className="flex-grow p-4">{renderPage()}</main>
@@ -114,9 +43,26 @@ function App() {
       <NotificationDrawer
         currentUser={currentUser || emptyUser}
         isOpen={isDrawerOpen}
-        onClose={handleCloseDrawer}
+        onClose={() => closeDrawer()}
       />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <NavigationProvider>
+        <UserProvider>
+          {" "}
+          {/* Wrap AppContent with UserProvider */}
+          <AppContent />
+        </UserProvider>
+      </NavigationProvider>
+      <div className="min-h-screen flex flex-col">
+        <Toaster position="bottom-right" richColors />
+      </div>
+    </>
   );
 }
 

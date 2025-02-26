@@ -1,3 +1,4 @@
+import { useNavigation } from "../../context/NavigationContext";
 import logo from "/images/logos/communiti_logo.png";
 import {
   DropdownMenu,
@@ -19,6 +20,8 @@ function TopNav({
   usersList,
   handleUserLogin,
 }) {
+  const { goToProfileDetails, goToHome, toggleDrawer, isDrawerOpen } =
+    useNavigation();
   const navItems = [
     { name: "Home", icon: "house", page: "home" },
     { name: "Communities", icon: "group", page: "" },
@@ -43,14 +46,26 @@ function TopNav({
           {navItems.map(({ name, icon: Icon, page }) => (
             <NavigationMenuItem key={page !== "" ? page : name}>
               <button
-                onClick={() => (page !== "" ? setCurrentPage(page) : null)}
+                onClick={() => {
+                  if (page === "home") {
+                    goToHome();
+                  }
+                }}
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
-                ${currentPage === page ? "bg-gray-300" : "hover:bg-gray-200"}`}
+                ${
+                  currentPage === page && !isDrawerOpen
+                    ? "bg-gray-300"
+                    : "hover:bg-gray-200"
+                }`}
               >
                 <span className="material-symbols-outlined">{Icon}</span>
                 <span
                   className={`text-black text-base font-semibold font-['Fraunces'] leading-normal whitespace-nowrap w-auto
-                  ${currentPage === page ? "text-blue-600" : "text-gray-800"}`}
+                  ${
+                    currentPage === page && !isDrawerOpen
+                      ? "text-blue-600"
+                      : "text-gray-800"
+                  }`}
                 >
                   {name}
                 </span>
@@ -61,9 +76,11 @@ function TopNav({
           {/* Notifications Button with Badge */}
           <NavigationMenuItem>
             <button
-              onClick={() => setCurrentPage("notifications")}
+              onClick={() => {
+                toggleDrawer();
+              }}
               className={`relative flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
-      ${currentPage === "notifications" ? "bg-gray-300" : "hover:bg-gray-200"}`}
+      ${isDrawerOpen ? "bg-gray-300" : "hover:bg-gray-200"}`}
             >
               <NotificationsIcon />
               {/* Notification Badge */}
@@ -74,7 +91,7 @@ function TopNav({
               )}
               <span
                 className={`text-black text-base font-semibold font-['Fraunces'] leading-normal 
-        ${currentPage === "notifications" ? "text-blue-600" : "text-gray-800"}`}
+        ${isDrawerOpen ? "text-blue-600" : "text-gray-800"}`}
               >
                 Notifications
               </span>
@@ -195,12 +212,12 @@ function TopNav({
               >
                 View Profile
               </DropdownMenuItem> */}
-                <DropdownMenuItem
-                  onClick={() => setCurrentPage("feedback")}
+                {/* <DropdownMenuItem
+                  onClick={() => goToProfileDetails("PXKgEDwdVZrWxatSfKDr")}
                   className="cursor-pointer hover:bg-gray-100 p-2 rounded-md"
                 >
                   Debug feedback page
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 {/* <DropdownMenuItem
                 onClick={() => setCurrentPage("logout")}
                 className="cursor-pointer text-red-600 hover:bg-gray-100 p-2 rounded-md"
