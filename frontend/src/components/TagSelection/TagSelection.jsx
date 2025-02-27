@@ -50,7 +50,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
   };
 
   return (
-    <section className="flex gap-4">
+    <section className="flex gap-[10px]">
       {categories.map((category) => {
         const filteredTags = tags.filter((tag) => tag.category === category);
         const isOpen = openDropdowns.includes(category); // check if the dropdown is open
@@ -58,53 +58,50 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
         const selectedTag = selectedTags.find((t) => t.category === category);
 
         return (
-          <div key={category} className="relative w-1/3 mb-[200px]">
-            {/* dropdown button */}
-            <button
-              type="button" //prevents immediate form submission
-              onClick={() =>
-                setOpenDropdowns(
-                  (prevOpenDropdowns) =>
-                    prevOpenDropdowns.includes(category)
-                      ? prevOpenDropdowns
-                      : [...prevOpenDropdowns, category] // open if not
-                )
-              }
-              className="flex justify-between items-center bg-[#fffefe] text-black px-4 py-2 rounded-lg hover:bg-[#ccc] w-[200px] h-[40px] flex-shrink-0 
-                            border radius-[8px] border-t-[1px] border-r-[2px] border-b-[1px] border-l-[1px] border-gray-800 text-base font-bold"
+          <div key={category} className="relative w-[220px] mb-[215px]">
+          {/* dropdown button */}
+          <button
+            type="button"
+            onClick={() =>
+              setOpenDropdowns((prevOpenDropdowns) =>
+                prevOpenDropdowns.includes(category)
+                  ? prevOpenDropdowns.filter((c) => c !== category) // close dropdown
+                  : [...prevOpenDropdowns, category] // open dropdown
+              )
+            }
+            className={`flex justify-between items-center bg-[#fffefe] text-black px-4 py-2 w-[200px] h-[40px] flex-shrink-0  border-black border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px] 
+              border border-gray-800 text-base font-bold
+              ${
+                isOpen
+                ? "rounded-t-lg border-b-[0.5px] border-b-[#d9d9d9] border-r-[2px]" // open state
+                : "rounded-lg border-b-[2px]" // goes back to closed state
+              }`}
+          >
+            {category}
+            <ChevronDown className="w-5 h-5" />
+          </button>
+        
+          {/* dropdown Menu */}
+          {isOpen && (
+            <div
+              className="absolute left-0 w-[200px] bg-white border-black border-t-0 border-r-[2px] border-b-[2px] border-l-[1px] 
+                rounded-b-lg z-10" 
             >
-              {category}
-              <ChevronDown className="w-5 h-5" />
-            </button>
-
-            {/* dropdown Menu */}
-            {isOpen && (
-              <div
-                className="absolute left-0 w-50 bg-white border-black radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px]
-                             rounded-lg z-10"
-              >
-                {filteredTags.map((tag) => (
-                  <button
-                    key={tag.id}
-                    onClick={(e) => handleTagClick(tag, category, e)}
-                    className={`block w-full text-left px-4 py-2 cursor-pointer text-[14px] font-400 leading-[20px] transition-all
-                    
-                      ${
-                        selectedTags.some(
-                          (t) =>
-                            t.id === tag.id &&
-                            t.category === category
-                        )
-                          ? "bg-[#FFD22F] text-black font-bold border-width-[2rem] border border-[#d0aa24] focus:radius-[8px] "
-                          : "hover:bg-[#FFD22F] hover:text-black focus:radius-[8px]"
-                      }`}
-                  >
-                    {tag.tagName}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+              {filteredTags.map((tag) => (
+                <button
+                  key={tag.id}
+                  onClick={(e) => handleTagClick(tag, category, e)}
+                  className={`block w-full text-left px-[12px] py-[9px] text-[#28363F] text-[14px] font-400 leading-[20px] transition-all 
+                    ${selectedTags.some((t) => t.id === tag.id && t.category === category)
+                      ? "bg-[#FFD22F] text-black border border-[#987700]"
+                      : "hover:bg-[#FFD22F] hover:text-black"}`}
+                >
+                  {tag.tagName}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         );
       })}
     </section>

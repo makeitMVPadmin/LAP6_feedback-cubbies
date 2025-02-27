@@ -186,7 +186,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
 
           {/* Tag selection section */}
           <section className="pb-4 mt-4">
-            <h2 className="text-base font-bold my-2 mx-4">Choose Tags</h2>
+            <h2 className="text-base font-bold my-2 font-['Montserrat']">Choose Tags</h2>
             <TagSelection
               selectedTags={selectedTags}
               setSelectedTags={setSelectedTags}
