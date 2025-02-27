@@ -10,8 +10,7 @@ import {
   updateDoc,
   getDoc,
   orderBy,
-  limit,
-  runTransaction
+  limit
 } from "firebase/firestore";
 
 // CREATE
@@ -78,75 +77,6 @@ export const createCommentNotification = async (feedbackId) => {
     );
   }
 };
-
-// export const createCommentNotification = async (feedbackId) => {
-//   try {
-//     await runTransaction(db, async (transaction) => {
-//       // Fetch the feedback document
-//       const feedbackRef = doc(db, "feedbacks", feedbackId);
-//       const feedbackDoc = await transaction.get(feedbackRef);
-
-//       if (!feedbackDoc.exists()) {
-//         console.error("Feedback not found");
-//         return;
-//       }
-
-//       const feedbackData = feedbackDoc.data();
-//       if (!feedbackData || !feedbackData.userId || !feedbackData.portfolioId) {
-//         console.error("Missing required fields in feedback data");
-//         return;
-//       }
-
-//       // Query for existing notification
-//       const existingNotifQuery = query(
-//         collection(db, "notifications"),
-//         where("feedbackId", "==", feedbackId)
-//       );
-//       const existingNotifSnapshot = await getDocs(existingNotifQuery);
-
-//       if (!existingNotifSnapshot.empty) {
-//         console.log("Notification already exists, skipping write.");
-//         return;
-//       }
-
-//       // Fetch the portfolio
-//       const portfolioRef = doc(db, "portfolios", feedbackData.portfolioId);
-//       const portfolioDoc = await transaction.get(portfolioRef);
-//       if (!portfolioDoc.exists()) {
-//         console.error("Portfolio not found");
-//         return;
-//       }
-
-//       // Fetch the sender
-//       const senderRef = doc(db, "users", feedbackData.userId);
-//       const senderDoc = await transaction.get(senderRef);
-//       if (!senderDoc.exists()) {
-//         console.error("User not found");
-//         return;
-//       }
-//       const senderName = senderDoc.data().username;
-
-//       // Add the new notification inside the transaction
-//       const notificationRef = collection(db, "notifications");
-//       transaction.set(doc(notificationRef), {
-//         userId: feedbackData.userId,
-//         portfolioId: feedbackData.portfolioId,
-//         feedbackId: feedbackId,
-//         message: `@${senderName} commented on your portfolio`,
-//         readStatus: false,
-//         createdAt: serverTimestamp(),
-//         updatedAt: serverTimestamp(),
-//       });
-
-//       console.log("Notification successfully created within transaction.");
-//     });
-//   } catch (err) {
-//     console.error("Error creating notification:", err);
-//     throw new Error(
-//       `createNotification while listening to comment creation failed: ${err.message}`
-//     );
-//   }
-// };
 
 export const createBoostNotification = async (boostId) => {
   try {
@@ -215,50 +145,48 @@ export const getAllNotifications = async (
   ownerUserId
 ) => {
   try {
-    // Fetch all the portfolios associated with the ownerUserId
-    const portfolioQuery = query(
-      collection(db, "portfolios"),
-      where("userId", "==", ownerUserId)
-    );
-    const portfolioSnapshot = await getDocs(portfolioQuery);
-    const portfolioIds = portfolioSnapshot.docs.map((doc) => doc.id);
-    if (portfolioIds.length === 0) {
-      return [];
-    }
-
     // Fetch all notifications(paginated) for the ownerUserId's portfolios
     let notificationQuery = query(
       collection(db, "notifications"),
-      where("portfolioId", "in", portfolioIds),
-      // orderBy("createdAt", "desc"),
-      // limit(5)
+      where("userId", "==", ownerUserId),
+      orderBy("createdAt", "desc")
     );
 
     const notificationSnapshot = await getDocs(notificationQuery);
-    const notificationList = [];
+    let notificationList = notificationSnapshot.docs.map(docSnap => ({
+      id: docSnap.id,
+      ...docSnap.data(),
+    }));
 
-    for (const docSnap of notificationSnapshot.docs) {
-      let notificationData = {
-        id: docSnap.id,
-        ...docSnap.data(),
-      };
+    // Collect all unique feedbackIds
+    const feedbackIds = [
+      ...new Set(
+        notificationList
+          .map(notification => notification.feedbackId)
+          .filter(id => id) // Remove null/undefined values
+      ),
+    ];
 
-      console.log("raw notificationData: ", notificationData);
-      
-      if (notificationData.feedbackId) {
-        const feedbackDoc = await getDoc(
-          doc(db, "feedbacks", notificationData.feedbackId)
-        );
+    // Fetch feedbacks in a batch (Firestore supports max 30 IDs in "in" query at a time)
+    const feedbackMap = {};
+    const batchSize = 30;
+    for (let i = 0; i < feedbackIds.length; i += batchSize) {
+      const batchIds = feedbackIds.slice(i, i + batchSize);
+      const feedbackQuery = query(
+        collection(db, "feedbacks"),
+        where("__name__", "in", batchIds)
+      );
 
-        if (feedbackDoc.exists()) {
-          notificationData.feedbackContent = feedbackDoc.data().comment;
-          console.log("Fetched feedbackContent: ", notificationData.feedbackContent);
-        } else {
-          notificationData.feedbackContent = null;
-        }
-      }
-      notificationList.push(notificationData);
+      const feedbackSnapshot = await getDocs(feedbackQuery);
+      feedbackSnapshot.forEach(feedbackDoc => {
+        feedbackMap[feedbackDoc.id] = feedbackDoc.data().comment;
+      });
     }
+
+    notificationList = notificationList.map(notification => ({
+      ...notification,
+      feedbackContent: feedbackMap[notification.feedbackId] || null,
+    }));
 
     console.log("notificationList: ", notificationList);
     console.log("Final notification list in backend: ", notificationList);

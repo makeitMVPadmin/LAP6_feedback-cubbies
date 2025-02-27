@@ -35,88 +35,16 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [commentNotif, setCommentNotif] = useState([]);
   const [boostNotif, setBoostNotif] = useState([]);
 
-  // Listener for a new comment created
-  // let isFeedbackListenerActive = false;
-  // const listenForNewFeedback = () => {
-  //   if (isFeedbackListenerActive) {
-  //     return;
-  //   }
-  //   isFeedbackListenerActive = true;
-  //   try {
-  //     const feedbackQuery = query(
-  //       collection(db, "feedbacks"),
-  //       where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
-  //       orderBy("createdAt", "desc")
-  //     );
-
-  //     const unsubscribe = onSnapshot(feedbackQuery, (snapshot) => {
-  //       snapshot.docChanges().forEach(async (change) => {
-  //         if (change.type === "added") {
-  //           const feedbackId = change.doc.id;
-  //           console.log("New feedback detected");
-
-  //           try {
-  //             //await createCommentNotification(feedbackId);
-  //             console.log(change.doc.data());
-  //           } catch (err) {
-  //             console.error("Failed to create notification:", err);
-  //           }
-  //         }
-  //       });
-  //     });
-  //     return unsubscribe;
-  //   } catch (err) {
-  //     console.error("Error listening for new feedback: ", err);
-  //     return [];
-  //   }
-  // };
-
-  // Listener for a new boost created
-  // let isReactionListenerActive = false;
-  // const listenForNewReaction = () => {
-  //   if (isReactionListenerActive) {
-  //     return;
-  //   }
-  //   isReactionListenerActive = true;
-
-  //   try {
-  //     const reactionQuery = query(
-  //       collection(db, "boosts"),
-  //       where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
-  //       orderBy("createdAt", "desc")
-  //     );
-
-  //     const unsubscribe = onSnapshot(reactionQuery, (snapshot) => {
-  //       snapshot.docChanges().forEach(async (change) => {
-  //         if (change.type === "added") {
-  //           const boostId = change.doc.id;
-  //           console.log("New reaction detected");
-
-  //           try {
-  //             await createBoostNotification(boostId);
-  //           } catch (err) {
-  //             console.error("Failed to create notification:", err);
-  //           }
-  //         }
-  //       });
-  //     });
-  //     return unsubscribe;
-  //   } catch (err) {
-  //     console.error("Error listening for new reaction: ", err);
-  //     return [];
-  //   }
-  // };
-
-  // Fetching all notifications
+  // Fetching all initial notifications
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const { notificationList } = await getAllNotifications(ownerUserId);
+      const notifications = await getAllNotifications(ownerUserId);
       console.log("OwnerUserId: ", ownerUserId);
-      console.log("ALL notifications: ", notificationList);
-      setGetNotifications(
-        Array.isArray(notificationList) ? notificationList : []
-      );
+      console.log("ALL notifications: ", notifications);
+
+      // Ensure notifications is an array before updating state
+      setGetNotifications(Array.isArray(notifications) ? notifications : []);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
     } finally {
@@ -133,7 +61,7 @@ const NotificationTabs = ({ ownerUserId }) => {
         where("userId", "==", ownerUserId),
         where("readStatus", "==", false),
         orderBy("createdAt", "desc")
-      ); 
+      );
 
       // onSnapshot to listen for new notifications
       const unsubscribe = onSnapshot(notificationQuery, (snapshot) => {
@@ -143,7 +71,7 @@ const NotificationTabs = ({ ownerUserId }) => {
         }));
 
         console.log("OwnerUserId: ", ownerUserId);
-        console.log("Listener notifications: ", newNotifications); 
+        console.log("Listener notifications: ", newNotifications);
 
         // Update the notifications state and removing duplicates
         setGetNotifications((prev) => {
@@ -172,7 +100,6 @@ const NotificationTabs = ({ ownerUserId }) => {
     (notif) => notif.feedbackId
   );
   const boostNotifications = getNotifications.filter((notif) => notif.boostId);
-
 
   // Fetch notifications count
   const fetchNotificationsCounts = async () => {
@@ -224,26 +151,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   }, [getNotifications]);
 
   useEffect(() => {
-    let isMounted = true;
-    let unsubscribeFeedback, unsubscribeReaction, unsubscribeNotification;
-
-    const fetchData = async () => {
-      await fetchNotifications();
-      if (isMounted) {
-        unsubscribeFeedback = listenForNewFeedback();
-        unsubscribeReaction = listenForNewReaction();
-        unsubscribeNotification = listenForNewNotifications();
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      isMounted = false;
-      if (unsubscribeFeedback) unsubscribeFeedback();
-      if (unsubscribeReaction) unsubscribeReaction();
-      if (unsubscribeNotification) unsubscribeNotification();
-    };
+    fetchNotifications();
   }, [ownerUserId]);
 
   useEffect(() => {
@@ -376,7 +284,9 @@ const NotificationTabs = ({ ownerUserId }) => {
               commentNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
+                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-200" : "bg-white"
+                  }`}
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -390,13 +300,19 @@ const NotificationTabs = ({ ownerUserId }) => {
                   }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow text-center">
+                  <div className="flex-grow">
                     <h3
                       className="font-bold text-[16px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       {notif.message}
                     </h3>
+                    <p
+                      className=" text-[14px] h-[24px]"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      {notif.feedbackContent}
+                    </p>
                     <p
                       className="text-right text-[14px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -443,7 +359,9 @@ const NotificationTabs = ({ ownerUserId }) => {
               boostNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
+                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-200" : "bg-white"
+                  }`}
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
