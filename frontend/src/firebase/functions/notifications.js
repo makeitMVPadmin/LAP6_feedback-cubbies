@@ -139,9 +139,7 @@ export const createBoostNotification = async (boostId) => {
 
 // GET
 // Get notifications for a user "All" Notifications Tab
-export const getAllNotifications = async (
-  ownerUserId
-) => {
+export const getAllNotifications = async (ownerUserId) => {
   try {
     // Fetch all the portofolios associated with the ownerUserId
     const portfolioQuery = query(
@@ -157,14 +155,14 @@ export const getAllNotifications = async (
     // Fetch all notifications(paginated) for the ownerUserId's portfolios
     let notificationQuery = query(
       collection(db, "notifications"),
-      where("portfolioId", "in", portfolioIds),
+      where("portfolioId", "in", portfolioIds)
       // orderBy("createdAt", "desc"),
       // limit(5)
     );
 
     const notificationSnapshot = await getDocs(notificationQuery);
     const notificationList = [];
-
+    console.log("notificationList: ", notificationSnapshot);
     for (const docSnap of notificationSnapshot.docs) {
       let notificationData = {
         id: docSnap.id,
@@ -172,7 +170,7 @@ export const getAllNotifications = async (
       };
 
       console.log("raw notificationData: ", notificationData);
-      
+
       if (notificationData.feedbackId) {
         const feedbackDoc = await getDoc(
           doc(db, "feedbacks", notificationData.feedbackId)
@@ -180,7 +178,10 @@ export const getAllNotifications = async (
 
         if (feedbackDoc.exists()) {
           notificationData.feedbackContent = feedbackDoc.data().comment;
-          console.log("Fetched feedbackContent: ", notificationData.feedbackContent);
+          console.log(
+            "Fetched feedbackContent: ",
+            notificationData.feedbackContent
+          );
         } else {
           notificationData.feedbackContent = null;
         }
@@ -255,4 +256,4 @@ export const getNotificationsCounter = async (ownerUserId) => {
     console.error("Error getting total notifications count: ", err);
     return 0;
   }
-}
+};
