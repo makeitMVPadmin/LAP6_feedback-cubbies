@@ -60,13 +60,15 @@ const BoostButton = ({ portfolioId }) => {
     };
 
     fetchBoostData();
-  }, [portfolioId, currentUser]);
+  }, [portfolioId, currentUser?.id]);
 
   return (
     <Button
-      onClick={handleBoostClick}
-      className="h-[45.85px] px-[13.75px] py-[18.34px] bg-[#ffd22f] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7 hover:bg-[#e6b800]"
-    >
+  onClick={handleBoostClick}
+  className={`h-[45.85px] px-[13.75px] py-[18.34px] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] 
+    text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7
+    ${isBoosted ? "bg-[#ffd22f]" : "bg-[#ffd22f]/70"} hover:bg-[#e6b800]`}
+>
       <Zap size={30} />
       <span>{boostCount} Boost{boostCount !== 1 ? "s" : ""}</span>
     </Button>
