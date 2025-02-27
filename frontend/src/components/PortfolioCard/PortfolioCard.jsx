@@ -1,26 +1,33 @@
 import { useNavigation } from '../../context/NavigationContext';
 import BoostButton from '../BoostsBtn/BoostsBtn';
-import { Button, Card, CardContent, Avatar } from '../ui/index';
+import {
+  Button,
+  Card,
+  CardContent,
+  Avatar,
+  CardTitle,
+  VisibilityIcon,
+} from '../ui/index';
 
 const PortfolioCard = ({ portfolio, user, role }) => {
   const { goToProfileDetails } = useNavigation();
+
   return (
     <Card
       key={portfolio.id}
-      className="w-[754px] h-[537px] py-6 px-8 **:relative bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-start items-start inline-flex">
-      <CardContent className="h-6 w-15 px-2.5  py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
+      className="w-full max-w-[754px] py-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden">
+      <CardContent className="h-6 w-15 px-2.5 py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
         New
       </CardContent>
 
-      <div className="className=w-[342px] h-[60px] justify-start items-center gap-2 inline-flex py-3 ms-[4.18rem]">
-        <div className="w-9 h-9 inline-flex justify-center items-center">
+      <div className="w-full flex justify-start items-center gap-4 pt-3 pl-1 pb-0.5 ms-[4.18rem]">
+        <div className="w-9 h-9 flex justify-center items-center">
           <Avatar className="w-9 h-9 rounded-full" />
         </div>
 
-        <div className="flex w-[298px] items-center gap-4">
-          <div className="text-slate-950 text-xl flex flex-row font-bold font-['Montserrat'] leading-7">
-            {user?.firstName}
-            {user?.lastName}
+        <div className="flex w-full items-center gap-4 pb-1">
+          <div className="text-slate-950 text-xl flex flex-row font-semibold font-['Montserrat'] leading-7">
+            {user?.firstName} {user?.lastName}
           </div>
           <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
             {user?.email}
@@ -28,24 +35,22 @@ const PortfolioCard = ({ portfolio, user, role }) => {
         </div>
       </div>
 
-      <div className="h-6 pl-28 py-1 justify-items-center gap-4 inline-flex">
-        <div className="text-slate-500 font-h2 font-bold font-['Montserrat'] leading-none"> 
-          New Grad 
+      <div className="h-6 pl-22 justify-items-center gap-4 pt-1 inline-flex">
+        <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none pl-8">
+          New Grad
         </div>
-        <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-none">
+        <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
           1 day ago
         </div>
       </div>
 
-      <h2>{portfolio.title}</h2>
-
-      <div className="text-black text-xl font-bold font-['Montserrat'] leading-loose text-left w-[570px] ml-[70px]">
+      <CardTitle className="text-black text-xl font-bold font-['Montserrat'] leading-loose text-left py-6 ml-[70px]">
         <p>{portfolio.description}</p>
-      </div>
+      </CardTitle>
 
       {portfolio.imageUrl && (
         <div className="flex justify-center items-center w-full">
-          <div className="w-[570px] h-[188px] flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
+          <div className="w-full max-w-[570px] h-[188px] flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
             <img
               className="w-full h-full object-cover"
               src={portfolio.imageUrl}
@@ -56,7 +61,7 @@ const PortfolioCard = ({ portfolio, user, role }) => {
       )}
 
       <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
-        <div className="flex flex-wrap gap-2 border border-gray-300 rounded-lg">
+        <div className="flex flex-wrap gap-2 rounded-lg">
           <div className="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
             <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
               Python
@@ -72,35 +77,13 @@ const PortfolioCard = ({ portfolio, user, role }) => {
               UX
             </div>
           </div>
-          <div data-svg-wrapper className="relative">
-            <svg
-              width="24"
-              height="25"
-              viewBox="0 0 24 25"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12.0001 5.30078L12 19.7008M19.2 12.5008L4.80005 12.5008"
-                stroke="black"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 border border-gray-300 rounded-lg">
-          <Button className="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl justify-center items-center gap-[9.17px] inline-flex">
-            <div className="w-[27.51px] h-[27.51px] bg-[#d9d9d9]"></div>
-
-            <a
-              href={portfolio.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline mt-2 block">
-              <div className="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
-                Review Portfolio
-              </div>
+        <div className="flex flex-wrap gap-2 rounded-lg">
+          <Button className="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl justify-items-center items-center text-center gap-[9.17px] inline-flex text-lg font-medium font-['Montserrat'] leading-7">
+            <VisibilityIcon className="w-12 h-12" />
+            <a href={portfolio.link} target="_blank" rel="noopener noreferrer">
+              Review Portfolio
             </a>
           </Button>
 
