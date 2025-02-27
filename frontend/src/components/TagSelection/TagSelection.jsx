@@ -22,16 +22,22 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
   }, []);
 
   const handleTagClick = (tag, category, e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault();
     e.stopPropagation();
 
     // replace the selected tag in the category dropdown
     setSelectedTags((prevSelectedTags) => {
-      const updatedTags = prevSelectedTags.filter(
-        (t) => t.category !== category
+      const isAlreadySelected = prevSelectedTags.some(
+        (t) => t.id === tag.id && t.category === category
       );
-      updatedTags.push({ ...tag, category });
-      return updatedTags;
+    
+      if (isAlreadySelected) {
+        return prevSelectedTags.filter(
+          (t) => !(t.id === tag.id && t.category === category)
+        ); 
+      } else {
+        return [...prevSelectedTags, { ...tag, category }]; 
+      }
     });
 
     // keep the dropdown open after a selection
@@ -65,7 +71,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
                 )
               }
               className="flex justify-between items-center bg-[#fffefe] text-black px-4 py-2 rounded-lg hover:bg-[#ccc] w-[200px] h-[40px] flex-shrink-0 
-                            border radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px] border-gray-800 text-base font-bold"
+                            border radius-[8px] border-t-[1px] border-r-[2px] border-b-[1px] border-l-[1px] border-gray-800 text-base font-bold"
             >
               {category}
               <ChevronDown className="w-5 h-5" />
@@ -74,23 +80,24 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
             {/* dropdown Menu */}
             {isOpen && (
               <div
-                className="absolute left-0 w-full bg-white border radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px]
-                             shadow-md rounded-lg mt-1 z-10"
+                className="absolute left-0 w-50 bg-white border-black radius-[8px] border-t-[1px] border-r-[2px] border-b-[2px] border-l-[1px]
+                             rounded-lg z-10"
               >
                 {filteredTags.map((tag) => (
                   <button
                     key={tag.id}
-                    onClick={(e) => handleTagClick(tag, category, e)} // update the selected tag
-                    className={`block w-full text-left px-4 py-2 cursor-pointer text-[14px] font-400 leading-[20px]
-                                            ${
-                                              selectedTags.some(
-                                                (t) =>
-                                                  t.id === tag.id &&
-                                                  t.category === category
-                                              )
-                                                ? "bg-[#0099FF] text-white"
-                                                : "hover:bg-[#0099FF] hover:text-white"
-                                            }`}
+                    onClick={(e) => handleTagClick(tag, category, e)}
+                    className={`block w-full text-left px-4 py-2 cursor-pointer text-[14px] font-400 leading-[20px] transition-all
+                    
+                      ${
+                        selectedTags.some(
+                          (t) =>
+                            t.id === tag.id &&
+                            t.category === category
+                        )
+                          ? "bg-[#FFD22F] text-black font-bold border-width-[2rem] border border-[#d0aa24] focus:radius-[8px] "
+                          : "hover:bg-[#FFD22F] hover:text-black focus:radius-[8px]"
+                      }`}
                   >
                     {tag.tagName}
                   </button>
