@@ -31,10 +31,12 @@ const fetchPortfolio = async () => {
 
 const addPortfolio = async (portfolioData) => {
   try {
-    await addDoc(collection(db, "portfolios"), portfolioData);
-    console.log("Portfolio added successfully!");
+    const docRef = await addDoc(collection(db, "portfolios"), portfolioData);
+    console.log("Portfolio added successfully!", docRef.id);
+    return { id: docRef.id, ...portfolioData }; // Return an object with the ID
   } catch (error) {
     console.error("Error adding portfolio:", error);
+    return null; // Return null to avoid undefined errors
   }
 };
 
