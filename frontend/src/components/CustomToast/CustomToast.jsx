@@ -16,7 +16,7 @@ export const showCustomToast = () => {
   });
 
   toast.custom((t) => (
-    <div className="w-[356px] h-[116px] pl-6 pr-8 py-6 bg-white rounded-md shadow-[0px_4px_6px_-4px_rgba(0,0,0,0.10)] shadow-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-start items-start gap-2.5 inline-flex overflow-hidden relative">
+    <div className="w-[356px] h-[116px] pl-6 pr-8 py-6 bg-white rounded-md shadow-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-start items-start gap-2.5 inline-flex overflow-hidden relative">
       {/* Close Icon (Top-Right) */}
       <button
         className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-md"

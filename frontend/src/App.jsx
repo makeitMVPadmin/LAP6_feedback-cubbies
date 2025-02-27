@@ -6,7 +6,7 @@ import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import TopNav from "@/components/TopNav/TopNav";
 import "./App.css";
 import { emptyUser } from "./firebase/functions/fetchUsers";
-// import { Toaster } from "sonner";
+import { Toaster } from "sonner";
 
 function AppContent() {
   const { currentPage, goToProfileDetails, isDrawerOpen, closeDrawer } =
@@ -59,9 +59,9 @@ function App() {
           <AppContent />
         </UserProvider>
       </NavigationProvider>
-      {/* <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col">
         <Toaster position="bottom-right" richColors />
-      </div> */}
+      </div>
     </>
   );
 }
