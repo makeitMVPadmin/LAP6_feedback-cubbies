@@ -31,12 +31,6 @@ function PostModal({ isOpen, onClose, currentUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // check if the user is logged in
-    // if (!currentUser) {
-    //   console.error("User is not authenticated.");
-    //   return;
-    // }
-
     if (
       !postMessage.trim() ||
       !link.trim() ||
@@ -105,11 +99,11 @@ function PostModal({ isOpen, onClose, currentUser }) {
 
   return (
     <div
-      className="fixed inset-0 flex justify-center items-center z-10"
+      className="fixed inset-0 flex justify-center items-center z-10 bg-black/60"
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-white p-7 rounded-2xl border-2 w-[1014px] overflow-y-auto pt-[45px] pl-[62px] pr-[62px] pb-[16px]"
+        className="bg-white p-7 rounded-2xl border-2 w-[1014px] h-[730px] overflow-y-auto pt-[45px] pl-[62px] pr-[62px] pb-[16px]"
         style={{
           borderTop: "1px solid var(--Gray-Gray12, #28363F)",
           borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -195,10 +189,19 @@ function PostModal({ isOpen, onClose, currentUser }) {
 
           {/* Buttons for canceling or publishing */}
           <div className="flex justify-between mt-4">
-            <Button variant="outline" onClick={onClose}>
+            <Button
+              className="border-none shadow-none  h-[48px] text-[20px]"
+              variant="outline"
+              onClick={onClose}
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
               Cancel
             </Button>
-            <Button className="bg-[#0099ff]" type="submit">
+            <Button
+              className="bg-[#0099ff] h-[48px] text-[20px]"
+              type="submit"
+              style={{ fontFamily: "Montserrat, sans-serif" }}
+            >
               Publish
             </Button>
           </div>
