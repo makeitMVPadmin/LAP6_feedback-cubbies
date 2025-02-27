@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
-function PostModal({ isOpen, onClose }) {
+function PostModal({ isOpen, onClose, currentUser }) {
   if (!isOpen) return null;
 
   const [postMessage, setPostMessage] = useState("");
@@ -57,15 +57,22 @@ function PostModal({ isOpen, onClose }) {
       updatedAt: new Date().toISOString(),
     };
 
-    await addPortfolio(portfolioData);
+    try {
+      // Add portfolio and get the portfolioId
+      const addedPortfolio = await addPortfolio(portfolioData);
+      const portfolioId = addedPortfolio.id;
 
-    setPostMessage("");
-    setLink("");
-    setCoverImage(null);
-    setSelectedTags([]);
-    setShowError(false);
+      console.log("Portfolio Created with ID:", portfolioId);
 
-    onClose();
+      setPostMessage("");
+      setLink("");
+      setCoverImage(null);
+      setSelectedTags([]);
+      setShowError(false);
+      onClose();
+    } catch (error) {
+      console.error("Error adding portfolio:", error);
+    }
   };
 
   // Clear error when user starts typing

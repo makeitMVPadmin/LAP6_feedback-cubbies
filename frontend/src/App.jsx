@@ -14,6 +14,7 @@ function AppContent() {
   const { usersList, currentUser, handleUserLogin } = useUser();
 
   const renderPage = () => {
+
     switch (currentPage) {
       case "home":
         return <HomePage/>;
