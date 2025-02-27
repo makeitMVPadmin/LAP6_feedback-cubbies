@@ -11,6 +11,7 @@ import {
   getDoc,
   orderBy,
   limit,
+  runTransaction
 } from "firebase/firestore";
 
 // CREATE
@@ -34,7 +35,9 @@ export const createCommentNotification = async (feedbackId) => {
       collection(db, "notifications"),
       where("feedbackId", "==", feedbackId)
     );
+
     const existingNotifSnapshot = await getDocs(existingNotifQuery);
+
     if (!existingNotifSnapshot.empty) {
       console.log("Notification already exists, skipping write.");
       return;
@@ -75,6 +78,75 @@ export const createCommentNotification = async (feedbackId) => {
     );
   }
 };
+
+// export const createCommentNotification = async (feedbackId) => {
+//   try {
+//     await runTransaction(db, async (transaction) => {
+//       // Fetch the feedback document
+//       const feedbackRef = doc(db, "feedbacks", feedbackId);
+//       const feedbackDoc = await transaction.get(feedbackRef);
+
+//       if (!feedbackDoc.exists()) {
+//         console.error("Feedback not found");
+//         return;
+//       }
+
+//       const feedbackData = feedbackDoc.data();
+//       if (!feedbackData || !feedbackData.userId || !feedbackData.portfolioId) {
+//         console.error("Missing required fields in feedback data");
+//         return;
+//       }
+
+//       // Query for existing notification
+//       const existingNotifQuery = query(
+//         collection(db, "notifications"),
+//         where("feedbackId", "==", feedbackId)
+//       );
+//       const existingNotifSnapshot = await getDocs(existingNotifQuery);
+
+//       if (!existingNotifSnapshot.empty) {
+//         console.log("Notification already exists, skipping write.");
+//         return;
+//       }
+
+//       // Fetch the portfolio
+//       const portfolioRef = doc(db, "portfolios", feedbackData.portfolioId);
+//       const portfolioDoc = await transaction.get(portfolioRef);
+//       if (!portfolioDoc.exists()) {
+//         console.error("Portfolio not found");
+//         return;
+//       }
+
+//       // Fetch the sender
+//       const senderRef = doc(db, "users", feedbackData.userId);
+//       const senderDoc = await transaction.get(senderRef);
+//       if (!senderDoc.exists()) {
+//         console.error("User not found");
+//         return;
+//       }
+//       const senderName = senderDoc.data().username;
+
+//       // Add the new notification inside the transaction
+//       const notificationRef = collection(db, "notifications");
+//       transaction.set(doc(notificationRef), {
+//         userId: feedbackData.userId,
+//         portfolioId: feedbackData.portfolioId,
+//         feedbackId: feedbackId,
+//         message: `@${senderName} commented on your portfolio`,
+//         readStatus: false,
+//         createdAt: serverTimestamp(),
+//         updatedAt: serverTimestamp(),
+//       });
+
+//       console.log("Notification successfully created within transaction.");
+//     });
+//   } catch (err) {
+//     console.error("Error creating notification:", err);
+//     throw new Error(
+//       `createNotification while listening to comment creation failed: ${err.message}`
+//     );
+//   }
+// };
 
 export const createBoostNotification = async (boostId) => {
   try {
@@ -143,7 +215,7 @@ export const getAllNotifications = async (
   ownerUserId
 ) => {
   try {
-    // Fetch all the portofolios associated with the ownerUserId
+    // Fetch all the portfolios associated with the ownerUserId
     const portfolioQuery = query(
       collection(db, "portfolios"),
       where("userId", "==", ownerUserId)

@@ -36,82 +36,84 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [boostNotif, setBoostNotif] = useState([]);
 
   // Listener for a new comment created
-  let isFeedbackListenerActive = false;
-  const listenForNewFeedback = () => {
-    if (isFeedbackListenerActive) {
-      return;
-    }
-    isFeedbackListenerActive = true;
-    try {
-      const feedbackQuery = query(
-        collection(db, "feedbacks"),
-        where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
-        orderBy("createdAt", "desc")
-      );
+  // let isFeedbackListenerActive = false;
+  // const listenForNewFeedback = () => {
+  //   if (isFeedbackListenerActive) {
+  //     return;
+  //   }
+  //   isFeedbackListenerActive = true;
+  //   try {
+  //     const feedbackQuery = query(
+  //       collection(db, "feedbacks"),
+  //       where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
+  //       orderBy("createdAt", "desc")
+  //     );
 
-      const unsubscribe = onSnapshot(feedbackQuery, (snapshot) => {
-        snapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const feedbackId = change.doc.id;
-            console.log("New feedback detected");
+  //     const unsubscribe = onSnapshot(feedbackQuery, (snapshot) => {
+  //       snapshot.docChanges().forEach(async (change) => {
+  //         if (change.type === "added") {
+  //           const feedbackId = change.doc.id;
+  //           console.log("New feedback detected");
 
-            try {
-              await createCommentNotification(feedbackId);
-            } catch (err) {
-              console.error("Failed to create notification:", err);
-            }
-          }
-        });
-      });
-      return unsubscribe;
-    } catch (err) {
-      console.error("Error listening for new feedback: ", err);
-      return [];
-    }
-  };
+  //           try {
+  //             //await createCommentNotification(feedbackId);
+  //             console.log(change.doc.data());
+  //           } catch (err) {
+  //             console.error("Failed to create notification:", err);
+  //           }
+  //         }
+  //       });
+  //     });
+  //     return unsubscribe;
+  //   } catch (err) {
+  //     console.error("Error listening for new feedback: ", err);
+  //     return [];
+  //   }
+  // };
 
   // Listener for a new boost created
-  let isReactionListenerActive = false;
-  const listenForNewReaction = () => {
-    if (isReactionListenerActive) {
-      return;
-    }
-    isReactionListenerActive = true;
+  // let isReactionListenerActive = false;
+  // const listenForNewReaction = () => {
+  //   if (isReactionListenerActive) {
+  //     return;
+  //   }
+  //   isReactionListenerActive = true;
 
-    try {
-      const reactionQuery = query(
-        collection(db, "boosts"),
-        where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
-        orderBy("createdAt", "desc")
-      );
+  //   try {
+  //     const reactionQuery = query(
+  //       collection(db, "boosts"),
+  //       where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
+  //       orderBy("createdAt", "desc")
+  //     );
 
-      const unsubscribe = onSnapshot(reactionQuery, (snapshot) => {
-        snapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const boostId = change.doc.id;
-            console.log("New reaction detected");
+  //     const unsubscribe = onSnapshot(reactionQuery, (snapshot) => {
+  //       snapshot.docChanges().forEach(async (change) => {
+  //         if (change.type === "added") {
+  //           const boostId = change.doc.id;
+  //           console.log("New reaction detected");
 
-            try {
-              await createBoostNotification(boostId);
-            } catch (err) {
-              console.error("Failed to create notification:", err);
-            }
-          }
-        });
-      });
-      return unsubscribe;
-    } catch (err) {
-      console.error("Error listening for new reaction: ", err);
-      return [];
-    }
-  };
+  //           try {
+  //             await createBoostNotification(boostId);
+  //           } catch (err) {
+  //             console.error("Failed to create notification:", err);
+  //           }
+  //         }
+  //       });
+  //     });
+  //     return unsubscribe;
+  //   } catch (err) {
+  //     console.error("Error listening for new reaction: ", err);
+  //     return [];
+  //   }
+  // };
 
   // Fetching all notifications
   const fetchNotifications = async () => {
     setLoading(true);
     try {
       const { notificationList } = await getAllNotifications(ownerUserId);
-
+      console.log("OwnerUserId: ", ownerUserId);
+      console.log("ALL notifications: ", notificationList);
       setGetNotifications(
         Array.isArray(notificationList) ? notificationList : []
       );
@@ -124,13 +126,14 @@ const NotificationTabs = ({ ownerUserId }) => {
 
   // Listener for new notifications created
   const listenForNewNotifications = () => {
+    console.log("Listening for new notifications");
     try {
       const notificationQuery = query(
         collection(db, "notifications"),
         where("userId", "==", ownerUserId),
         where("readStatus", "==", false),
         orderBy("createdAt", "desc")
-      );
+      ); 
 
       // onSnapshot to listen for new notifications
       const unsubscribe = onSnapshot(notificationQuery, (snapshot) => {
@@ -138,6 +141,9 @@ const NotificationTabs = ({ ownerUserId }) => {
           id: doc.id,
           ...doc.data(),
         }));
+
+        console.log("OwnerUserId: ", ownerUserId);
+        console.log("Listener notifications: ", newNotifications); 
 
         // Update the notifications state and removing duplicates
         setGetNotifications((prev) => {
@@ -219,24 +225,24 @@ const NotificationTabs = ({ ownerUserId }) => {
 
   useEffect(() => {
     let isMounted = true;
+    let unsubscribeFeedback, unsubscribeReaction, unsubscribeNotification;
 
     const fetchData = async () => {
       await fetchNotifications();
       if (isMounted) {
-        const unsubscribeFeedback = listenForNewFeedback();
-        const unsubscribeReaction = listenForNewReaction();
-        const unsubscribeNotification = listenForNewNotifications();
-        return () => {
-          if (unsubscribeFeedback) unsubscribeFeedback();
-          if (unsubscribeReaction) unsubscribeReaction();
-          if (unsubscribeNotification) unsubscribeNotification();
-        };
+        unsubscribeFeedback = listenForNewFeedback();
+        unsubscribeReaction = listenForNewReaction();
+        unsubscribeNotification = listenForNewNotifications();
       }
     };
 
     fetchData();
+
     return () => {
       isMounted = false;
+      if (unsubscribeFeedback) unsubscribeFeedback();
+      if (unsubscribeReaction) unsubscribeReaction();
+      if (unsubscribeNotification) unsubscribeNotification();
     };
   }, [ownerUserId]);
 
