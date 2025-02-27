@@ -55,6 +55,7 @@ const TagSelection = ({ selectedTags, setSelectedTags }) => {
           <div key={category} className="relative w-1/3 mb-[200px]">
             {/* dropdown button */}
             <button
+              type="button" //prevents immediate form submission
               onClick={() =>
                 setOpenDropdowns(
                   (prevOpenDropdowns) =>
