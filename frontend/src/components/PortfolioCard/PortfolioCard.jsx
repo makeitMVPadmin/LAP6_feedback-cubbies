@@ -1,40 +1,37 @@
-import { useNavigation } from "../../context/NavigationContext";
-import { Button, Card, Avatar } from "../ui/index";
-import BoostButton from "../BoostsBtn/BoostsBtn";
+import { useNavigation } from '../../context/NavigationContext';
+import BoostButton from '../BoostsBtn/BoostsBtn';
+import { Button, Card, CardContent, Avatar } from '../ui/index';
 
 const PortfolioCard = ({ portfolio, user, role }) => {
   const { goToProfileDetails } = useNavigation();
   return (
     <Card
       key={portfolio.id}
-      className="w-[754px] h-[537px] flex-shrink-0 rounded-lg border border-gray-700 border-t border-l border-r-2 border-b-2 p-6 shadow-md flex flex-col gap-6"
-    >
-      <div className="h-6 px-2.5 w-15 py-1 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex">
-        <div className="text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
-          New
-        </div>
-      </div>
+      className="w-[754px] h-[537px] py-6 px-8 **:relative bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-start items-start inline-flex">
+      <CardContent className="h-6 w-15 px-2.5  py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
+        New
+      </CardContent>
 
-      <div className="w-[342px] h-[60px] flex items-center gap-2">
-        <div className="w-9 h-9 flex justify-center items-center">
-          <Avatar className="w-12 h-12" />
+      <div className="className=w-[342px] h-[60px] justify-start items-start gap-2 inline-flex py-3 ms-[4.18rem]">
+        <div className="w-9 h-9 inline-flex justify-center items-center">
+          <Avatar className="w-9 h-9 rounded-full" />
         </div>
 
-        <div className="flex flex-col w-[298px]">
+        <div className="flex w-[298px]">
           <div className="flex items-center gap-4">
-            <div className="text-slate-950 text-xl font-bold font-[Corben] leading-7">
+            <div className="text-slate-950 text-xl  flex flex-row font-bold font-['Montserrat'] leading-7">
               {user?.firstName} {user?.lastName}
             </div>
-            <div className="text-slate-500 font-header font-bold font-[Corben] leading-tight">
+            <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
               {user?.email}
             </div>
           </div>
 
           <div className="flex items-center gap-4 mt-1">
-            <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
+            <div className="text-slate-500 font-h2 font-bold font-['Montserrat'] leading-none">
               {role?.roleName}
             </div>
-            <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
+            <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-none">
               1 day ago
             </div>
           </div>
@@ -68,7 +65,7 @@ const PortfolioCard = ({ portfolio, user, role }) => {
           </div>
           <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
             <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              Coding{" "}
+              Coding{' '}
             </div>
           </div>
           <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
@@ -82,8 +79,7 @@ const PortfolioCard = ({ portfolio, user, role }) => {
               height="25"
               viewBox="0 0 24 25"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+              xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M12.0001 5.30078L12 19.7008M19.2 12.5008L4.80005 12.5008"
                 stroke="black"
@@ -102,20 +98,18 @@ const PortfolioCard = ({ portfolio, user, role }) => {
               href={portfolio.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 hover:underline mt-2 block"
-            >
+              className="text-blue-500 hover:underline mt-2 block">
               <div className="text-center text-white text-lg font-medium font-['Montserrat'] leading-7">
                 Review Portfolio
               </div>
             </a>
           </Button>
 
-          <BoostButton portfolioId={portfolio.id}/>
+          <BoostButton portfolioId={portfolio.id} />
 
           <Button
             onClick={() => goToProfileDetails(portfolio.id)}
-            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
-          >
+            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
             Comments
           </Button>
         </div>

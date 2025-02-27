@@ -16,6 +16,7 @@ function NotificationDrawer({ isOpen, onClose }) {
       try {
         const { notificationList } = await getAllNotifications(ownerUserId);
         setNotifications(notificationList || []);
+
       } catch (err) {
         console.error("Error fetching notifications:", err);
       } finally {
