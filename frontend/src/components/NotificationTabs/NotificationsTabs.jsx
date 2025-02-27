@@ -196,37 +196,40 @@ const NotificationTabs = ({ ownerUserId }) => {
   // Fetch notifications count
   const fetchNotificationsCounts = async () => {
     try {
-      const { totalCount, commentCount, boostCount }= await getNotificationsCounter(ownerUserId);
-      setTotalCount(totalCount);
-      setCommentCount(commentCount);
-      setBoostCount(boostCount);
+      const { totalCount, commentCount, boostCount } =
+        await getNotificationsCounter(ownerUserId);
+
+      // Only update state if values actually changed
+      setTotalCount((prev) => (prev !== totalCount ? totalCount : prev));
+      setCommentCount((prev) => (prev !== commentCount ? commentCount : prev));
+      setBoostCount((prev) => (prev !== boostCount ? boostCount : prev));
     } catch (err) {
       console.error("Error fetching notification counts: ", err);
     }
   };
 
   useEffect(() => {
+    if (!ownerUserId) return;
     fetchNotificationsCounts();
-    console.log("Total count: ", totalCount);
-    console.log("Comment count: ", commentCount);
-    console.log("Boost count: ", boostCount);
   }, [ownerUserId]);
 
   return (
     <>
       <Tabs defaultValue="all">
-        <TabsList className="bg-[#0264D4] w-full flex justify-start gap-[48px] rounded-none h-14 p-[12px_16px]">
+        <TabsList className="bg-[#0264D4] w-full flex justify-start gap-[48px] rounded-none h-14 p-[12px_16px] relative">
           <TabsTrigger
             value="all"
             className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[58px]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
-            {totalCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
-                {totalCount}
-              </span>
-            )}
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
+              {totalCount > 0 && (
+                <span className="bg-red-500 text-white text-xs font-bold rounded-full px-3 py-1 absolute right-4">
+                  {totalCount}
+                </span>
+              )}
+            </div>
           </TabsTrigger>
           <TabsTrigger
             value="comments"
@@ -235,7 +238,7 @@ const NotificationTabs = ({ ownerUserId }) => {
           >
             Comments
             {commentCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2">
                 {commentCount}
               </span>
             )}
@@ -247,7 +250,7 @@ const NotificationTabs = ({ ownerUserId }) => {
           >
             Boosts
             {boostCount > 0 && (
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2">
                 {boostCount}
               </span>
             )}

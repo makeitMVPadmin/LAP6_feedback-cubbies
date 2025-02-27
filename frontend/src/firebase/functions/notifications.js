@@ -288,24 +288,6 @@ export const getNotificationsCounter = async (ownerUserId) => {
 
     console.log("Total number of notifications: ", totalCount);
 
-    // Query for comments notifications
-    // const commentsQuery = query(
-    //   notificationsRef,
-    //   where("userId", "==", ownerUserId),
-    //   where("feedbackId", "!=", null)
-    // );
-    // const commentsSnapshot = await getDocs(commentsQuery);
-    // const totalComments = commentsSnapshot.docs.length;
-    
-    // Query for boost notifications
-    // const boostQuery = query(
-    //   notificationsRef,
-    //   where("userId", "==", ownerUserId),
-    //   where("boostId", "!=", null)
-    // );
-    // const boostSnapshot = await getDocs(boostQuery);
-    // const totalBoosts = boostSnapshot.docs.length;
-
     // Manually count comments and boosts
     let totalComments = 0;
     let totalBoosts = 0;
