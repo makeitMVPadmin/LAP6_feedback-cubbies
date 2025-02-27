@@ -1,5 +1,6 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
 import { addPortfolio } from "../../firebase/functions/index.js";
+import { showCustomToast } from "../CustomToast/CustomToast";
 import TagSelection from "../TagSelection/TagSelection";
 import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
@@ -73,6 +74,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
       setSelectedTags([]);
       setShowError(false);
       onClose();
+      showCustomToast();
     } catch (error) {
       console.error("Error adding portfolio:", error);
     }
