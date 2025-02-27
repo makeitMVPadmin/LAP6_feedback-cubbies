@@ -7,11 +7,10 @@ export {
 } from './portfolios';
 export { fetchUsers, fetchUserById } from './fetchUsers';
 export {
-  createReactionNotification,
+  createBoostNotification,
   createCommentNotification,
   getAllNotifications,
-  getUnreadCommentsNotification,
-  getUnreadReactionsNotification,
+  getNotificationsCounter,
   markNotificationAsRead,
 } from './notifications';
 export { deleteNotification, blockUser, muteUser } from './kebabFunction';
