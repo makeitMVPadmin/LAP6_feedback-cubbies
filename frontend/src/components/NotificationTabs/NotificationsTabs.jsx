@@ -33,7 +33,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Listener for a new feedback created
+  // Listener for a new comment created
   let isFeedbackListenerActive = false;
   const listenForNewFeedback = () => {
     if (isFeedbackListenerActive) {
@@ -68,14 +68,14 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  // Listener for a new reaction created
+  // Listener for a new boost created
   let isReactionListenerActive = false;
   const listenForNewReaction = () => {
     if (isReactionListenerActive) {
       return;
     }
     isReactionListenerActive = true;
-    
+
     try {
       const reactionQuery = query(
         collection(db, "boosts"),
@@ -184,6 +184,15 @@ const NotificationTabs = ({ ownerUserId }) => {
     };
   }, [ownerUserId]);
 
+  // Filtering notifications by comments and boosts
+  const commentNotifications = getNotifications.filter(
+    (notif) => notif.feedbackId
+  );
+
+  const boostNotifications = getNotifications.filter(
+    (notif) => notif.boostId
+  )
+
   // Fetching unread notifications
   const fetchUnreadNotifs = async () => {
     setLoading(true);
@@ -263,11 +272,11 @@ const NotificationTabs = ({ ownerUserId }) => {
             Comments
           </TabsTrigger>
           <TabsTrigger
-            value="reactions"
+            value="boosts"
             className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[124px]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
-            Reactions
+            Boosts
           </TabsTrigger>
         </TabsList>
 
@@ -341,13 +350,13 @@ const NotificationTabs = ({ ownerUserId }) => {
           </section>
         </TabsContent>
 
-        {/* Unread Comments */}
+        {/* All Comments */}
         <TabsContent value="comments">
           <section className="flex flex-col gap-2">
-            {getUnreadComments.length > 0 ? (
-              getUnreadComments.map((unreadNotif) => (
+            {commentNotifications.length > 0 ? (
+              commentNotifications.map((notif) => (
                 <div
-                  key={unreadNotif.id}
+                  key={notif.id}
                   className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
@@ -363,7 +372,7 @@ const NotificationTabs = ({ ownerUserId }) => {
                       className="font-bold text-[16px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      {unreadNotif.message}
+                      {notif.message}
                     </h3>
                     <p
                       className="text-right text-[14px]"
@@ -378,10 +387,10 @@ const NotificationTabs = ({ ownerUserId }) => {
                   </div>
                   <KebabMenu
                     onBlock={() =>
-                      console.log("Block user:", unreadNotif.userId)
+                      console.log("Block user:", notif.userId)
                     }
-                    onMute={() => console.log("Mute user:", unreadNotif.userId)}
-                    onDelete={() => deleteNotification(unreadNotif.id)}
+                    onMute={() => console.log("Mute user:", notif.userId)}
+                    onDelete={() => deleteNotification(notif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }
@@ -406,13 +415,13 @@ const NotificationTabs = ({ ownerUserId }) => {
           </section>
         </TabsContent>
 
-        {/* Unread Reactions */}
-        <TabsContent value="reactions">
+        {/* All Boosts */}
+        <TabsContent value="boosts">
           <section className="flex flex-col gap-2">
-            {getUnreadReactions.length > 0 ? (
-              getUnreadReactions.map((unreadNotif) => (
+            {boostNotifications.length > 0 ? (
+              boostNotifications.map((boostNotif) => (
                 <div
-                  key={unreadNotif.id}
+                  key={boostNotif.id}
                   className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
@@ -428,25 +437,25 @@ const NotificationTabs = ({ ownerUserId }) => {
                       className="font-bold text-[16px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      {unreadNotif.message}
+                      {boostNotif.message}
                     </h3>
                     <p
-                      className="text-right text-[46px]"
+                      className="text-right text-[14px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      {notif.createdAt
+                      {boostNotif.createdAt
                         ? new Date(
-                            notif.createdAt.toDate()
+                            boostNotif.createdAt.toDate()
                           ).toLocaleDateString()
                         : ""}
                     </p>
                   </div>
                   <KebabMenu
                     onBlock={() =>
-                      console.log("Block user:", unreadNotif.userId)
+                      console.log("Block user:", boostNotif.userId)
                     }
-                    onMute={() => console.log("Mute user:", unreadNotif.userId)}
-                    onDelete={() => deleteNotification(unreadNotif.id)}
+                    onMute={() => console.log("Mute user:", boostNotif.userId)}
+                    onDelete={() => deleteNotification(boostNotif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }
