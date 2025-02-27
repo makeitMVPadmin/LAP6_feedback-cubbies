@@ -4,9 +4,8 @@ import {
   createCommentNotification,
   createBoostNotification,
   getAllNotifications,
-  getUnreadCommentsNotification,
-  getUnreadReactionsNotification,
   getNotificationsCounter,
+  markNotificationAsRead,
 } from "../../firebase/functions/notifications";
 import KebabMenu from "../KebabMenu/KebabMenu";
 import {
@@ -22,8 +21,8 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { use } from "react";
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "../../context/NavigationContext";
 
 const NotificationTabs = ({ ownerUserId }) => {
   const [getNotifications, setGetNotifications] = useState([]);
@@ -31,6 +30,8 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
   const [boostCount, setBoostCount] = useState(0);
+  const [notifClick, setNotifClick] = useState(getNotifications);
+  const { goToProfileDetails } = useNavigation();
 
   // Listener for a new comment created
   let isFeedbackListenerActive = false;
@@ -107,8 +108,6 @@ const NotificationTabs = ({ ownerUserId }) => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      console.log("ownerUserId: ", ownerUserId);
-
       const { notificationList } = await getAllNotifications(ownerUserId);
 
       setGetNotifications(
@@ -196,15 +195,6 @@ const NotificationTabs = ({ ownerUserId }) => {
       const { totalCount, commentCount, boostCount } =
         await getNotificationsCounter(ownerUserId);
 
-      console.log(
-        "Updating State - Total:",
-        totalCount,
-        "Comments:",
-        commentCount,
-        "Boosts:",
-        boostCount
-      );
-
       // Ensure default values if undefined
       const safeCommentCount = commentCount ?? 0;
       const safeBoostCount = boostCount ?? 0;
@@ -226,6 +216,27 @@ const NotificationTabs = ({ ownerUserId }) => {
     if (!ownerUserId) return;
     fetchNotificationsCounts();
   }, [ownerUserId]);
+
+  // Handle Notification Click
+  const handleNotificationClick = async (notif) => {
+    if (!notif.portfolioId) {
+      console.error("No portfolioId found in notification");
+      return;
+    }
+
+    setNotifClick((prev) => 
+    prev.map((n) => (n.id === notif.id ? { ...n, readStatus: true } : n))
+  );
+
+  try {
+    await markNotificationAsRead(notif.id);
+  } catch (err) {
+    console.error("Failed to mark notification as read: ", err);
+  }
+
+  //Redirect to portfolio page
+  goToProfileDetails(notif.portfolioId);
+  }
 
   return (
     <>
@@ -277,7 +288,7 @@ const NotificationTabs = ({ ownerUserId }) => {
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
+                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${notif.readStatus ? "bg-gray-200" : "bg-white"}`}
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -285,6 +296,7 @@ const NotificationTabs = ({ ownerUserId }) => {
                     borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                     background: "var(--neutral-100, #F5F5F5)",
                   }}
+                  onClick={() => handleNotificationClick(notif)}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow">

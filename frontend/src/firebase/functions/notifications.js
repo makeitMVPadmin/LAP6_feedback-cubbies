@@ -198,64 +198,6 @@ export const getAllNotifications = async (
   }
 };
 
-// Get all unread comment notifications for a user 
-export const getUnreadCommentsNotification = async (ownerUserId) => {
-  try {
-    // Filtering for unread notifications
-    const notificationsRef = collection(db, "notifications");
-    const unreadFeedbackQuery = query(
-      notificationsRef,
-      where("userId", "==", ownerUserId),
-      where("boostId", "==", null),
-      where("readStatus", "==", false),
-      orderBy("createdAt", "desc"),
-      limit(5)
-    );
-
-    console.log(unreadFeedbackQuery);
-
-    const querySnapshot = await getDocs(unreadFeedbackQuery);
-
-    // Extracting the unread data
-    const unreadComments = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    return unreadComments;
-  } catch (err) {
-    console.error("Error getting notifications: ", err);
-    throw new Error(`getUnreadCommentsNotifications failed: ${err.message}`);
-  }
-};
-
-// Get all unread boost notifications for a user
-export const getUnreadReactionsNotification = async (ownerUserId) => {
-  try {
-    // Filtering for unread notifications of the entire collection
-    const notificationsRef = collection(db, "notifications");
-    const unreadReactionQuery = query(
-      notificationsRef,
-      where("userId", "==", ownerUserId),
-      where("boostId", "!=", null),
-      where("readStatus", "==", false),
-      orderBy("createdAt", "desc"),
-      limit(5)
-    );
-
-    const querySnapshot = await getDocs(unreadReactionQuery);
-
-    // Extracting the unread data
-    const unreadReaction = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    return unreadReaction;
-  } catch (err) {
-    console.error("Error getting notifications: ", err);
-    throw new Error(`getUnreadCommentsNotifications failed: ${err.message}`);
-  }
-};
-
 // Mark a notification as read
 export const markNotificationAsRead = async (notificationId) => {
   try {

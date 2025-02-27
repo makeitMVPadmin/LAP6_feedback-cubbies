@@ -10,8 +10,7 @@ export {
   createBoostNotification,
   createCommentNotification,
   getAllNotifications,
-  getUnreadCommentsNotification,
-  getUnreadReactionsNotification,
+  getNotificationsCounter,
   markNotificationAsRead,
 } from './notifications';
 export { deleteNotification, blockUser, muteUser } from './kebabFunction';
