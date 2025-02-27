@@ -28,6 +28,18 @@ export const createCommentNotification = async (feedbackId) => {
       console.error("Missing required fields in feedback data");
       return null;
     }
+
+    // Check if the notification already exists
+    const existingNotifQuery = query(
+      collection(db, "notifications"),
+      where("feedbackId", "==", feedbackId)
+    );
+    const existingNotifSnapshot = await getDocs(existingNotifQuery);
+    if (!existingNotifSnapshot.empty) {
+      console.log("Notification already exists, skipping write.");
+      return;
+    }
+
     // Fetch the portfolio
     const portfolioDoc = await getDoc(
       doc(db, "portfolios", feedbackData.portfolioId)
@@ -64,10 +76,10 @@ export const createCommentNotification = async (feedbackId) => {
   }
 };
 
-export const createReactionNotification = async (reactionId) => {
+export const createReactionNotification = async (boostId) => {
   try {
     // Fetch the reaction
-    const reactionDoc = await getDoc(doc(db, "reaction", reactionId));
+    const reactionDoc = await getDoc(doc(db, "boosts", boostId));
     if (!reactionDoc.exists()) {
       console.error("Reaction not found");
       return null;
@@ -78,6 +90,18 @@ export const createReactionNotification = async (reactionId) => {
       console.error("Missing required fields in reaction data");
       return null;
     }
+
+    // Check if the notification already exists
+    const existingNotifQuery = query(
+      collection(db, "notifications"),
+      where("boostId", "==", boostId)
+    );
+    const existingNotifSnapshot = await getDocs(existingNotifQuery);
+    if (!existingNotifSnapshot.empty) {
+      console.log("Notification already exists, skipping write.");
+      return;
+    }
+
     // Fetch the portfolio
     const portfolioDoc = await getDoc(
       doc(db, "portfolios", reactionData.portfolioId)
@@ -99,7 +123,7 @@ export const createReactionNotification = async (reactionId) => {
     await addDoc(collection(db, "notifications"), {
       userId: reactionData.userId,
       portfolioId: reactionData.portfolioId,
-      reactionId,
+      boostId: boostId,
       message: `${senderName} reacted to your portfolio`,
       readStatus: false,
       createdAt: serverTimestamp(),
@@ -183,7 +207,7 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
     const unreadFeedbackQuery = query(
       notificationsRef,
       where("userId", "==", ownerUserId),
-      where("reactionId", "==", null),
+      where("boostId", "==", null),
       // where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
       limit(5)
@@ -213,7 +237,7 @@ export const getUnreadReactionsNotification = async (ownerUserId) => {
     const unreadReactionQuery = query(
       notificationsRef,
       where("userId", "==", ownerUserId),
-      where("reactionId", "!=", null),
+      where("boostId", "!=", null),
       // where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
       limit(5)
@@ -248,3 +272,21 @@ export const markNotificationAsRead = async (notificationId) => {
     throw new Error(`markNotificationAsRead failed: ${err.message}`);
   }
 };
+
+// Notifications Counter
+export const getNotificationsCounter = async (ownerUserId) => {
+  try {
+    const notificationsRef = collection(db, "notifications");
+    const unreadQuery = query(
+      notificationsRef,
+      where("userId", "==", ownerUserId),
+      where("readStatus", "==", false)
+    );
+
+    const querySnapshot = await getDocs(unreadQuery);
+    return querySnapshot.docs.length;
+  } catch (err) {
+    console.error("Error getting notifications count: ", err);
+    return 0;
+  }
+}

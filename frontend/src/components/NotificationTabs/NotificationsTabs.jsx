@@ -21,6 +21,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import { use } from "react";
 import React, { useEffect, useState } from "react";
 
 const NotificationTabs = ({ ownerUserId }) => {
@@ -30,12 +31,19 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [getUnreadComments, setGetUnreadComments] = useState([]);
   const [getUnreadReactions, setGetUnreadReactions] = useState([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Listener for a new feedback created
+  let isFeedbackListenerActive = false;
   const listenForNewFeedback = () => {
+    if (isFeedbackListenerActive) {
+      return;
+    }
+    isFeedbackListenerActive = true;
     try {
       const feedbackQuery = query(
         collection(db, "feedbacks"),
+        where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
         orderBy("createdAt", "desc")
       );
 
@@ -61,21 +69,28 @@ const NotificationTabs = ({ ownerUserId }) => {
   };
 
   // Listener for a new reaction created
+  let isReactionListenerActive = false;
   const listenForNewReaction = () => {
+    if (isReactionListenerActive) {
+      return;
+    }
+    isReactionListenerActive = true;
+    
     try {
       const reactionQuery = query(
-        collection(db, "reactions"),
+        collection(db, "boosts"),
+        where("createdAt", ">", new Date(Date.now() - 1000 * 60 * 60)),
         orderBy("createdAt", "desc")
       );
 
       const unsubscribe = onSnapshot(reactionQuery, (snapshot) => {
         snapshot.docChanges().forEach(async (change) => {
           if (change.type === "added") {
-            const reactionId = change.doc.id;
+            const boostId = change.doc.id;
             console.log("New reaction detected");
 
             try {
-              await createReactionNotification(reactionId);
+              await createReactionNotification(boostId);
             } catch (err) {
               console.error("Failed to create notification:", err);
             }
@@ -102,7 +117,6 @@ const NotificationTabs = ({ ownerUserId }) => {
       setGetLastVisibleDoc(lastVisible);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
-      // setGetNotifications(mockNotifications);
     } finally {
       setLoading(false);
     }
@@ -145,17 +159,28 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  console.log("getNotifications:", getNotifications);
+  // console.log("getNotifications:", getNotifications);
 
   useEffect(() => {
-    fetchNotifications();
-    const unsubscribeFeedback = listenForNewFeedback();
-    const unsubscribeReaction = listenForNewReaction();
-    const unsubscribeNotification = listenForNewNotifications();
+    let isMounted = true;
+
+    const fetchData = async () => {
+      await fetchNotifications();
+      if (isMounted) {
+        const unsubscribeFeedback = listenForNewFeedback();
+        const unsubscribeReaction = listenForNewReaction();
+        const unsubscribeNotification = listenForNewNotifications();
+        return () => {
+          if (unsubscribeFeedback) unsubscribeFeedback();
+          if (unsubscribeReaction) unsubscribeReaction();
+          if (unsubscribeNotification) unsubscribeNotification();
+        };
+      }
+    };
+
+    fetchData();
     return () => {
-      if (unsubscribeFeedback) unsubscribeFeedback();
-      if (unsubscribeReaction) unsubscribeReaction();
-      if (unsubscribeNotification) unsubscribeNotification();
+      isMounted = false;
     };
   }, [ownerUserId]);
 
@@ -163,6 +188,14 @@ const NotificationTabs = ({ ownerUserId }) => {
   const fetchUnreadNotifs = async () => {
     setLoading(true);
     try {
+      const cachedData = localStorage.getItem("unreadNotifs");
+      if (cachedData) {
+        setGetUnreadComments(JSON.parse(cachedData).comments);
+        setGetUnreadReactions(JSON.parse(cachedData).reactions);
+        setLoading(false);
+        return;
+      }
+
       const [unreadComments, unreadReactions] = await Promise.all([
         getUnreadCommentsNotification(ownerUserId),
         getUnreadReactionsNotification(ownerUserId),
@@ -170,6 +203,11 @@ const NotificationTabs = ({ ownerUserId }) => {
 
       setGetUnreadComments(unreadComments || []);
       setGetUnreadReactions(unreadReactions || []);
+
+      localStorage.setItem(
+        "unreadNotifs",
+        JSON.stringify({ comments: unreadComments, reactions: unreadReactions })
+      );
     } catch (err) {
       console.error("Error fetching notifications list:", err);
     } finally {
@@ -181,13 +219,30 @@ const NotificationTabs = ({ ownerUserId }) => {
     fetchUnreadNotifs();
   }, [ownerUserId]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // useEffect(() => {
+  //   const fetchUnreadCount = async () => {
+  //     const count = await getNotificationsCounter(ownerUserId);
+  //     setUnreadCount(count);
+  //   };
 
-  // if (getNotifications.length == 0) {
-  //   return <div>Loading...</div>;
-  // }
+  //   fetchUnreadCount();
+
+  //   const notificationQuery = query(
+  //     collection(db, "notifications"),
+  //     where("userId", "==", ownerUserId),
+  //     where("readStatus", "==", false)
+  //   );
+
+  //   if (loading) {
+  //     return <div>Loading...</div>;
+  //   }
+
+  //   const unsubscribe = onSnapshot(notificationQuery, (snapshot) => {
+  //     setUnreadCount(snapshot.docs.length); // Update unread count in real-time
+  //   });
+
+  //   return () => unsubscribe();
+  // }, [ownerUserId]);
 
   return (
     <>
