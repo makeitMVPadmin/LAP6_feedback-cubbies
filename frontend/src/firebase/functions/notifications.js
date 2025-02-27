@@ -286,26 +286,28 @@ export const getNotificationsCounter = async (ownerUserId) => {
     const totalSnapshot = await getDocs(totalQuery);
     const totalCount = totalSnapshot.docs.length;
 
-    console.log("Total number of notifications: ", totalCount);
+    // Query comments count
+    const commentQuery = query(
+      notificationsRef,
+      where("userId", "==", ownerUserId),
+      where("feedbackId", "!=", null)
+    );
+    const commentSnapshot = await getDocs(commentQuery);
+    const commentCount = commentSnapshot.docs.length;
 
-    // Manually count comments and boosts
-    let totalComments = 0;
-    let totalBoosts = 0;
-    for (const notification of totalSnapshot.docs) {
-      if (notification.data().feedbackId) {
-        totalComments++;
-      } else if (notification.data().boostId) {
-        totalBoosts++;
-      }
-    };
-
-    console.log("Total number of comments: ", totalComments);
-    console.log("Total number of boosts: ", totalBoosts);
+    // Query boosts count
+    const boostQuery = query(
+      notificationsRef,
+      where("userId", "==", ownerUserId),
+      where("boostId", "!=", null)
+    );
+    const boostSnapshot = await getDocs(boostQuery);
+    const boostCount = boostSnapshot.docs.length;
 
     return {
       totalCount,
-      totalComments,
-      totalBoosts,
+      commentCount: commentCount ?? 0,
+      boostCount: boostCount ?? 0,
     };
   } catch (err) {
     console.error("Error getting total notifications count: ", err);

@@ -28,9 +28,6 @@ import React, { useEffect, useState } from "react";
 const NotificationTabs = ({ ownerUserId }) => {
   const [getNotifications, setGetNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const [getUnreadComments, setGetUnreadComments] = useState([]);
-  // const [getUnreadReactions, setGetUnreadReactions] = useState([]);
-  // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
   const [boostCount, setBoostCount] = useState(0);
@@ -199,10 +196,27 @@ const NotificationTabs = ({ ownerUserId }) => {
       const { totalCount, commentCount, boostCount } =
         await getNotificationsCounter(ownerUserId);
 
+      console.log(
+        "Updating State - Total:",
+        totalCount,
+        "Comments:",
+        commentCount,
+        "Boosts:",
+        boostCount
+      );
+
+      // Ensure default values if undefined
+      const safeCommentCount = commentCount ?? 0;
+      const safeBoostCount = boostCount ?? 0;
+
       // Only update state if values actually changed
       setTotalCount((prev) => (prev !== totalCount ? totalCount : prev));
-      setCommentCount((prev) => (prev !== commentCount ? commentCount : prev));
-      setBoostCount((prev) => (prev !== boostCount ? boostCount : prev));
+      setCommentCount((prev) =>
+        prev !== safeCommentCount ? safeCommentCount : prev
+      );
+      setBoostCount((prev) =>
+        prev !== safeBoostCount ? safeBoostCount : prev
+      );
     } catch (err) {
       console.error("Error fetching notification counts: ", err);
     }
@@ -219,38 +233,36 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsList className="bg-[#0264D4] w-full flex justify-start gap-[48px] rounded-none h-14 p-[12px_16px] relative">
           <TabsTrigger
             value="all"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[58px]"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[58px] px-4 min-w-[90px] flex justify-between items-center relative"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center">
-              {totalCount > 0 && (
-                <span className="bg-red-500 text-white text-xs font-bold rounded-full px-3 py-1 absolute right-4">
-                  {totalCount}
-                </span>
-              )}
-            </div>
+            {totalCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
+                {totalCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger
             value="comments"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[165px]"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[165px] flex items-center relative"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Comments
-            {commentCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2">
+            {typeof commentCount !== "undefined" && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 z-50">
                 {commentCount}
               </span>
             )}
           </TabsTrigger>
           <TabsTrigger
             value="boosts"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[124px]"
+            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[124px] flex items-center relative"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Boosts
-            {boostCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2">
+            {typeof boostCount !== "undefined" && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 z-50">
                 {boostCount}
               </span>
             )}
