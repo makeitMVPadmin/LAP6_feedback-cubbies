@@ -7,7 +7,7 @@ export {
 } from './portfolios';
 export { fetchUsers, fetchUserById } from './fetchUsers';
 export {
-  createReactionNotification,
+  createBoostNotification,
   createCommentNotification,
   getAllNotifications,
   getUnreadCommentsNotification,

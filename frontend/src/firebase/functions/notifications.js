@@ -76,18 +76,18 @@ export const createCommentNotification = async (feedbackId) => {
   }
 };
 
-export const createReactionNotification = async (boostId) => {
+export const createBoostNotification = async (boostId) => {
   try {
-    // Fetch the reaction
-    const reactionDoc = await getDoc(doc(db, "boosts", boostId));
-    if (!reactionDoc.exists()) {
-      console.error("Reaction not found");
+    // Fetch the boost
+    const boostDoc = await getDoc(doc(db, "boosts", boostId));
+    if (!boostDoc.exists()) {
+      console.error("Boost not found");
       return null;
     }
 
-    const reactionData = reactionDoc.data();
-    if (!reactionData || !reactionData.userId || !reactionData.portfolioId) {
-      console.error("Missing required fields in reaction data");
+    const boostData = boostDoc.data();
+    if (!boostData || !boostData.userId || !boostData.portfolioId) {
+      console.error("Missing required fields in boost data");
       return null;
     }
 
@@ -124,7 +124,7 @@ export const createReactionNotification = async (boostId) => {
       userId: reactionData.userId,
       portfolioId: reactionData.portfolioId,
       boostId: boostId,
-      message: `${senderName} reacted to your portfolio`,
+      message: `${senderName} boosted your portfolio`,
       readStatus: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -138,10 +138,9 @@ export const createReactionNotification = async (boostId) => {
 };
 
 // GET
-// Get paginated notifications for a user "All" Notifications Tab
+// Get notifications for a user "All" Notifications Tab
 export const getAllNotifications = async (
-  ownerUserId,
-  lastVisibleDoc = null
+  ownerUserId
 ) => {
   try {
     // Fetch all the portofolios associated with the ownerUserId
@@ -152,22 +151,17 @@ export const getAllNotifications = async (
     const portfolioSnapshot = await getDocs(portfolioQuery);
     const portfolioIds = portfolioSnapshot.docs.map((doc) => doc.id);
     if (portfolioIds.length === 0) {
-      return {
-        notifications: [],
-        lastVisibleDoc: null,
-      };
+      return [];
     }
 
     // Fetch all notifications(paginated) for the ownerUserId's portfolios
     let notificationQuery = query(
       collection(db, "notifications"),
       where("portfolioId", "in", portfolioIds),
-      orderBy("createdAt", "desc"),
-      limit(5)
+      // orderBy("createdAt", "desc"),
+      // limit(5)
     );
-    if (lastVisibleDoc) {
-      notificationQuery = query(notificationQuery, startAfter(lastVisibleDoc));
-    }
+
     const notificationSnapshot = await getDocs(notificationQuery);
     const notificationList = [];
 
@@ -177,12 +171,16 @@ export const getAllNotifications = async (
         ...docSnap.data(),
       };
 
+      console.log("raw notificationData: ", notificationData);
+      
       if (notificationData.feedbackId) {
         const feedbackDoc = await getDoc(
           doc(db, "feedbacks", notificationData.feedbackId)
         );
+
         if (feedbackDoc.exists()) {
           notificationData.feedbackContent = feedbackDoc.data().comment;
+          console.log("Fetched feedbackContent: ", notificationData.feedbackContent);
         } else {
           notificationData.feedbackContent = null;
         }
@@ -190,16 +188,17 @@ export const getAllNotifications = async (
       notificationList.push(notificationData);
     }
 
-    const lastVisible =
-      notificationSnapshot.docs[notificationSnapshot.docs.length - 1];
-    return { notificationList, lastVisible };
+    console.log("notificationList: ", notificationList);
+    console.log("Final notification list in backend: ", notificationList);
+
+    return notificationList;
   } catch (err) {
     console.error("Error getting notifications: ", err);
     throw new Error(`getNotifications failed: ${err.message}`);
   }
 };
 
-// Get all unread notifications for a user "Unread Comments/Feedbacks & Reactions Tab"
+// Get all unread comment notifications for a user 
 export const getUnreadCommentsNotification = async (ownerUserId) => {
   try {
     // Filtering for unread notifications
@@ -208,7 +207,7 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
       notificationsRef,
       where("userId", "==", ownerUserId),
       where("boostId", "==", null),
-      // where("readStatus", "==", false),
+      where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
       limit(5)
     );
@@ -229,7 +228,7 @@ export const getUnreadCommentsNotification = async (ownerUserId) => {
   }
 };
 
-// Get all unread notifications for a user "Unread Comments/Feedbacks & Reactions Tab"
+// Get all unread boost notifications for a user
 export const getUnreadReactionsNotification = async (ownerUserId) => {
   try {
     // Filtering for unread notifications of the entire collection
@@ -238,7 +237,7 @@ export const getUnreadReactionsNotification = async (ownerUserId) => {
       notificationsRef,
       where("userId", "==", ownerUserId),
       where("boostId", "!=", null),
-      // where("readStatus", "==", false),
+      where("readStatus", "==", false),
       orderBy("createdAt", "desc"),
       limit(5)
     );
@@ -277,16 +276,57 @@ export const markNotificationAsRead = async (notificationId) => {
 export const getNotificationsCounter = async (ownerUserId) => {
   try {
     const notificationsRef = collection(db, "notifications");
-    const unreadQuery = query(
+
+    // Query for the total number of notifications
+    const totalQuery = query(
       notificationsRef,
-      where("userId", "==", ownerUserId),
-      where("readStatus", "==", false)
+      where("userId", "==", ownerUserId)
     );
 
-    const querySnapshot = await getDocs(unreadQuery);
-    return querySnapshot.docs.length;
+    const totalSnapshot = await getDocs(totalQuery);
+    const totalCount = totalSnapshot.docs.length;
+
+    console.log("Total number of notifications: ", totalCount);
+
+    // Query for comments notifications
+    // const commentsQuery = query(
+    //   notificationsRef,
+    //   where("userId", "==", ownerUserId),
+    //   where("feedbackId", "!=", null)
+    // );
+    // const commentsSnapshot = await getDocs(commentsQuery);
+    // const totalComments = commentsSnapshot.docs.length;
+    
+    // Query for boost notifications
+    // const boostQuery = query(
+    //   notificationsRef,
+    //   where("userId", "==", ownerUserId),
+    //   where("boostId", "!=", null)
+    // );
+    // const boostSnapshot = await getDocs(boostQuery);
+    // const totalBoosts = boostSnapshot.docs.length;
+
+    // Manually count comments and boosts
+    let totalComments = 0;
+    let totalBoosts = 0;
+    for (const notification of totalSnapshot.docs) {
+      if (notification.data().feedbackId) {
+        totalComments++;
+      } else if (notification.data().boostId) {
+        totalBoosts++;
+      }
+    };
+
+    console.log("Total number of comments: ", totalComments);
+    console.log("Total number of boosts: ", totalBoosts);
+
+    return {
+      totalCount,
+      totalComments,
+      totalBoosts,
+    };
   } catch (err) {
-    console.error("Error getting notifications count: ", err);
+    console.error("Error getting total notifications count: ", err);
     return 0;
   }
 }

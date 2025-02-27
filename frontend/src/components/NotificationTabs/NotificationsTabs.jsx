@@ -2,10 +2,11 @@ import { db } from "../../firebase/firebase";
 import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import {
   createCommentNotification,
-  createReactionNotification,
+  createBoostNotification,
   getAllNotifications,
   getUnreadCommentsNotification,
   getUnreadReactionsNotification,
+  getNotificationsCounter,
 } from "../../firebase/functions/notifications";
 import KebabMenu from "../KebabMenu/KebabMenu";
 import {
@@ -26,12 +27,13 @@ import React, { useEffect, useState } from "react";
 
 const NotificationTabs = ({ ownerUserId }) => {
   const [getNotifications, setGetNotifications] = useState([]);
-  const [getLastVisibleDoc, setGetLastVisibleDoc] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [getUnreadComments, setGetUnreadComments] = useState([]);
-  const [getUnreadReactions, setGetUnreadReactions] = useState([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
+  // const [getUnreadComments, setGetUnreadComments] = useState([]);
+  // const [getUnreadReactions, setGetUnreadReactions] = useState([]);
+  // const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [boostCount, setBoostCount] = useState(0);
 
   // Listener for a new comment created
   let isFeedbackListenerActive = false;
@@ -90,7 +92,7 @@ const NotificationTabs = ({ ownerUserId }) => {
             console.log("New reaction detected");
 
             try {
-              await createReactionNotification(boostId);
+              await createBoostNotification(boostId);
             } catch (err) {
               console.error("Failed to create notification:", err);
             }
@@ -108,13 +110,13 @@ const NotificationTabs = ({ ownerUserId }) => {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const { notificationList, lastVisible } = await getAllNotifications(
-        ownerUserId
-      );
+      console.log("ownerUserId: ", ownerUserId);
+
+      const { notificationList } = await getAllNotifications(ownerUserId);
+
       setGetNotifications(
         Array.isArray(notificationList) ? notificationList : []
       );
-      setGetLastVisibleDoc(lastVisible);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
     } finally {
@@ -128,6 +130,7 @@ const NotificationTabs = ({ ownerUserId }) => {
       const notificationQuery = query(
         collection(db, "notifications"),
         where("userId", "==", ownerUserId),
+        where("readStatus", "==", false),
         orderBy("createdAt", "desc")
       );
 
@@ -140,6 +143,7 @@ const NotificationTabs = ({ ownerUserId }) => {
 
         // Update the notifications state and removing duplicates
         setGetNotifications((prev) => {
+          // console.log("New notifications: ", newNotifications);
           const prevArr = Array.isArray(prev) ? prev : [];
           const mergedArr = [
             ...newNotifications.filter(
@@ -158,8 +162,6 @@ const NotificationTabs = ({ ownerUserId }) => {
       return [];
     }
   };
-
-  // console.log("getNotifications:", getNotifications);
 
   useEffect(() => {
     let isMounted = true;
@@ -189,69 +191,26 @@ const NotificationTabs = ({ ownerUserId }) => {
     (notif) => notif.feedbackId
   );
 
-  const boostNotifications = getNotifications.filter(
-    (notif) => notif.boostId
-  )
+  const boostNotifications = getNotifications.filter((notif) => notif.boostId);
 
-  // Fetching unread notifications
-  const fetchUnreadNotifs = async () => {
-    setLoading(true);
+  // Fetch notifications count
+  const fetchNotificationsCounts = async () => {
     try {
-      const cachedData = localStorage.getItem("unreadNotifs");
-      if (cachedData) {
-        setGetUnreadComments(JSON.parse(cachedData).comments);
-        setGetUnreadReactions(JSON.parse(cachedData).reactions);
-        setLoading(false);
-        return;
-      }
-
-      const [unreadComments, unreadReactions] = await Promise.all([
-        getUnreadCommentsNotification(ownerUserId),
-        getUnreadReactionsNotification(ownerUserId),
-      ]);
-
-      setGetUnreadComments(unreadComments || []);
-      setGetUnreadReactions(unreadReactions || []);
-
-      localStorage.setItem(
-        "unreadNotifs",
-        JSON.stringify({ comments: unreadComments, reactions: unreadReactions })
-      );
+      const { totalCount, commentCount, boostCount }= await getNotificationsCounter(ownerUserId);
+      setTotalCount(totalCount);
+      setCommentCount(commentCount);
+      setBoostCount(boostCount);
     } catch (err) {
-      console.error("Error fetching notifications list:", err);
-    } finally {
-      setLoading(false);
+      console.error("Error fetching notification counts: ", err);
     }
   };
 
   useEffect(() => {
-    fetchUnreadNotifs();
+    fetchNotificationsCounts();
+    console.log("Total count: ", totalCount);
+    console.log("Comment count: ", commentCount);
+    console.log("Boost count: ", boostCount);
   }, [ownerUserId]);
-
-  // useEffect(() => {
-  //   const fetchUnreadCount = async () => {
-  //     const count = await getNotificationsCounter(ownerUserId);
-  //     setUnreadCount(count);
-  //   };
-
-  //   fetchUnreadCount();
-
-  //   const notificationQuery = query(
-  //     collection(db, "notifications"),
-  //     where("userId", "==", ownerUserId),
-  //     where("readStatus", "==", false)
-  //   );
-
-  //   if (loading) {
-  //     return <div>Loading...</div>;
-  //   }
-
-  //   const unsubscribe = onSnapshot(notificationQuery, (snapshot) => {
-  //     setUnreadCount(snapshot.docs.length); // Update unread count in real-time
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [ownerUserId]);
 
   return (
     <>
@@ -263,6 +222,11 @@ const NotificationTabs = ({ ownerUserId }) => {
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
+            {totalCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                {totalCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger
             value="comments"
@@ -270,6 +234,11 @@ const NotificationTabs = ({ ownerUserId }) => {
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Comments
+            {commentCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                {commentCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger
             value="boosts"
@@ -277,6 +246,11 @@ const NotificationTabs = ({ ownerUserId }) => {
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Boosts
+            {boostCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-2">
+                {boostCount}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -386,9 +360,7 @@ const NotificationTabs = ({ ownerUserId }) => {
                     </p>
                   </div>
                   <KebabMenu
-                    onBlock={() =>
-                      console.log("Block user:", notif.userId)
-                    }
+                    onBlock={() => console.log("Block user:", notif.userId)}
                     onMute={() => console.log("Mute user:", notif.userId)}
                     onDelete={() => deleteNotification(notif.id)}
                     onPreferences={() =>
@@ -419,9 +391,9 @@ const NotificationTabs = ({ ownerUserId }) => {
         <TabsContent value="boosts">
           <section className="flex flex-col gap-2">
             {boostNotifications.length > 0 ? (
-              boostNotifications.map((boostNotif) => (
+              boostNotifications.map((notif) => (
                 <div
-                  key={boostNotif.id}
+                  key={notif.id}
                   className="flex items-start justify-between w-full border rounded-lg gap-[24px] bg-[#F5F5F5] p-[16px_24px]"
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
@@ -437,25 +409,23 @@ const NotificationTabs = ({ ownerUserId }) => {
                       className="font-bold text-[16px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      {boostNotif.message}
+                      {notif.message}
                     </h3>
                     <p
                       className="text-right text-[14px]"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
-                      {boostNotif.createdAt
+                      {notif.createdAt
                         ? new Date(
-                            boostNotif.createdAt.toDate()
+                            notif.createdAt.toDate()
                           ).toLocaleDateString()
                         : ""}
                     </p>
                   </div>
                   <KebabMenu
-                    onBlock={() =>
-                      console.log("Block user:", boostNotif.userId)
-                    }
-                    onMute={() => console.log("Mute user:", boostNotif.userId)}
-                    onDelete={() => deleteNotification(boostNotif.id)}
+                    onBlock={() => console.log("Block user:", notif.userId)}
+                    onMute={() => console.log("Mute user:", notif.userId)}
+                    onDelete={() => deleteNotification(notif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }
