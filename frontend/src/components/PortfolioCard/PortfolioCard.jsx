@@ -12,29 +12,28 @@ const PortfolioCard = ({ portfolio, user, role }) => {
         New
       </CardContent>
 
-      <div className="className=w-[342px] h-[60px] justify-start items-start gap-2 inline-flex py-3 ms-[4.18rem]">
+      <div className="className=w-[342px] h-[60px] justify-start items-center gap-2 inline-flex py-3 ms-[4.18rem]">
         <div className="w-9 h-9 inline-flex justify-center items-center">
           <Avatar className="w-9 h-9 rounded-full" />
         </div>
 
-        <div className="flex w-[298px]">
-          <div className="flex items-center gap-4">
-            <div className="text-slate-950 text-xl  flex flex-row font-bold font-['Montserrat'] leading-7">
-              {user?.firstName} {user?.lastName}
-            </div>
-            <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
-              {user?.email}
-            </div>
+        <div className="flex w-[298px] items-center gap-4">
+          <div className="text-slate-950 text-xl flex flex-row font-bold font-['Montserrat'] leading-7">
+            {user?.firstName}
+            {user?.lastName}
           </div>
+          <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
+            {user?.email}
+          </div>
+        </div>
+      </div>
 
-          <div className="flex items-center gap-4 mt-1">
-            <div className="text-slate-500 font-h2 font-bold font-['Montserrat'] leading-none">
-              {role?.roleName}
-            </div>
-            <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-none">
-              1 day ago
-            </div>
-          </div>
+      <div className="h-6 pl-28 py-1 justify-items-center gap-4 inline-flex">
+        <div className="text-slate-500 font-h2 font-bold font-['Montserrat'] leading-none"> 
+          New Grad 
+        </div>
+        <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-none">
+          1 day ago
         </div>
       </div>
 

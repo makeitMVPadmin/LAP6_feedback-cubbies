@@ -59,7 +59,7 @@ function App() {
           <AppContent />
         </UserProvider>
       </NavigationProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-full flex flex-col">
         <Toaster position="bottom-right" richColors />
       </div>
     </>
