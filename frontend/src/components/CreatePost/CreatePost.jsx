@@ -1,12 +1,30 @@
 import React, { useState } from 'react';
 import PostModal from '../PostModal/PostModal.jsx';
-import { Button, Card, Avatar } from '../ui/index';
+import { Button, Card, Avatar } from '../ui/index'
 
 function CreatePost() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"; // Disable scrolling when modal opens
+    } else {
+      document.body.style.overflow = ""; // Restore scrolling when modal closes
+    }
+
+    return () => {
+      document.body.style.overflow = ""; // Cleanup on unmount
+    };
+  }, [isModalOpen]);
+
   return (
     <>
      <div className="h-12 px-6 justify-start items-center gap-16 inline-flex">
@@ -16,6 +34,7 @@ function CreatePost() {
           Start Creating A Post...
         </Button>
       </div>
+
       <PostModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </>
   );
