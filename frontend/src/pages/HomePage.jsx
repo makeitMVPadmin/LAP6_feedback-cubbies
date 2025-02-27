@@ -1,25 +1,28 @@
-import CreatePost from "../components/CreatePost/CreatePost";
-import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
-import { Card } from "../components/ui/index";
+import CreatePost from '../components/CreatePost/CreatePost';
+import PortfolioCard from '../components/PortfolioCard/PortfolioCard';
+import FilterTags from '../components/FilterTags';
+import { Card, Avatar } from '../components/ui/index';
 import {
   fetchPortfolio,
   fetchRoleById,
   fetchUserById,
-} from "../firebase/functions/index";
-import { useEffect, useState } from "react";
+} from '../firebase/functions/index';
+import { useEffect, useState } from 'react';
 
 function HomePage() {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTag, setSelectedTag] = useState(null);
+
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       try {
         const portfolioData = await fetchPortfolio();
-        console.log("Fetched portfolios:", portfolioData);
+        console.log('Fetched portfolios:', portfolioData);
         setPortfolios(portfolioData);
 
         const usersData = {};
@@ -46,7 +49,7 @@ function HomePage() {
         setUsers(usersData);
         setRoles(rolesData);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
@@ -54,15 +57,21 @@ function HomePage() {
     getData();
   }, []);
 
-
   return (
-    <div className="grid grid-cols-1 gap-[3.13rem] justify-items-center">
-      <CreatePost />
-      <div className="flex flex-col items-center justify-center h-auto text-center gap-6">
+    <section className="grid grid-cols-1  gap-[3.13rem] justify-items-center">
+      <div className="flex w-[47.125rem] justify-start">
+        <Card className="h-24 p-6 bg-blue-200 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-start gap-6 inline-flex ">
+          <Avatar className="w-12 h-12" />
+          <CreatePost />
+          <FilterTags selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+        </Card>
+      </div>
+
+      <div >
         {loading ? (
           <p>Loading...</p>
         ) : portfolios.length > 0 ? (
-          <Card className="flex flex-col gap-6 items-center">
+          <Card className=" w-[882px] grid grid-cols-1 justify-items-center h-auto text-center gap-6 bg-blue-200 p-16">
             {portfolios.map((portfolio) => (
               <PortfolioCard
                 key={portfolio.id}
@@ -76,7 +85,7 @@ function HomePage() {
           <p>No portfolios available.</p>
         )}
       </div>
-    </div>
+    </section>
   );
 }
 

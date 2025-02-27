@@ -145,7 +145,7 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  console.log("getNotifications:", getNotifications);
+  // console.log("getNotifications:", getNotifications);
 
   useEffect(() => {
     fetchNotifications();

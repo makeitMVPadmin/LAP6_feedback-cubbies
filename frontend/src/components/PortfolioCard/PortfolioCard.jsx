@@ -7,7 +7,7 @@ const PortfolioCard = ({ portfolio, user, role }) => {
   return (
     <Card
       key={portfolio.id}
-      className="w-[754px] h-[537px] flex-shrink-0 rounded-lg border border-gray-700 border-t border-l border-r-2 border-b-2 p-6 shadow-md flex flex-col gap-6"
+      className="w-[754px] h-[537px] relative bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex-col justify-start items-start inline-flex"
     >
       <div className="h-6 px-2.5 w-15 py-1 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex">
         <div className="text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
@@ -20,21 +20,21 @@ const PortfolioCard = ({ portfolio, user, role }) => {
           <Avatar className="w-12 h-12" />
         </div>
 
-        <div className="flex flex-col w-[298px]">
+        <div className="flex w-[298px]">
           <div className="flex items-center gap-4">
-            <div className="text-slate-950 text-xl font-bold font-[Corben] leading-7">
+            <div className="text-slate-950 text-xl  flex flex-row font-bold font-['Montserrat'] leading-7">
               {user?.firstName} {user?.lastName}
             </div>
-            <div className="text-slate-500 font-header font-bold font-[Corben] leading-tight">
+            <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
               {user?.email}
             </div>
           </div>
 
           <div className="flex items-center gap-4 mt-1">
-            <div className="text-slate-500 font-h2 font-bold font-[corben] leading-none">
+            <div className="text-slate-500 font-h2 font-bold font-['Montserrat'] leading-none">
               {role?.roleName}
             </div>
-            <div className="text-slate-500 font-header font-bold font-[corben] leading-none">
+            <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-none">
               1 day ago
             </div>
           </div>

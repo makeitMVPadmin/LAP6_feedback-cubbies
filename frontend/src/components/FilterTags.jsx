@@ -22,23 +22,23 @@ export function FilterTags() {
           <DropdownMenuGroup className="text-[#28363f] text-base font-bold font-['Montserrat'] leading-tight">
             Design Tags
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               UX
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Product Design
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f]focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Wireframing
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Prototype
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Branding
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Motion Design
             </DropdownMenuItem>
           </DropdownMenuGroup>
@@ -46,23 +46,23 @@ export function FilterTags() {
           <DropdownMenuGroup className="text-[#28363f] text-base font-bold font-['Montserrat'] leading-tight">
             Dev Tags
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800]  text-sm font-normal font-['Montserrat'] leading-tight">
               Frontend
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Backend
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Full Stack
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Python
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               JavaScript
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Data Science
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -70,23 +70,23 @@ export function FilterTags() {
           <DropdownMenuGroup className="text-[#28363f] text-base font-bold font-['Montserrat'] leading-tight">
             General Tags
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Prodect Management
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Cybersecurity
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               DevOps
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Coding
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Game Development
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#e6b800] text-sm font-normal font-['Montserrat'] leading-tight">
               Mobile Development
             </DropdownMenuItem>
           </DropdownMenuGroup>
