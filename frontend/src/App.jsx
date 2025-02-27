@@ -26,7 +26,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#0954b0]">
       <header className="bg-white shadow-md p-4">
         <TopNav
           setCurrentPage={goToProfileDetails}

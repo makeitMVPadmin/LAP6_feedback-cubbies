@@ -167,6 +167,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   );
   const boostNotifications = getNotifications.filter((notif) => notif.boostId);
 
+
   // Fetch notifications count
   const fetchNotificationsCounts = async () => {
     try {
