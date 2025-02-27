@@ -16,12 +16,13 @@ function PostModal({ isOpen, onClose, currentUser }) {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"; // Disable scrolling when modal opens
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = ""; // Restore scrolling when modal closes
     }
+
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = ""; // Ensure cleanup when modal unmounts
     };
   }, [isOpen]);
 
@@ -60,6 +61,8 @@ function PostModal({ isOpen, onClose, currentUser }) {
     try {
       // Add portfolio and get the portfolioId
       const addedPortfolio = await addPortfolio(portfolioData);
+      console.log("Added Portfolio Response:", addedPortfolio);
+
       const portfolioId = addedPortfolio.id;
 
       console.log("Portfolio Created with ID:", portfolioId);
