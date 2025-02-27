@@ -1,3 +1,4 @@
+import { useNavigation } from "../../context/NavigationContext";
 import { db } from "../../firebase/firebase";
 import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import {
@@ -22,7 +23,6 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "../../context/NavigationContext";
 
 const NotificationTabs = ({ ownerUserId }) => {
   const [getNotifications, setGetNotifications] = useState([]);
@@ -32,6 +32,8 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [boostCount, setBoostCount] = useState(0);
   const [notifClick, setNotifClick] = useState(getNotifications);
   const { goToProfileDetails } = useNavigation();
+  const [commentNotif, setCommentNotif] = useState([]);
+  const [boostNotif, setBoostNotif] = useState([]);
 
   // Listener for a new comment created
   let isFeedbackListenerActive = false;
@@ -159,34 +161,10 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchData = async () => {
-      await fetchNotifications();
-      if (isMounted) {
-        const unsubscribeFeedback = listenForNewFeedback();
-        const unsubscribeReaction = listenForNewReaction();
-        const unsubscribeNotification = listenForNewNotifications();
-        return () => {
-          if (unsubscribeFeedback) unsubscribeFeedback();
-          if (unsubscribeReaction) unsubscribeReaction();
-          if (unsubscribeNotification) unsubscribeNotification();
-        };
-      }
-    };
-
-    fetchData();
-    return () => {
-      isMounted = false;
-    };
-  }, [ownerUserId]);
-
   // Filtering notifications by comments and boosts
   const commentNotifications = getNotifications.filter(
     (notif) => notif.feedbackId
   );
-
   const boostNotifications = getNotifications.filter((notif) => notif.boostId);
 
   // Fetch notifications count
@@ -212,11 +190,6 @@ const NotificationTabs = ({ ownerUserId }) => {
     }
   };
 
-  useEffect(() => {
-    if (!ownerUserId) return;
-    fetchNotificationsCounts();
-  }, [ownerUserId]);
-
   // Handle Notification Click
   const handleNotificationClick = async (notif) => {
     if (!notif.portfolioId) {
@@ -224,19 +197,52 @@ const NotificationTabs = ({ ownerUserId }) => {
       return;
     }
 
-    setNotifClick((prev) => 
-    prev.map((n) => (n.id === notif.id ? { ...n, readStatus: true } : n))
-  );
+    setNotifClick((prev) =>
+      prev.map((n) => (n.id === notif.id ? { ...n, readStatus: true } : n))
+    );
 
-  try {
-    await markNotificationAsRead(notif.id);
-  } catch (err) {
-    console.error("Failed to mark notification as read: ", err);
-  }
+    try {
+      await markNotificationAsRead(notif.id);
+    } catch (err) {
+      console.error("Failed to mark notification as read: ", err);
+    }
 
-  //Redirect to portfolio page
-  goToProfileDetails(notif.portfolioId);
-  }
+    //Redirect to portfolio page
+    goToProfileDetails(notif.portfolioId);
+  };
+
+  useEffect(() => {
+    setCommentNotif(getNotifications.filter((notif) => notif.feedbackId));
+    setBoostNotif(getNotifications.filter((notif) => notif.boostId));
+  }, [getNotifications]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      await fetchNotifications();
+      if (isMounted) {
+        const unsubscribeFeedback = listenForNewFeedback();
+        const unsubscribeReaction = listenForNewReaction();
+        const unsubscribeNotification = listenForNewNotifications();
+        return () => {
+          if (unsubscribeFeedback) unsubscribeFeedback();
+          if (unsubscribeReaction) unsubscribeReaction();
+          if (unsubscribeNotification) unsubscribeNotification();
+        };
+      }
+    };
+
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [ownerUserId]);
+
+  useEffect(() => {
+    if (!ownerUserId) return;
+    fetchNotificationsCounts();
+  }, [ownerUserId]);
 
   return (
     <>
@@ -249,7 +255,7 @@ const NotificationTabs = ({ ownerUserId }) => {
           >
             All
             {totalCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1">
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1">
                 {totalCount}
               </span>
             )}
@@ -261,7 +267,7 @@ const NotificationTabs = ({ ownerUserId }) => {
           >
             Comments
             {typeof commentCount !== "undefined" && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 z-50">
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50">
                 {commentCount}
               </span>
             )}
@@ -273,7 +279,7 @@ const NotificationTabs = ({ ownerUserId }) => {
           >
             Boosts
             {typeof boostCount !== "undefined" && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 z-50">
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50">
                 {boostCount}
               </span>
             )}
@@ -288,7 +294,9 @@ const NotificationTabs = ({ ownerUserId }) => {
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${notif.readStatus ? "bg-gray-200" : "bg-white"}`}
+                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-200" : "bg-white"
+                  }`}
                   style={{
                     borderTop: "1px solid var(--Gray-Gray12, #28363F)",
                     borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -296,7 +304,10 @@ const NotificationTabs = ({ ownerUserId }) => {
                     borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                     background: "var(--neutral-100, #F5F5F5)",
                   }}
-                  onClick={() => handleNotificationClick(notif)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNotificationClick(notif);
+                  }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow">
@@ -366,6 +377,10 @@ const NotificationTabs = ({ ownerUserId }) => {
                     borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                     background: "var(--neutral-100, #F5F5F5)",
                   }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNotificationClick(notif);
+                  }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
                   <div className="flex-grow text-center">
@@ -428,6 +443,10 @@ const NotificationTabs = ({ ownerUserId }) => {
                     borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
                     borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
                     background: "var(--neutral-100, #F5F5F5)",
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNotificationClick(notif);
                   }}
                 >
                   <span class="material-symbols-outlined">account_circle</span>
