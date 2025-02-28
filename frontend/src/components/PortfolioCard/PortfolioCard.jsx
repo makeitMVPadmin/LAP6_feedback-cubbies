@@ -1,3 +1,4 @@
+import media from "../../assets/media.png";
 import plusIcon from "../../assets/plus.svg";
 import { useNavigation } from "../../context/NavigationContext";
 import BoostButton from "../BoostsBtn/BoostsBtn";
@@ -50,17 +51,19 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
         <p>{portfolio.description}</p>
       </CardTitle>
 
-      {portfolio.imageUrl && (
-        <div className="flex justify-center items-center w-full">
-          <div className="w-full max-w-[570px] h-[188px] flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
-            <img
-              className="w-full h-full object-cover"
-              src={portfolio.imageUrl}
-              alt={portfolio.title}
-            />
-          </div>
+      <div className="flex justify-center items-center w-full">
+        <div className="w-full max-w-[570px] h-[188px] flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
+          <img
+            className="w-full h-full object-cover"
+            src={
+              portfolio.imageUrl && portfolio.imageUrl !== ""
+                ? portfolio.imageUrl
+                : media
+            }
+            alt={portfolio.title}
+          />
         </div>
-      )}
+      </div>
 
       <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
         <div className="flex flex-wrap gap-2 rounded-lg">
