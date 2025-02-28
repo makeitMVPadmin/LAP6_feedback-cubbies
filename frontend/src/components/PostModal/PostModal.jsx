@@ -229,7 +229,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
           </section>
 
           {/* Buttons for canceling or publishing */}
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between">
             <Button
               className="border-none shadow-none  h-[48px] text-[20px]"
               variant="outline"
