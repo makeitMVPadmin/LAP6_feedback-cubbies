@@ -6,7 +6,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
+.material-symbols-outlined {
+  color: currentColor
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
