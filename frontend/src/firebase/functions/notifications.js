@@ -34,7 +34,9 @@ export const createCommentNotification = async (feedbackId) => {
       collection(db, "notifications"),
       where("feedbackId", "==", feedbackId)
     );
+
     const existingNotifSnapshot = await getDocs(existingNotifQuery);
+
     if (!existingNotifSnapshot.empty) {
       console.log("Notification already exists, skipping write.");
       return;
@@ -139,57 +141,53 @@ export const createBoostNotification = async (boostId) => {
 
 // GET
 // Get notifications for a user "All" Notifications Tab
-export const getAllNotifications = async (
-  ownerUserId
-) => {
+export const getAllNotifications = async (ownerUserId) => {
   try {
-    // Fetch all the portofolios associated with the ownerUserId
-    const portfolioQuery = query(
-      collection(db, "portfolios"),
-      where("userId", "==", ownerUserId)
-    );
-    const portfolioSnapshot = await getDocs(portfolioQuery);
-    const portfolioIds = portfolioSnapshot.docs.map((doc) => doc.id);
-    if (portfolioIds.length === 0) {
-      return [];
-    }
-
     // Fetch all notifications(paginated) for the ownerUserId's portfolios
     let notificationQuery = query(
       collection(db, "notifications"),
-      where("portfolioId", "in", portfolioIds),
-      // orderBy("createdAt", "desc"),
-      // limit(5)
+      where("userId", "==", ownerUserId),
+      orderBy("createdAt", "desc")
     );
 
     const notificationSnapshot = await getDocs(notificationQuery);
-    const notificationList = [];
+    let notificationList = notificationSnapshot.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data(),
+    }));
 
-    for (const docSnap of notificationSnapshot.docs) {
-      let notificationData = {
-        id: docSnap.id,
-        ...docSnap.data(),
-      };
+    // Collect all unique feedbackIds
+    const feedbackIds = [
+      ...new Set(
+        notificationList
+          .map((notification) => notification.feedbackId)
+          .filter((id) => id)
+      ),
+    ];
 
-      console.log("raw notificationData: ", notificationData);
-      
-      if (notificationData.feedbackId) {
-        const feedbackDoc = await getDoc(
-          doc(db, "feedbacks", notificationData.feedbackId)
-        );
+    // Fetch feedbacks in a batch (Firestore supports max 30 IDs in "in" query at a time)
+    const feedbackMap = {};
+    const batchSize = 30;
+    for (let i = 0; i < feedbackIds.length; i += batchSize) {
+      const batchIds = feedbackIds.slice(i, i + batchSize);
+      const feedbackQuery = query(
+        collection(db, "feedbacks"),
+        where("__name__", "in", batchIds)
+      );
 
-        if (feedbackDoc.exists()) {
-          notificationData.feedbackContent = feedbackDoc.data().comment;
-          console.log("Fetched feedbackContent: ", notificationData.feedbackContent);
-        } else {
-          notificationData.feedbackContent = null;
-        }
-      }
-      notificationList.push(notificationData);
+      const feedbackSnapshot = await getDocs(feedbackQuery);
+      feedbackSnapshot.forEach((feedbackDoc) => {
+        feedbackMap[feedbackDoc.id] = feedbackDoc.data().comment;
+      });
     }
 
-    console.log("notificationList: ", notificationList);
-    console.log("Final notification list in backend: ", notificationList);
+    notificationList = notificationList.map((notification) => ({
+      ...notification,
+      feedbackContent: feedbackMap[notification.feedbackId] || null,
+    }));
+
+    // console.log("notificationList: ", notificationList);
+    // console.log("Final notification list in backend: ", notificationList);
 
     return notificationList;
   } catch (err) {
@@ -255,4 +253,4 @@ export const getNotificationsCounter = async (ownerUserId) => {
     console.error("Error getting total notifications count: ", err);
     return 0;
   }
-}
+};
