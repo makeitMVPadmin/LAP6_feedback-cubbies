@@ -143,11 +143,12 @@ export const createBoostNotification = async (boostId) => {
 // Get notifications for a user "All" Notifications Tab
 export const getAllNotifications = async (ownerUserId) => {
   try {
-    // Fetch all notifications(paginated) for the ownerUserId's portfolios
+    // Fetch all notifications for the ownerUserId's portfolios
     let notificationQuery = query(
       collection(db, "notifications"),
       where("userId", "==", ownerUserId),
-      orderBy("createdAt", "desc")
+      orderBy("createdAt", "desc"),
+      limit(20)
     );
 
     const notificationSnapshot = await getDocs(notificationQuery);

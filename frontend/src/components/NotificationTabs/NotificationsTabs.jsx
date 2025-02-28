@@ -40,15 +40,28 @@ const NotificationTabs = ({ ownerUserId }) => {
   const { notifications } = useNotifications(ownerUserId);
 
   // Fetching all initial notifications
-  const fetchNotifications = async () => {
+  const fetchNotifications = async (lastDoc = null) => {
     setLoading(true);
     try {
-      const notifications = await getAllNotifications(ownerUserId);
-      // console.log("OwnerUserId: ", ownerUserId);
-      // console.log("Fetched ALL notifications: ", notifications);
+      let notificationsQuery = query(
+        collection(db, "notifications"),
+        where("userId", "==", ownerUserId),
+        orderBy("createdAt", "desc"),
+        limit(10) // Fetch only 10 at a time
+      );
 
-      // Ensure notifications is an array before updating state
-      setGetNotifications(Array.isArray(notifications) ? notifications : []);
+      if (lastDoc) {
+        notificationsQuery = query(notificationsQuery, startAfter(lastDoc));
+      }
+      console.log("Fetched ALL notifications: ", notifications);
+
+      const snapshot = await getDocs(notificationsQuery);
+      const newNotifications = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setGetNotifications((prev) => [...prev, ...newNotifications]);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
     } finally {
@@ -112,10 +125,11 @@ const NotificationTabs = ({ ownerUserId }) => {
 
       setGetNotifications((prev) => {
         // Merge old and new notifications without duplicates
-        const merged = [...notifications, ...prev].filter(
-          (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+        const uniqueNotifications = new Map();
+        [...notifications, ...prev].forEach((notif) =>
+          uniqueNotifications.set(notif.id, notif)
         );
-        return merged;
+        return Array.from(uniqueNotifications.values());
       });
     }
   }, [notifications]);
