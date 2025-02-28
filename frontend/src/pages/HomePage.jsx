@@ -22,7 +22,6 @@ function HomePage() {
       setLoading(true);
       try {
         const portfolioData = await fetchPortfolio();
-        console.log('Fetched portfolios:', portfolioData);
         setPortfolios(portfolioData);
 
         const usersData = {};
@@ -59,6 +58,8 @@ function HomePage() {
 
   // Sort portfolios by updatedAt field in descending order
   const sortedPortfolios = portfolios.sort((a, b) => b.updatedAt - a.updatedAt);
+  console.log("home page roles", roles)
+  
 
   return (
     <section className="grid grid-cols-1 min-h-screen gap-[3.13rem] justify-items-center">
@@ -80,7 +81,7 @@ function HomePage() {
                 key={portfolio.id}
                 portfolio={portfolio}
                 user={users[portfolio.userId]}
-                role={roles[portfolio.userId?.roleId]}
+                role={roles[users[portfolio.userId]?.roleId]}
               />
             ))}
           </Card>

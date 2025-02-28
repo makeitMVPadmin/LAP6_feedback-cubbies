@@ -1,5 +1,5 @@
-import { useNavigation } from '../../context/NavigationContext';
-import BoostButton from '../BoostsBtn/BoostsBtn';
+import { useNavigation } from "../../context/NavigationContext";
+import BoostButton from "../BoostsBtn/BoostsBtn";
 import {
   Button,
   Card,
@@ -7,15 +7,17 @@ import {
   Avatar,
   CardTitle,
   VisibilityIcon,
-} from '../ui/index';
+} from "../ui/index";
 
 const PortfolioCard = ({ portfolio, user, role }) => {
   const { goToProfileDetails } = useNavigation();
+  console.log("portfolio card role", role);
 
   return (
     <Card
       key={portfolio.id}
-      className="w-full max-w-[754px] py-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden">
+      className="w-full max-w-[754px] py-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden"
+    >
       <CardContent className="h-6 w-15 px-2.5 py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
         New
       </CardContent>
@@ -30,14 +32,14 @@ const PortfolioCard = ({ portfolio, user, role }) => {
             {user?.firstName} {user?.lastName}
           </div>
           <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
-            {user?.email}
+            @{user?.username}
           </div>
         </div>
       </div>
 
       <div className="h-6 pl-22 justify-items-center gap-4 pt-1 inline-flex">
         <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none pl-8">
-          New Grad
+          {role?.roleName}
         </div>
         <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
           1 day ago
@@ -69,7 +71,7 @@ const PortfolioCard = ({ portfolio, user, role }) => {
           </div>
           <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
             <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              Coding{' '}
+              Coding{" "}
             </div>
           </div>
           <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
@@ -91,7 +93,8 @@ const PortfolioCard = ({ portfolio, user, role }) => {
 
           <Button
             onClick={() => goToProfileDetails(portfolio.id)}
-            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
+          >
             Comments
           </Button>
         </div>
