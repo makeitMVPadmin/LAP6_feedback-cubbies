@@ -28,7 +28,7 @@ export function FilterTags() {
             <DropdownMenuItem className="text-[#28363f] focus:bg-[#ffd22f] text-sm font-normal font-['Montserrat'] leading-tight">
               Product Design
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-[#28363f]focus:bg-[#ffd22f] text-sm font-normal font-['Montserrat'] leading-tight">
+            <DropdownMenuItem className="text-[#28363f] focus:bg-[#ffd22f] text-sm font-normal font-['Montserrat'] leading-tight">
               Wireframing
             </DropdownMenuItem>
             <DropdownMenuSeparator />

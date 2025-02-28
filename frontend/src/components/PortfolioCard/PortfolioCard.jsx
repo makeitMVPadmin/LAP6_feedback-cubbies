@@ -18,7 +18,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
   return (
     <Card
       key={portfolio.id}
-      className="w-full max-w-[754px] py-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden"
+      className="w-full max-w-[754px] py-6 pb-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden"
     >
       <CardContent className="h-6 w-15 px-2.5 py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
         New
@@ -82,7 +82,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
           ) : (
             <div className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]">
               <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-                {tags.tagName}
+                {/* {tag.tagName} */}
               </div>
             </div>
           )}
