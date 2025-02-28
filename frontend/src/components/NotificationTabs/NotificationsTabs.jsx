@@ -1,6 +1,7 @@
 import { useNavigation } from "../../context/NavigationContext";
 import { db } from "../../firebase/firebase";
 import { deleteNotification } from "../../firebase/functions/kebabFunction";
+import useNotifications from "../../firebase/functions/notificationHooks";
 import {
   createCommentNotification,
   createBoostNotification,
@@ -35,13 +36,16 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [commentNotif, setCommentNotif] = useState([]);
   const [boostNotif, setBoostNotif] = useState([]);
 
+  // Listens for new notifications
+  const { notifications } = useNotifications(ownerUserId);
+
   // Fetching all initial notifications
   const fetchNotifications = async () => {
     setLoading(true);
     try {
       const notifications = await getAllNotifications(ownerUserId);
-      console.log("OwnerUserId: ", ownerUserId);
-      console.log("ALL notifications: ", notifications);
+      // console.log("OwnerUserId: ", ownerUserId);
+      // console.log("Fetched ALL notifications: ", notifications);
 
       // Ensure notifications is an array before updating state
       setGetNotifications(Array.isArray(notifications) ? notifications : []);
@@ -51,55 +55,6 @@ const NotificationTabs = ({ ownerUserId }) => {
       setLoading(false);
     }
   };
-
-  // Listener for new notifications created
-  const listenForNewNotifications = () => {
-    console.log("Listening for new notifications");
-    try {
-      const notificationQuery = query(
-        collection(db, "notifications"),
-        where("userId", "==", ownerUserId),
-        where("readStatus", "==", false),
-        orderBy("createdAt", "desc")
-      );
-
-      // onSnapshot to listen for new notifications
-      const unsubscribe = onSnapshot(notificationQuery, (snapshot) => {
-        const newNotifications = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        console.log("OwnerUserId: ", ownerUserId);
-        console.log("Listener notifications: ", newNotifications);
-
-        // Update the notifications state and removing duplicates
-        setGetNotifications((prev) => {
-          // console.log("New notifications: ", newNotifications);
-          const prevArr = Array.isArray(prev) ? prev : [];
-          const mergedArr = [
-            ...newNotifications.filter(
-              (newNotification) =>
-                !prevArr.some((p) => p.id === newNotification.id)
-            ),
-            ...prevArr,
-          ];
-          return mergedArr;
-        });
-      });
-
-      return unsubscribe;
-    } catch (err) {
-      console.error("Error listening for new notifications: ", err);
-      return [];
-    }
-  };
-
-  // Filtering notifications by comments and boosts
-  const commentNotifications = getNotifications.filter(
-    (notif) => notif.feedbackId
-  );
-  const boostNotifications = getNotifications.filter((notif) => notif.boostId);
 
   // Fetch notifications count
   const fetchNotificationsCounts = async () => {
@@ -145,15 +100,33 @@ const NotificationTabs = ({ ownerUserId }) => {
     goToProfileDetails(notif.portfolioId);
   };
 
+  // Load initial notifications once on mount
+  useEffect(() => {
+    fetchNotifications();
+  }, [ownerUserId]);
+
+  // Merging when real-time notifications are added
+  useEffect(() => {
+    if (notifications.length > 0) {
+      console.log("Updated notifications (real-time):", notifications);
+
+      setGetNotifications((prev) => {
+        // Merge old and new notifications without duplicates
+        const merged = [...notifications, ...prev].filter(
+          (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+        );
+        return merged;
+      });
+    }
+  }, [notifications]);
+
+  // Filtering notifications by comments and boosts
   useEffect(() => {
     setCommentNotif(getNotifications.filter((notif) => notif.feedbackId));
     setBoostNotif(getNotifications.filter((notif) => notif.boostId));
   }, [getNotifications]);
 
-  useEffect(() => {
-    fetchNotifications();
-  }, [ownerUserId]);
-
+  // Fetch notifications count
   useEffect(() => {
     if (!ownerUserId) return;
     fetchNotificationsCounts();
@@ -280,8 +253,8 @@ const NotificationTabs = ({ ownerUserId }) => {
         {/* All Comments */}
         <TabsContent value="comments">
           <section className="flex flex-col gap-2">
-            {commentNotifications.length > 0 ? (
-              commentNotifications.map((notif) => (
+            {commentNotif.length > 0 ? (
+              commentNotif.map((notif) => (
                 <div
                   key={notif.id}
                   className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
@@ -355,8 +328,8 @@ const NotificationTabs = ({ ownerUserId }) => {
         {/* All Boosts */}
         <TabsContent value="boosts">
           <section className="flex flex-col gap-2">
-            {boostNotifications.length > 0 ? (
-              boostNotifications.map((notif) => (
+            {boostNotif.length > 0 ? (
+              boostNotif.map((notif) => (
                 <div
                   key={notif.id}
                   className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${

@@ -10,7 +10,7 @@ import {
   updateDoc,
   getDoc,
   orderBy,
-  limit
+  limit,
 } from "firebase/firestore";
 
 // CREATE
@@ -141,9 +141,7 @@ export const createBoostNotification = async (boostId) => {
 
 // GET
 // Get notifications for a user "All" Notifications Tab
-export const getAllNotifications = async (
-  ownerUserId
-) => {
+export const getAllNotifications = async (ownerUserId) => {
   try {
     // Fetch all notifications(paginated) for the ownerUserId's portfolios
     let notificationQuery = query(
@@ -153,7 +151,7 @@ export const getAllNotifications = async (
     );
 
     const notificationSnapshot = await getDocs(notificationQuery);
-    let notificationList = notificationSnapshot.docs.map(docSnap => ({
+    let notificationList = notificationSnapshot.docs.map((docSnap) => ({
       id: docSnap.id,
       ...docSnap.data(),
     }));
@@ -162,8 +160,8 @@ export const getAllNotifications = async (
     const feedbackIds = [
       ...new Set(
         notificationList
-          .map(notification => notification.feedbackId)
-          .filter(id => id) // Remove null/undefined values
+          .map((notification) => notification.feedbackId)
+          .filter((id) => id)
       ),
     ];
 
@@ -178,12 +176,12 @@ export const getAllNotifications = async (
       );
 
       const feedbackSnapshot = await getDocs(feedbackQuery);
-      feedbackSnapshot.forEach(feedbackDoc => {
+      feedbackSnapshot.forEach((feedbackDoc) => {
         feedbackMap[feedbackDoc.id] = feedbackDoc.data().comment;
       });
     }
 
-    notificationList = notificationList.map(notification => ({
+    notificationList = notificationList.map((notification) => ({
       ...notification,
       feedbackContent: feedbackMap[notification.feedbackId] || null,
     }));
@@ -255,4 +253,4 @@ export const getNotificationsCounter = async (ownerUserId) => {
     console.error("Error getting total notifications count: ", err);
     return 0;
   }
-}
+};
