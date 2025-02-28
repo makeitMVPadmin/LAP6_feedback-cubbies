@@ -1,32 +1,33 @@
-import CreatePost from '../components/CreatePost/CreatePost';
-import PortfolioCard from '../components/PortfolioCard/PortfolioCard';
-import FilterTags from '../components/FilterTags';
-import { Card, Avatar } from '../components/ui/index';
+import CreatePost from "../components/CreatePost/CreatePost";
+import FilterTags from "../components/FilterTags";
+import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
+import { Card, Avatar } from "../components/ui/index";
 import {
   fetchPortfolio,
   fetchRoleById,
   fetchUserById,
-} from '../firebase/functions/index';
-import { useEffect, useState } from 'react';
+  fetchTagsById,
+} from "../firebase/functions/index";
+import { useEffect, useState } from "react";
 
 function HomePage() {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [tags, setTags] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState(null);
-
 
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
       try {
         const portfolioData = await fetchPortfolio();
-        console.log('Fetched portfolios:', portfolioData);
         setPortfolios(portfolioData);
 
         const usersData = {};
         const rolesData = {};
+        const tagsData = {};
         for (const portfolio of portfolioData) {
           if (portfolio.userId) {
             if (!usersData[portfolio.userId]) {
@@ -44,12 +45,29 @@ function HomePage() {
           } else {
             console.log(`No userId for portfolio with id: ${portfolio.id}`);
           }
+
+          if (portfolio.tagId && Array.isArray(portfolio.tagId)) {
+            for (const tagId of portfolio.tagId) {
+              const tagData = await fetchTagsById(tagId);
+              if (tagData) {
+                tagsData[portfolio.tagId] = tagData;
+              }
+            }
+          }
+
+          if (portfolio.tagId) {
+            const tagData = await fetchTagsById(portfolio.tagId);
+            if (tagData) {
+              tagsData[portfolio.tagId] = tagData;
+            }
+          }
         }
 
         setUsers(usersData);
         setRoles(rolesData);
+        setTags(tagsData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -66,11 +84,14 @@ function HomePage() {
         <Card className="h-24 p-8 bg-blue-200 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-center gap-6 inline-flex ">
           <Avatar className="w-12 h-12" />
           <CreatePost />
-          <FilterTags selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+          <FilterTags
+            selectedTag={selectedTag}
+            setSelectedTag={setSelectedTag}
+          />
         </Card>
       </div>
 
-      <div >
+      <div>
         {loading ? (
           <p>Loading...</p>
         ) : sortedPortfolios.length > 0 ? (
@@ -81,6 +102,7 @@ function HomePage() {
                 portfolio={portfolio}
                 user={users[portfolio.userId]}
                 role={roles[portfolio.userId?.roleId]}
+                tags={tags[portfolio.tagId]}
               />
             ))}
           </Card>

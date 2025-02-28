@@ -1,5 +1,8 @@
-import { useNavigation } from '../../context/NavigationContext';
-import BoostButton from '../BoostsBtn/BoostsBtn';
+import media from "../../assets/media.png";
+import plusIcon from "../../assets/plus.svg";
+import { useNavigation } from "../../context/NavigationContext";
+import BoostButton from "../BoostsBtn/BoostsBtn";
+import { calculateDaysAgo } from "../../utils/dateUtil";
 import {
   Button,
   Card,
@@ -7,15 +10,16 @@ import {
   Avatar,
   CardTitle,
   VisibilityIcon,
-} from '../ui/index';
+} from "../ui/index";
 
-const PortfolioCard = ({ portfolio, user, role }) => {
+const PortfolioCard = ({ portfolio, user, role, tags }) => {
   const { goToProfileDetails } = useNavigation();
 
   return (
     <Card
       key={portfolio.id}
-      className="w-full max-w-[754px] py-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden">
+      className="w-full max-w-[754px] py-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden"
+    >
       <CardContent className="h-6 w-15 px-2.5 py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
         New
       </CardContent>
@@ -40,7 +44,7 @@ const PortfolioCard = ({ portfolio, user, role }) => {
           New Grad
         </div>
         <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
-          1 day ago
+          <span>{ calculateDaysAgo(portfolio.createdAt) }</span>
         </div>
       </div>
 
@@ -48,34 +52,42 @@ const PortfolioCard = ({ portfolio, user, role }) => {
         <p>{portfolio.description}</p>
       </CardTitle>
 
-      {portfolio.imageUrl && (
-        <div className="flex justify-center items-center w-full">
-          <div className="w-full max-w-[570px] h-[188px] flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
-            <img
-              className="w-full h-full object-cover"
-              src={portfolio.imageUrl}
-              alt={portfolio.title}
-            />
-          </div>
+      <div className="flex justify-center items-center w-full">
+        <div className="w-full max-w-[570px] h-[188px] flex-shrink-0 rounded-lg overflow-hidden border border-gray-300 shadow-lg">
+          <img
+            className="w-full h-full object-cover"
+            src={
+              portfolio.imageUrl && portfolio.imageUrl !== ""
+                ? portfolio.imageUrl
+                : media
+            }
+            alt={portfolio.title}
+          />
         </div>
-      )}
+      </div>
 
       <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
         <div className="flex flex-wrap gap-2 rounded-lg">
-          <div className="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              Python
+          {Array.isArray(tags) ? (
+            tags.map((tag) => (
+              <div
+                key={tag.id}
+                className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]"
+              >
+                <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  {tag.tagName}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]">
+              <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                {tags.tagName}
+              </div>
             </div>
-          </div>
-          <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              Coding{' '}
-            </div>
-          </div>
-          <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              UX
-            </div>
+          )}
+          <div className="inline-flex items-center gap-4">
+            <img src={plusIcon} alt="plus icon" />
           </div>
         </div>
 
@@ -91,7 +103,8 @@ const PortfolioCard = ({ portfolio, user, role }) => {
 
           <Button
             onClick={() => goToProfileDetails(portfolio.id)}
-            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7">
+            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
+          >
             Comments
           </Button>
         </div>
