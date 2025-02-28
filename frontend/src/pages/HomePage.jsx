@@ -6,12 +6,14 @@ import {
   fetchPortfolio,
   fetchRoleById,
   fetchUserById,
+  fetchTagsById,
 } from "../firebase/functions/index";
 import { useEffect, useState } from "react";
 
 function HomePage() {
   const [portfolios, setPortfolios] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [tags, setTags] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState(null);
@@ -25,6 +27,7 @@ function HomePage() {
 
         const usersData = {};
         const rolesData = {};
+        const tagsData = {};
         for (const portfolio of portfolioData) {
           if (portfolio.userId) {
             if (!usersData[portfolio.userId]) {
@@ -42,10 +45,27 @@ function HomePage() {
           } else {
             console.log(`No userId for portfolio with id: ${portfolio.id}`);
           }
+
+          if (portfolio.tagId && Array.isArray(portfolio.tagId)) {
+            for (const tagId of portfolio.tagId) {
+              const tagData = await fetchTagsById(tagId);
+              if (tagData) {
+                tagsData[portfolio.tagId] = tagData;
+              }
+            }
+          }
+
+          if (portfolio.tagId) {
+            const tagData = await fetchTagsById(portfolio.tagId);
+            if (tagData) {
+              tagsData[portfolio.tagId] = tagData;
+            }
+          }
         }
 
         setUsers(usersData);
         setRoles(rolesData);
+        setTags(tagsData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -81,7 +101,8 @@ function HomePage() {
                 key={portfolio.id}
                 portfolio={portfolio}
                 user={users[portfolio.userId]}
-                role={roles[users[portfolio.userId]?.roleId]}
+                role={roles[portfolio.userId?.roleId]}
+                tags={tags[portfolio.tagId]}
               />
             ))}
           </Card>

@@ -8,7 +8,7 @@ import {
   updateDoc,
   deleteDoc,
   query,
-  where,
+  where
 } from "firebase/firestore";
 
 const getPortfolioFeedback = async (portfolioId) => {
@@ -41,6 +41,8 @@ const getPortfolioFeedback = async (portfolioId) => {
         profilePhoto: userData.profilePhoto,
       });
     });
+
+    feedbackList.sort((a, b) => a.createdAt - b.createdAt);
 
     return feedbackList;
   } catch (err) {
