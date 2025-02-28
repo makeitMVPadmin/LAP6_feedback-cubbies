@@ -1,13 +1,13 @@
-import CreatePost from '../components/CreatePost/CreatePost';
-import PortfolioCard from '../components/PortfolioCard/PortfolioCard';
-import FilterTags from '../components/FilterTags';
-import { Card, Avatar } from '../components/ui/index';
+import CreatePost from "../components/CreatePost/CreatePost";
+import FilterTags from "../components/FilterTags";
+import PortfolioCard from "../components/PortfolioCard/PortfolioCard";
+import { Card, Avatar } from "../components/ui/index";
 import {
   fetchPortfolio,
   fetchRoleById,
   fetchUserById,
-} from '../firebase/functions/index';
-import { useEffect, useState } from 'react';
+} from "../firebase/functions/index";
+import { useEffect, useState } from "react";
 
 function HomePage() {
   const [portfolios, setPortfolios] = useState([]);
@@ -15,7 +15,6 @@ function HomePage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState(null);
-
 
   useEffect(() => {
     const getData = async () => {
@@ -48,7 +47,7 @@ function HomePage() {
         setUsers(usersData);
         setRoles(rolesData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -58,8 +57,6 @@ function HomePage() {
 
   // Sort portfolios by updatedAt field in descending order
   const sortedPortfolios = portfolios.sort((a, b) => b.updatedAt - a.updatedAt);
-  console.log("home page roles", roles)
-  
 
   return (
     <section className="grid grid-cols-1 min-h-screen gap-[3.13rem] justify-items-center">
@@ -67,11 +64,14 @@ function HomePage() {
         <Card className="h-24 p-8 bg-blue-200 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-center gap-6 inline-flex ">
           <Avatar className="w-12 h-12" />
           <CreatePost />
-          <FilterTags selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+          <FilterTags
+            selectedTag={selectedTag}
+            setSelectedTag={setSelectedTag}
+          />
         </Card>
       </div>
 
-      <div >
+      <div>
         {loading ? (
           <p>Loading...</p>
         ) : sortedPortfolios.length > 0 ? (
