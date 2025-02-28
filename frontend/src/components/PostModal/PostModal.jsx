@@ -31,12 +31,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !postMessage.trim() ||
-      !link.trim() ||
-      !coverImage ||
-      selectedTags.length === 0
-    ) {
+    if (!link.trim() || !coverImage || selectedTags.length === 0) {
       setShowError(true); // Show error only when submit is clicked
       return;
     }
@@ -130,7 +125,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
                   Post message
                 </label>
                 <textarea
-                  className="border border-[#0F172A] rounded-lg px-3 py-2 placeholder-gray-500 h-[80px]"
+                  className="border border-[#0F172A] rounded-lg px-3 py-2 placeholder-gray-500 h-[103px]"
                   style={{ fontFamily: "Montserrat, sans-serif" }}
                   placeholder="Post message will give the reviewers more details about your portfolio"
                   value={postMessage}
@@ -138,7 +133,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
                 />
               </div>
               {/* Input for inserting a portfolio link */}
-              <div className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[42px] mb-4 w-[384px]">
+              <div className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[18px] w-[384px] h-[38px]">
                 <Link2 className="w-4 h-4 rotate-[45deg]" />
                 <input
                   className="flex-1 rounded-lg p-2 placeholder-gray-500 outline-none"
@@ -147,7 +142,24 @@ function PostModal({ isOpen, onClose, currentUser }) {
                   value={link}
                   onChange={handleLinkChange}
                 />
+                {/* Display error message when click submit */}
               </div>
+              {showError && (
+                <div className="flex gap-2">
+                  <p
+                    className="text-white text-sm mt-2 rounded-full bg-red-500 px-[9px]"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    !
+                  </p>
+                  <p
+                    className="text-red-500 text-sm mt-2"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    Field input is required
+                  </p>
+                </div>
+              )}
             </div>
             <div className="pt-[32px] w-[313px]">
               {/* Display selected or placeholder image */}
@@ -157,7 +169,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
               ></div>
               {/* Input for uploading a cover image */}
               <div className="h-[40px]">
-                <label className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[19px] w-full h-full">
+                <label className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[18px] w-full h-full">
                   <ImagePlus className="w-4 h-4" />
                   <input
                     className="flex-1 rounded-lg p-2 placeholder-gray-500 outline-none"
@@ -168,19 +180,28 @@ function PostModal({ isOpen, onClose, currentUser }) {
                   />
                 </label>
               </div>
+              {showError && (
+                <div className="flex gap-2">
+                  <p
+                    className="text-white text-sm mt-2 rounded-full bg-red-500 px-[9px]"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    !
+                  </p>
+                  <p
+                    className="text-red-500 text-sm mt-2"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    Field input is required
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Display error message only when clicking Submit */}
-          {showError && (
-            <p className="text-red-500 text-sm mt-2">
-              ⚠️ All fields are required.
-            </p>
-          )}
-
           {/* Tag selection section */}
           <section className="pb-4 mt-4">
-            <h2 className="text-base font-bold my-2 mx-4">Choose Tags</h2>
+            <h2 className="text-base font-bold mt-2 mb-[25px] ">Choose Tags</h2>
             <TagSelection
               selectedTags={selectedTags}
               setSelectedTags={setSelectedTags}
