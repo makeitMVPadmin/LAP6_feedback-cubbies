@@ -2,6 +2,7 @@ import media from "../../assets/media.png";
 import plusIcon from "../../assets/plus.svg";
 import { useNavigation } from "../../context/NavigationContext";
 import BoostButton from "../BoostsBtn/BoostsBtn";
+import { calculateDaysAgo } from "../../utils/dateUtil";
 import {
   Button,
   Card,
@@ -43,7 +44,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
           New Grad
         </div>
         <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
-          1 day ago
+          <span>{ calculateDaysAgo(portfolio.createdAt) }</span>
         </div>
       </div>
 
