@@ -186,8 +186,8 @@ export const getAllNotifications = async (ownerUserId) => {
       feedbackContent: feedbackMap[notification.feedbackId] || null,
     }));
 
-    console.log("notificationList: ", notificationList);
-    console.log("Final notification list in backend: ", notificationList);
+    // console.log("notificationList: ", notificationList);
+    // console.log("Final notification list in backend: ", notificationList);
 
     return notificationList;
   } catch (err) {

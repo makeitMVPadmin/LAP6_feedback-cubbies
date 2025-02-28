@@ -108,7 +108,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   // Merging when real-time notifications are added
   useEffect(() => {
     if (notifications.length > 0) {
-      console.log("Updated notifications (real-time):", notifications);
+      // console.log("Updated notifications (real-time):", notifications);
 
       setGetNotifications((prev) => {
         // Merge old and new notifications without duplicates
