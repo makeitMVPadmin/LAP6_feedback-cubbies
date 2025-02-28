@@ -57,10 +57,13 @@ function HomePage() {
     getData();
   }, []);
 
+  // Sort portfolios by updatedAt field in descending order
+  const sortedPortfolios = portfolios.sort((a, b) => b.updatedAt - a.updatedAt);
+
   return (
-    <section className="grid grid-cols-1  gap-[3.13rem] justify-items-center">
-      <div className="flex w-[47.125rem] justify-start">
-        <Card className="h-24 p-6 bg-blue-200 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-start gap-6 inline-flex ">
+    <section className="grid grid-cols-1 min-h-screen gap-[3.13rem] justify-items-center">
+      <div className="flex w-[55.125rem] justify-start">
+        <Card className="h-24 p-8 bg-blue-200 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-center gap-6 inline-flex ">
           <Avatar className="w-12 h-12" />
           <CreatePost />
           <FilterTags selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
@@ -70,9 +73,9 @@ function HomePage() {
       <div >
         {loading ? (
           <p>Loading...</p>
-        ) : portfolios.length > 0 ? (
+        ) : sortedPortfolios.length > 0 ? (
           <Card className=" w-[882px] grid grid-cols-1 justify-items-center h-auto text-center gap-6 bg-blue-200 p-16">
-            {portfolios.map((portfolio) => (
+            {sortedPortfolios.map((portfolio) => (
               <PortfolioCard
                 key={portfolio.id}
                 portfolio={portfolio}
