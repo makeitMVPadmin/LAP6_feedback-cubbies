@@ -1,4 +1,4 @@
-import fetchAllTags from "../../firebase/functions/fetchTags";
+import { fetchAllTags } from "../../firebase/functions/fetchTags";
 import { ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 
