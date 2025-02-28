@@ -3,9 +3,6 @@ import { db } from "../../firebase/firebase";
 import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import useNotifications from "../../firebase/functions/notificationHooks";
 import {
-  createCommentNotification,
-  createBoostNotification,
-  getAllNotifications,
   getNotificationsCounter,
   markNotificationAsRead,
 } from "../../firebase/functions/notifications";
@@ -18,7 +15,6 @@ import {
 } from "@/components/ui/tabs.jsx";
 import {
   collection,
-  onSnapshot,
   orderBy,
   query,
   where,
