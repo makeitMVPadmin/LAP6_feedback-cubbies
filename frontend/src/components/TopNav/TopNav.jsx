@@ -44,7 +44,7 @@ function TopNav({
         alt="Communiti Logo"
         className="w-[240px] h-[48px] py-2 px-1"
       />
-      <div className="w-[64px]" />
+      <div className="w-[50px]" />
       {/* Navigation Menu */}
       <NavigationMenu>
         <NavigationMenuList className="flex gap-8 pl-4">
@@ -104,7 +104,7 @@ function TopNav({
               />
               {/* Notification Badge */}
               {notificationCount > 0 && (
-                <span className="absolute top-[2px] right-[46px] -mt-1 -mr-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute top-[2px] right-[46px] -mt-1 -mr-2 bg-[#f44336] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {notificationCount > 9 ? "9+" : notificationCount}
                 </span>
               )}

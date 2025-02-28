@@ -14,20 +14,19 @@ function AppContent() {
   const { usersList, currentUser, handleUserLogin } = useUser();
 
   const renderPage = () => {
-
     switch (currentPage) {
       case "home":
-        return <HomePage/>;
+        return <HomePage />;
       case "feedback":
-        return <PortfolioDetailsPage/>;
+        return <PortfolioDetailsPage />;
       default:
-        return <HomePage/>;
+        return <HomePage />;
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0954b0]">
-      <header >
+      <header>
         <TopNav
           setCurrentPage={goToProfileDetails}
           currentPage={currentPage}
@@ -37,7 +36,7 @@ function AppContent() {
           handleUserLogin={handleUserLogin} // Pass login function
         />
       </header>
-      <main className="flex-grow p-4">{renderPage()}</main>
+      <main className="flex-grow p-12">{renderPage()}</main>
 
       {/* Notification Drawer */}
       <NotificationDrawer
