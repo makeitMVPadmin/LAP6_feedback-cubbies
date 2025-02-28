@@ -47,12 +47,10 @@ function HomePage() {
           }
 
           if (portfolio.tagId && Array.isArray(portfolio.tagId)) {
-            console.log("portfolio.tagId", portfolio.tagId)
             for (const tagId of portfolio.tagId) {
               const tagData = await fetchTagsById(tagId);
               if (tagData) {
                 tagsData[portfolio.tagId] = tagData;
-                console.log("tagsData", tagsData);
               }
             }
           }
@@ -61,7 +59,6 @@ function HomePage() {
             const tagData = await fetchTagsById(portfolio.tagId);
             if (tagData) {
               tagsData[portfolio.tagId] = tagData;
-              console.log("tagsData", tagsData);
             }
           }
         }
