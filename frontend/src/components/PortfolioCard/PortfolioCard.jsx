@@ -34,14 +34,14 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
             {user?.firstName} {user?.lastName}
           </div>
           <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
-            {user?.email}
+            @{user?.username}
           </div>
         </div>
       </div>
 
       <div className="h-6 pl-22 justify-items-center gap-4 pt-1 inline-flex">
         <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none pl-8">
-          New Grad
+          {role?.roleName}
         </div>
         <div className="text-slate-500 text-xs font-bold font-['Montserrat'] leading-none">
           <span>{ calculateDaysAgo(portfolio.createdAt) }</span>

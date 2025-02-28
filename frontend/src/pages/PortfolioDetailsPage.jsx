@@ -12,7 +12,6 @@ function PortfolioDetailsPage() {
   const retrivePortfoliobyId = async () => {
     try {
       const portfolio = await getPortfolioById(portfolioId);
-      console.log("portfolio data", portfolio);
       setSelectedPortfolio(portfolio);
     } catch (error) {
       console.error("Error retrieving portfolio:", error);
