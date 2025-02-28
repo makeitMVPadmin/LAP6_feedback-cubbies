@@ -69,7 +69,7 @@ const Feedback = ({ portfolioId }) => {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add comment..."
-            className="w-full h-full px-3 py-1 text-sm font-['Montserrat'] font-normal leading-[20px] placeholder:text-[#80909A] placeholder:font-['Montserrat'] placeholder:text-sm placeholder:font-normal placeholder:leading-[20px] placeholder: custom-font-settings"
+            className="w-full h-full px-3 py-1 text-sm font-['Montserrat'] font-normal leading-[20px] placeholder:text-[#80909A] placeholder:font-['Montserrat'] placeholder:text-sm placeholder:font-normal placeholder:leading-[20px] placeholder: custom-font-settings focus:outline-none"
           />
           <button onClick={handleCreateFeedback} className="pr-3">
             <img src={sendIcon} className="w-6 h-6" />
