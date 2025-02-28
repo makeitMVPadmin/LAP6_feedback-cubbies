@@ -28,18 +28,23 @@ function TopNav({
     { name: "Coffee Chat", icon: "groups", page: "" },
   ];
   const NotificationsIcon = () => (
-    <span className="material-symbols-outlined">notifications</span>
+    <span
+      className="material-symbols-outlined"
+      style={{ color: isDrawerOpen ? "#0099ff" : "black" }}
+    >
+      notifications
+    </span>
   );
 
   return (
-    <div className="w-[1070px] h-[104px] flex items-center justify-between mx-auto px-6  py-6 bg-white">
+    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center m-0 p-0">
       {/* Logo */}
       <img
         src={logo}
         alt="Communiti Logo"
         className="w-[240px] h-[48px] py-2 px-1"
       />
-
+      <div className="w-[50px]" />
       {/* Navigation Menu */}
       <NavigationMenu>
         <NavigationMenuList className="flex gap-8 pl-4">
@@ -54,17 +59,27 @@ function TopNav({
                 className={`flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
                 ${
                   currentPage === page && !isDrawerOpen
-                    ? "bg-gray-300"
-                    : "hover:bg-gray-200"
-                }`}
+                    ? ""
+                    : "hover:bg-[#4386f5]"
+                } `}
               >
-                <span className="material-symbols-outlined">{Icon}</span>
                 <span
-                  className={`text-black text-base font-semibold font-['Fraunces'] leading-normal whitespace-nowrap w-auto
+                  className="material-symbols-outlined"
+                  style={{
+                    color:
+                      currentPage === page && !isDrawerOpen
+                        ? "#0099ff"
+                        : "black",
+                  }}
+                >
+                  {Icon}
+                </span>
+                <span
+                  className={`text-base font-semibold font-['Fraunces'] leading-normal whitespace-nowrap w-auto
                   ${
                     currentPage === page && !isDrawerOpen
-                      ? "text-blue-600"
-                      : "text-gray-800"
+                      ? "text-[#0099ff]"
+                      : "text-black"
                   }`}
                 >
                   {name}
@@ -80,18 +95,22 @@ function TopNav({
                 toggleDrawer();
               }}
               className={`relative flex flex-col items-center p-2 rounded-md transition-colors duration-200 ease-in-out 
-      ${isDrawerOpen ? "bg-gray-300" : "hover:bg-gray-200"}`}
+      ${isDrawerOpen ? "" : "hover:bg-[#4386f5]"}`}
             >
-              <NotificationsIcon />
+              <NotificationsIcon
+                className={`${
+                  isDrawerOpen ? "color-[#0099ff]" : "color-black"
+                }`}
+              />
               {/* Notification Badge */}
               {notificationCount > 0 && (
-                <span className="absolute top-0 right-10 -mt-1 -mr-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute top-[2px] right-[46px] -mt-1 -mr-2 bg-[#f44336] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {notificationCount > 9 ? "9+" : notificationCount}
                 </span>
               )}
               <span
-                className={`text-black text-base font-semibold font-['Fraunces'] leading-normal 
-        ${isDrawerOpen ? "text-blue-600" : "text-gray-800"}`}
+                className={` text-base font-semibold font-['Fraunces'] leading-normal 
+        ${isDrawerOpen ? "text-[#0099ff]" : "text-black"}`}
               >
                 Notifications
               </span>
@@ -129,11 +148,14 @@ function TopNav({
                   <div className="w-[72px] h-[72px] justify-center items-center inline-flex">
                     <img
                       class="w-[72px] h-[72px] rounded-full border border-black"
-                      src={currentUser?.profilePicture}
+                      src={
+                        currentUser?.profilePicture ||
+                        "https://s3-alpha-sig.figma.com/img/8757/ea43/56d61cf7bb51515bf9da9c2f34ea9d23?Expires=1740960000&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=lIZuF74W~vHigZ4RccPfTTsvUcjXZI3QYmLos9h-AKERaZtZd71LC0oAptDzu4fUExn46v91WJIk71pklm1W62ZykvwPKu~FZUvD1ylZ1btHfQqlkNVWQh~DG9-pH3ZG7YJhRRGBEdOtJF1N-PwSFIrtAmufTs62Zs5dT6VHlGzzCMMuBsh0tE1~WRFLq9rhXUHJ7scXLYDG06xd9q9H7oDd3qDPr0AmFfwFgrbI1haBvV2nLSDGB8B6TjIDLHns0w3R0xG9Oruuog81fq3ZkVetKIap~v8PvGGo8J5EZ84RHkcH9nj6~Jd5aCNsvDyuHqZkXDcXPaqIl2jgkVkMfA__"
+                      }
                       alt={currentUser?.firstName}
                     />
                   </div>
-                  <div className="absolute -bottom-0 right-0 w-4 h-4">
+                  <div className="absolute -bottom-[-4px] right-0 w-4 h-4">
                     <div data-svg-wrapper class="relative">
                       <svg
                         width="24"
