@@ -98,7 +98,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-white p-7 rounded-2xl border-2 w-[1014px] h-[730px] overflow-y-auto pt-[45px] pl-[62px] pr-[62px] pb-[16px]"
+        className="bg-white p-7 rounded-2xl border-2 w-[1014px] h-[730px] pt-[45px] pl-[62px] pr-[62px] pb-[16px] overflow-hidden relative"
         style={{
           borderTop: "1px solid var(--Gray-Gray12, #28363F)",
           borderRight: "2px solid var(--Gray-Gray12, #28363F)",
@@ -132,8 +132,15 @@ function PostModal({ isOpen, onClose, currentUser }) {
                   onChange={handlePostMessageChange}
                 />
               </div>
+
               {/* Input for inserting a portfolio link */}
-              <div className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[18px] w-[384px] h-[38px]">
+              <div
+                className={`relative flex items-center border rounded-lg px-3 mt-[18px] w-[384px] h-[38px] transition-all ${
+                  showError && !link.trim()
+                    ? "border-red-500"
+                    : "border-[#0F172A]"
+                }`}
+              >
                 <Link2 className="w-4 h-4 rotate-[45deg]" />
                 <input
                   className="flex-1 rounded-lg p-2 placeholder-gray-500 outline-none"
@@ -142,12 +149,13 @@ function PostModal({ isOpen, onClose, currentUser }) {
                   value={link}
                   onChange={handleLinkChange}
                 />
+
                 {/* Display error message when click submit */}
               </div>
               {showError && (
-                <div className="flex gap-2">
+                <div className="flex gap-2 absolute left-[62px]">
                   <p
-                    className="text-white text-sm mt-2 rounded-full bg-red-500 px-[9px]"
+                    className="text-white text-sm mt-2 rounded-full bg-red-500 px-[9px] mb-0"
                     style={{ fontFamily: "Montserrat, sans-serif" }}
                   >
                     !
@@ -161,15 +169,23 @@ function PostModal({ isOpen, onClose, currentUser }) {
                 </div>
               )}
             </div>
-            <div className="pt-[32px] w-[313px]">
+
+            <div className="pt-[32px] w-[313px] relative">
               {/* Display selected or placeholder image */}
               <div
                 className="w-full h-[103px] rounded-[8px] bg-cover bg-center flex flex-col justify-between"
                 style={{ backgroundImage: `url(${coverImage || placeholder})` }}
               ></div>
+
               {/* Input for uploading a cover image */}
               <div className="h-[40px]">
-                <label className="flex items-center border border-[#0F172A] rounded-lg px-3 mt-[18px] w-full h-full">
+                <label
+                  className={`h-[40px] border rounded-lg px-3 mt-[18px] w-full flex items-center transition-all ${
+                    showError && !coverImage
+                      ? "border-red-500"
+                      : "border-[#0F172A]"
+                  }`}
+                >
                   <ImagePlus className="w-4 h-4" />
                   <input
                     className="flex-1 rounded-lg p-2 placeholder-gray-500 outline-none"
@@ -180,8 +196,10 @@ function PostModal({ isOpen, onClose, currentUser }) {
                   />
                 </label>
               </div>
+
+              {/* Display error message when click submit */}
               {showError && (
-                <div className="flex gap-2">
+                <div className="flex gap-2 absolute ">
                   <p
                     className="text-white text-sm mt-2 rounded-full bg-red-500 px-[9px]"
                     style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -201,7 +219,9 @@ function PostModal({ isOpen, onClose, currentUser }) {
 
           {/* Tag selection section */}
           <section className="pb-4 mt-4">
-            <h2 className="text-base font-bold mt-2 mb-[25px] ">Choose Tags</h2>
+            <h2 className="text-base font-bold mb-[25px] mt-[38px]">
+              Choose Tags
+            </h2>
             <TagSelection
               selectedTags={selectedTags}
               setSelectedTags={setSelectedTags}
