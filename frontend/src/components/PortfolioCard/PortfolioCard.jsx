@@ -1,3 +1,4 @@
+import plusIcon from "../../assets/plus.svg";
 import { useNavigation } from "../../context/NavigationContext";
 import BoostButton from "../BoostsBtn/BoostsBtn";
 import {
@@ -61,46 +62,29 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
         </div>
       )}
 
-      {/* <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
-        <div className="flex flex-wrap gap-2 rounded-lg">
-          <div className="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              Python
-            </div>
-          </div>
-          <div className="w-[105px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              Coding{' '}
-            </div>
-          </div>
-          <div className="w-[72px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex">
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              UX
-            </div>
-          </div>
-        </div> */}
-
       <div className="flex flex-col gap-6 mt-6 w-full items-start ml-[70px]">
         <div className="flex flex-wrap gap-2 rounded-lg">
-          {Array.isArray(tags) && tags?.map((tag) => (
-            <div
-              key={tag.id}
-              className="w-[97px] h-[35px] px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex"
-            >
+          {Array.isArray(tags) ? (
+            tags.map((tag) => (
+              <div
+                key={tag.id}
+                className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]"
+              >
+                <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
+                  {tag.tagName}
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]">
               <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-                {tag.tagName}
+                {tags.tagName}
               </div>
             </div>
-          ))}
-          {!Array.isArray(tags) ? (
-            <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-              {tags.tagName}
-            </div>
-          ) : (
-            <div className="text-gray-500">
-            
-            </div>
           )}
+          <div className="inline-flex items-center gap-4">
+            <img src={plusIcon} alt="plus icon" />
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 rounded-lg">
