@@ -11,7 +11,6 @@ import {
 
 const PortfolioCard = ({ portfolio, user, role }) => {
   const { goToProfileDetails } = useNavigation();
-  console.log("portfolio card role", role);
 
   return (
     <Card
