@@ -98,7 +98,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
             </div>
           ) : (
             <div className="text-gray-500">
-              no tag name
+            
             </div>
           )}
         </div>

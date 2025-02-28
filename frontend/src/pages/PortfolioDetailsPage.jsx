@@ -41,6 +41,7 @@ function PortfolioDetailsPage() {
           portfolio={selectedPortfolio.portfolio}
           user={selectedPortfolio.user}
           role={selectedPortfolio.role}
+          tags={selectedPortfolio.tags}
         />
         <Feedback portfolioId={portfolioId} />
       </div>
