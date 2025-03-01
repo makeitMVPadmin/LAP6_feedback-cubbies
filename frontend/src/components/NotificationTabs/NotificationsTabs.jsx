@@ -3,7 +3,6 @@ import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import useNotifications from "../../firebase/functions/notificationHooks";
 import {
   getAllNotifications,
-  getNotificationsCounter,
   markNotificationAsRead,
 } from "../../firebase/functions/notifications";
 import KebabMenu from "../KebabMenu/KebabMenu";
@@ -43,30 +42,6 @@ const NotificationTabs = ({ ownerUserId }) => {
       console.error("Error getting initial notifications list: ", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Fetch notifications count
-  const fetchNotificationsCounts = async () => {
-    try {
-      const { totalCount, commentCount, boostCount } =
-        await getNotificationsCounter(ownerUserId);
-
-      // Ensure default values if undefined
-      const safeCommentCount = commentCount ?? 0;
-      const safeBoostCount = boostCount ?? 0;
-
-      // Only update state if values actually changed
-      setTotalCount((prev) => (prev !== totalCount ? totalCount : prev));
-      setNotificationCount((prev) => (prev !== totalCount ? totalCount : prev));
-      setCommentCount((prev) =>
-        prev !== safeCommentCount ? safeCommentCount : prev
-      );
-      setBoostCount((prev) =>
-        prev !== safeBoostCount ? safeBoostCount : prev
-      );
-    } catch (err) {
-      console.error("Error fetching notification counts: ", err);
     }
   };
 
@@ -116,15 +91,23 @@ const NotificationTabs = ({ ownerUserId }) => {
   useEffect(() => {
     setCommentNotif(getNotifications.filter((notif) => notif.feedbackId));
     setBoostNotif(getNotifications.filter((notif) => notif.boostId));
+    setTotalCount((prev) =>
+      prev !== getNotifications.length ? getNotifications.length : prev
+    );
+    setNotificationCount((prev) =>
+      prev !== getNotifications.length ? getNotifications.length : prev
+    );
+    setCommentCount((prev) =>
+      prev !== getNotifications.filter((notif) => notif.feedbackId).length
+        ? getNotifications.filter((notif) => notif.feedbackId).length
+        : prev
+    );
+    setBoostCount((prev) =>
+      prev !== getNotifications.filter((notif) => notif.boostId).length
+        ? getNotifications.filter((notif) => notif.boostId).length
+        : prev
+    );
   }, [getNotifications]);
-
-  // Fetch notifications count
-  useEffect(() => {
-    if (!ownerUserId) return;
-    fetchNotificationsCounts();
-  }, [ownerUserId]);
-
-  //className=" ">
 
   return (
     <>
