@@ -76,9 +76,6 @@ function HomePage() {
 
   console.log("tags data", tags);
 
-  // Sort portfolios by updatedAt field in descending order
-  // const sortedPortfolios = portfolios.sort((a, b) => b.updatedAt.seconds - a.updatedAt.seconds);
-
   // // Filter portfolios based on selected tag
   // const filteredPortfolios = selectedTag
   //   ? sortedPortfolios.filter(portfolio => portfolio.tagId === selectedTag)
@@ -90,11 +87,11 @@ function HomePage() {
         <Card className="h-24 p-8 bg-blue-200 rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] justify-start items-center gap-6 inline-flex ">
           <Avatar className="w-12 h-12" />
           <CreatePost />
-          {/* <FilterTags
+          <FilterTags
             selectedTag={selectedTag}
             setSelectedTag={setSelectedTag}
             tags={tags}
-          /> */}
+          />
         </Card>
       </div>
 

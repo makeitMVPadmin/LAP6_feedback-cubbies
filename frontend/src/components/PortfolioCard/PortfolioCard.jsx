@@ -83,7 +83,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
           ) : (
             <div className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]">
               <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-                {/* {tags.tagName} */}
+                {tags.tagName}
               </div>
             </div>
           )}

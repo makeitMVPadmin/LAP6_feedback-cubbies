@@ -111,7 +111,7 @@ const getPortfolioById = async (portfolioId) => {
             doc(db, "tags", portfolioData.tagId)
           );
           if (tagSnapshot.exists()) {
-            tags = [tagSnapshot.data()];
+            tags = [tagSnapshot.data().tagName];
           } else {
             console.log(`No tag found for ID: ${portfolioData.tagId}`);
             tags = ["Unknown"];
