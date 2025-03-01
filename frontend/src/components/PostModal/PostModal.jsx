@@ -5,6 +5,7 @@ import TagSelection from "../TagSelection/TagSelection";
 import { Button } from "../ui/button";
 import { ImagePlus, Link2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { Timestamp } from "firebase/firestore"; 
 
 function PostModal({ isOpen, onClose, currentUser }) {
   if (!isOpen) return null;
@@ -44,8 +45,8 @@ function PostModal({ isOpen, onClose, currentUser }) {
       imageUrl: coverImage, // Use the coverImage URL directly
       link,
       tagId: selectedTags.map((tag) => tag.id),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
     };
 
     try {

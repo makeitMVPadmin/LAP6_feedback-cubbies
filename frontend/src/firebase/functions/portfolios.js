@@ -9,11 +9,12 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
+  orderBy
 } from "firebase/firestore";
 
 const fetchPortfolio = async () => {
   try {
-    const q = query(collection(db, "portfolios"), limit(3));
+    const q = query(collection(db, "portfolios"), orderBy("createdAt", "desc"), limit(3));
     const querySnapshot = await getDocs(q);
 
     const userPortfolio = querySnapshot.docs.map((doc) => ({
@@ -99,10 +100,10 @@ const getPortfolioById = async (portfolioId) => {
 
           tags = tagSnapshots.map((tagSnapshot) => {
             if (tagSnapshot.exists()) {
-              return tagSnapshot.data();
+              return tagSnapshot.data().tagName;
             } else {
               console.log(`No tag found for ID: ${tagSnapshot.id}`);
-              return { tagName: "Unknown" };
+              return "Unknown";
             }
           });
         } else {
@@ -110,10 +111,10 @@ const getPortfolioById = async (portfolioId) => {
             doc(db, "tags", portfolioData.tagId)
           );
           if (tagSnapshot.exists()) {
-            tags = [tagSnapshot.data()];
+            tags = [tagSnapshot.data().tagName];
           } else {
             console.log(`No tag found for ID: ${portfolioData.tagId}`);
-            tags = [{ tagName: "Unknown" }];
+            tags = ["Unknown"];
           }
         }
       }

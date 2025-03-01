@@ -14,6 +14,7 @@ import {
 
 const PortfolioCard = ({ portfolio, user, role, tags }) => {
   const { goToProfileDetails } = useNavigation();
+  console.log("tags portfolio", tags)
 
   return (
     <Card
@@ -75,14 +76,14 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
                 className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]"
               >
                 <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-                  {tag.tagName}
+                  {tag}
                 </div>
               </div>
             ))
           ) : (
             <div className="px-6 py-2 bg-[#ebebeb] rounded-[9px] justify-center items-center gap-6 inline-flex mr-[11px]">
               <div className="text-black/70 text-lg font-semibold font-['Montserrat'] leading-relaxed">
-                {/* {tag.tagName} */}
+                {tags.tagName}
               </div>
             </div>
           )}
