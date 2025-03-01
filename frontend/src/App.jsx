@@ -1,4 +1,4 @@
-import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
+// import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
 import { NavigationProvider, useNavigation } from "./context/NavigationContext";
 import { UserProvider, useUser } from "./context/UserContext";
 import HomePage from "./pages/HomePage";
@@ -39,11 +39,11 @@ function AppContent() {
       <main className="flex-grow p-12">{renderPage()}</main>
 
       {/* Notification Drawer */}
-      <NotificationDrawer
+      {/* <NotificationDrawer
         currentUser={currentUser || emptyUser}
         isOpen={isDrawerOpen}
         onClose={() => closeDrawer()}
-      />
+      /> */}
     </div>
   );
 }
