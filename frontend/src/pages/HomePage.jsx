@@ -72,10 +72,10 @@ function HomePage() {
   
     getData();
   }, []);
+
+  //  Sorted on backend, this was not working // Sort portfolios by updatedAt field in descending order
+  //  const sortedPortfolios = portfolios.sort((a, b) => b.updatedAt - a.updatedAt);
   
-
-  console.log("tags data", tags);
-
   // // Filter portfolios based on selected tag
   // const filteredPortfolios = selectedTag
   //   ? sortedPortfolios.filter(portfolio => portfolio.tagId === selectedTag)
