@@ -1,10 +1,7 @@
 import { useNavigation } from "../../context/NavigationContext";
-import { db } from "../../firebase/firebase";
 import { deleteNotification } from "../../firebase/functions/kebabFunction";
 import useNotifications from "../../firebase/functions/notificationHooks";
 import {
-  createCommentNotification,
-  createBoostNotification,
   getAllNotifications,
   getNotificationsCounter,
   markNotificationAsRead,
@@ -16,13 +13,6 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs.jsx";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
 const NotificationTabs = ({ ownerUserId }) => {
@@ -112,10 +102,11 @@ const NotificationTabs = ({ ownerUserId }) => {
 
       setGetNotifications((prev) => {
         // Merge old and new notifications without duplicates
-        const merged = [...notifications, ...prev].filter(
-          (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+        const uniqueNotifications = new Map();
+        [...notifications, ...prev].forEach((notif) =>
+          uniqueNotifications.set(notif.id, notif)
         );
-        return merged;
+        return Array.from(uniqueNotifications.values());
       });
     }
   }, [notifications]);
@@ -132,42 +123,50 @@ const NotificationTabs = ({ ownerUserId }) => {
     fetchNotificationsCounts();
   }, [ownerUserId]);
 
+  //className=" ">
+
   return (
     <>
       <Tabs defaultValue="all">
-        <TabsList className="bg-[#0264D4] w-full flex justify-start gap-[48px] rounded-none h-14 p-[12px_16px] relative">
+        <TabsList className="relative bg-transparent flex justify-start rounded-none w-full  min-w-[621px] min-h-[40px] gap-[24px] mt-[11px] mb-[12px] p-[12px_16px]">
           <TabsTrigger
             value="all"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[58px] px-4 min-w-[90px] flex justify-between items-center relative"
+            className="h-8 min-w-[50px] px-3 py-1.5 text-base font-semibold leading-tight rounded flex justify-between items-center whitespace-nowrap relative transition-colors 
+            bg-[#4386f5] text-white border border-transparent 
+            data-[state=active]:bg-white data-[state=active]:border-l data-[state=active]:border-r-2 data-[state=active]:border-t data-[state=active]:border-b-2 data-[state=active]:border-[#0099ff] data-[state=active]:text-[#0099ff]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
             {totalCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1">
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 min-w-[24px]">
                 {totalCount}
               </span>
             )}
           </TabsTrigger>
           <TabsTrigger
             value="comments"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[165px] flex items-center relative"
+            className="h-8 min-w-[131px] px-3 py-1.5 text-base font-semibold leading-tight rounded flex justify-between items-center whitespace-nowrap relative transition-colors 
+            bg-[#4386f5] text-white border border-transparent 
+            data-[state=active]:bg-white data-[state=active]:border-l data-[state=active]:border-r-2 data-[state=active]:border-t data-[state=active]:border-b-2 data-[state=active]:border-[#0099ff] data-[state=active]:text-[#0099ff]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Comments
             {typeof commentCount !== "undefined" && (
-              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50">
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50 min-w-[24px]">
                 {commentCount}
               </span>
             )}
           </TabsTrigger>
           <TabsTrigger
             value="boosts"
-            className="text-white text-[20px] border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-[#4A4459] py-0 h-[32px] w-[124px] flex items-center relative"
+            className="h-8 min-w-[81px] px-3 py-1.5 text-base font-semibold leading-tight rounded flex justify-between items-center whitespace-nowrap relative transition-colors 
+            bg-[#4386f5] text-white border border-transparent 
+            data-[state=active]:bg-white data-[state=active]:border-l data-[state=active]:border-r-2 data-[state=active]:border-t data-[state=active]:border-b-2 data-[state=active]:border-[#0099ff] data-[state=active]:text-[#0099ff]"
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Boosts
             {typeof boostCount !== "undefined" && (
-              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50">
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50 min-w-[24px]">
                 {boostCount}
               </span>
             )}
@@ -175,53 +174,73 @@ const NotificationTabs = ({ ownerUserId }) => {
         </TabsList>
 
         {/* ALL Notifications */}
-        <TabsContent value="all">
+        <TabsContent value="all" className="rounded-lg overflow-hidden">
           <section className="flex flex-col gap-2">
             {/* map through the notifications */}
             {getNotifications.length > 0 ? (
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
+                  className={`h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
                     notif.readStatus ? "bg-gray-200" : "bg-white"
                   }`}
                   style={{
-                    borderTop: "1px solid var(--Gray-Gray12, #28363F)",
-                    borderRight: "2px solid var(--Gray-Gray12, #28363F)",
-                    borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
-                    borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
-                    background: "var(--neutral-100, #F5F5F5)",
+                    borderRadius: "12px",
+                    borderWidth: "1px 2px 2px 1px",
+                    borderColor: "#28363F",
+                    background: "#F5F5F5",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
                     handleNotificationClick(notif);
                   }}
                 >
-                  <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow">
+                  {/* Profile Picture */}
+                  <span
+                    class="material-symbols-outlined"
+                    style={{
+                      fontSize: "34px",
+                      width: "32px",
+                      height: "34px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontVariationSettings:
+                        "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48", // Ensures correct scaling
+                    }}
+                  >
+                    account_circle
+                  </span>
+                  {/* Notification Content */}
+                  <div className="flex-1 min-w-[300px] max-w-[500px] flex flex-col justify-start gap-[4px]">
                     <h3
-                      className="font-bold text-[16px]"
+                      className="text-[#182127] text-base font-bold leading-tight"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       {notif.message}
                     </h3>
                     <p
-                      className=" text-[14px] h-[24px]"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                      className="text-black text-sm font-normal leading-tight w-full"
+                      style={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
                     >
                       {notif.feedbackContent}
                     </p>
-                    <p
-                      className="text-right text-[16px]"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
-                    >
+                    <p className="text-slate-950 text-base text-right font-normal font-['Inter'] leading-normal">
                       {notif.createdAt
-                        ? new Date(
-                            notif.createdAt.toDate()
-                          ).toLocaleDateString()
+                        ? new Date(notif.createdAt.toDate()).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )
                         : ""}
                     </p>
                   </div>
+                  {/* Kebab Menu */}
                   <KebabMenu
                     onBlock={() => console.log("Block user:", notif.userId)}
                     onMute={() => console.log("Mute user:", notif.userId)}
@@ -234,13 +253,12 @@ const NotificationTabs = ({ ownerUserId }) => {
               ))
             ) : (
               <p
-                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F5F5F5]"
+                className="h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition"
                 style={{
-                  borderTop: "1px solid var(--Gray-Gray12, #28363F)",
-                  borderRight: "2px solid var(--Gray-Gray12, #28363F)",
-                  borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
-                  borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
-                  background: "var(--neutral-100, #F5F5F5)",
+                  borderRadius: "12px",
+                  borderWidth: "1px 2px 2px 1px",
+                  borderColor: "#28363F",
+                  background: "#F5F5F5",
                   fontFamily: "Montserrat, sans-serif",
                 }}
               >
@@ -251,52 +269,70 @@ const NotificationTabs = ({ ownerUserId }) => {
         </TabsContent>
 
         {/* All Comments */}
-        <TabsContent value="comments">
+        <TabsContent value="comments" className="rounded-lg overflow-hidden">
           <section className="flex flex-col gap-2">
             {commentNotif.length > 0 ? (
               commentNotif.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
+                  className={`h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
                     notif.readStatus ? "bg-gray-200" : "bg-white"
                   }`}
                   style={{
-                    borderTop: "1px solid var(--Gray-Gray12, #28363F)",
-                    borderRight: "2px solid var(--Gray-Gray12, #28363F)",
-                    borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
-                    borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
-                    background: "var(--neutral-100, #F5F5F5)",
+                    borderRadius: "12px",
+                    borderWidth: "1px 2px 2px 1px",
+                    borderColor: "#28363F",
+                    background: "#F5F5F5",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
                     handleNotificationClick(notif);
                   }}
                 >
-                  <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow">
+                  {/* Profile Picture */}
+                  <span
+                    class="material-symbols-outlined"
+                    style={{
+                      fontSize: "34px",
+                      width: "32px",
+                      height: "34px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontVariationSettings:
+                        "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48", // Ensures correct scaling
+                    }}
+                  >
+                    account_circle
+                  </span>
+                  {/* Notification Content */}
+                  <div className="flex-1 min-w-[300px] max-w-[500px] flex flex-col justify-start gap-[4px]">
                     <h3
-                      className="font-bold text-[16px]"
+                      className="text-[#182127] text-base font-bold leading-tight"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       {notif.message}
                     </h3>
                     <p
-                      className=" text-[14px] h-[24px]"
+                      className="text-black text-sm font-normal leading-tight"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       {notif.feedbackContent}
                     </p>
-                    <p
-                      className="text-right text-[14px]"
-                      style={{ fontFamily: "Montserrat, sans-serif" }}
-                    >
+                    <p className="text-slate-950 text-base text-right font-normal font-['Inter'] leading-normal">
                       {notif.createdAt
-                        ? new Date(
-                            notif.createdAt.toDate()
-                          ).toLocaleDateString()
+                        ? new Date(notif.createdAt.toDate()).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )
                         : ""}
                     </p>
                   </div>
+                  {/* Kebab Menu */}
                   <KebabMenu
                     onBlock={() => console.log("Block user:", notif.userId)}
                     onMute={() => console.log("Mute user:", notif.userId)}
@@ -309,13 +345,12 @@ const NotificationTabs = ({ ownerUserId }) => {
               ))
             ) : (
               <p
-                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F5F5F5]"
+                className="h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition"
                 style={{
-                  borderTop: "1px solid var(--Gray-Gray12, #28363F)",
-                  borderRight: "2px solid var(--Gray-Gray12, #28363F)",
-                  borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
-                  borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
-                  background: "var(--neutral-100, #F5F5F5)",
+                  borderRadius: "12px",
+                  borderWidth: "1px 2px 2px 1px",
+                  borderColor: "#28363F",
+                  background: "#F5F5F5",
                   fontFamily: "Montserrat, sans-serif",
                 }}
               >
@@ -326,46 +361,71 @@ const NotificationTabs = ({ ownerUserId }) => {
         </TabsContent>
 
         {/* All Boosts */}
-        <TabsContent value="boosts">
+        <TabsContent value="boosts" className="rounded-lg overflow-hidden">
           <section className="flex flex-col gap-2">
             {boostNotif.length > 0 ? (
               boostNotif.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`flex items-start justify-between w-full border rounded-lg gap-[24px] p-[16px_24px] cursor-pointer hover:bg-gray-300 transition ${
+                  className={`h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
                     notif.readStatus ? "bg-gray-200" : "bg-white"
                   }`}
                   style={{
-                    borderTop: "1px solid var(--Gray-Gray12, #28363F)",
-                    borderRight: "2px solid var(--Gray-Gray12, #28363F)",
-                    borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
-                    borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
-                    background: "var(--neutral-100, #F5F5F5)",
+                    borderRadius: "12px",
+                    borderWidth: "1px 2px 2px 1px",
+                    borderColor: "#28363F",
+                    background: "#F5F5F5",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
                     handleNotificationClick(notif);
                   }}
                 >
-                  <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow text-center">
+                  {/* Profile Picture */}
+                  <span
+                    class="material-symbols-outlined"
+                    style={{
+                      fontSize: "34px",
+                      width: "32px",
+                      height: "34px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontVariationSettings:
+                        "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48", // Ensures correct scaling
+                    }}
+                  >
+                    account_circle
+                  </span>
+                  {/* Notification Content */}
+                  <div className="flex-1 min-w-[300px] max-w-[500px] flex flex-col justify-start gap-[4px]">
                     <h3
-                      className="font-bold text-[16px]"
+                      className="text-[#182127] text-base font-bold leading-tight"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
                       {notif.message}
                     </h3>
+                    {/* Placeholder for styling*/}
                     <p
-                      className="text-right text-[14px]"
+                      className="text-transparent text-sm font-normal leading-tight"
                       style={{ fontFamily: "Montserrat, sans-serif" }}
                     >
+                      Placeholder
+                    </p>
+                    <p className="text-slate-950 text-base text-right font-normal font-['Inter'] leading-normal">
                       {notif.createdAt
-                        ? new Date(
-                            notif.createdAt.toDate()
-                          ).toLocaleDateString()
+                        ? new Date(notif.createdAt.toDate()).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )
                         : ""}
                     </p>
                   </div>
+                  {/* Kebab Menu */}
                   <KebabMenu
                     onBlock={() => console.log("Block user:", notif.userId)}
                     onMute={() => console.log("Mute user:", notif.userId)}
@@ -378,13 +438,12 @@ const NotificationTabs = ({ ownerUserId }) => {
               ))
             ) : (
               <p
-                className="flex items-start justify-between w-full p-[16px_24px] border rounded-lg bg-[#F5F5F5]"
+                className="h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition"
                 style={{
-                  borderTop: "1px solid var(--Gray-Gray12, #28363F)",
-                  borderRight: "2px solid var(--Gray-Gray12, #28363F)",
-                  borderBottom: "2px solid var(--Gray-Gray12, #28363F)",
-                  borderLeft: "1px solid var(--Gray-Gray12, #28363F)",
-                  background: "var(--neutral-100, #F5F5F5)",
+                  borderRadius: "12px",
+                  borderWidth: "1px 2px 2px 1px",
+                  borderColor: "#28363F",
+                  background: "#F5F5F5",
                   fontFamily: "Montserrat, sans-serif",
                 }}
               >

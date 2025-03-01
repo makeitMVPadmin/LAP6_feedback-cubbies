@@ -14,7 +14,7 @@ import {
 export const listenForNewFeedbacksAndBoosts = (ownerUserId) => {
   if (!ownerUserId) return;
 
-  console.log("Listening for new feedbacks & boosts...");
+  // console.log("Listening for new feedbacks & boosts...");
 
   // Listen for new feedbacks
   const feedbackQuery = query(
@@ -112,7 +112,7 @@ export const listenForNewFeedbacksAndBoosts = (ownerUserId) => {
 export const listenForUnreadNotifications = (ownerUserId, setNotifications) => {
   if (!ownerUserId) return;
 
-  console.log("Listening for unread notifications...");
+  // console.log("Listening for unread notifications...");
 
   const notificationsQuery = query(
     collection(db, "notifications"),
@@ -132,7 +132,7 @@ export const listenForUnreadNotifications = (ownerUserId, setNotifications) => {
       ...new Set(
         newNotifications
           .map((notification) => notification.feedbackId)
-          .filter((id) => id) 
+          .filter((id) => id)
       ),
     ];
 
