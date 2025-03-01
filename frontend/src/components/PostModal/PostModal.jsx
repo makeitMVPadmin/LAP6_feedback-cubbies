@@ -1,17 +1,17 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
+import { useNavigation } from "../../context/NavigationContext.jsx";
 import { useUser } from "../../context/UserContext";
 import { addPortfolio } from "../../firebase/functions/index.js";
 import { showCustomToast } from "../CustomToast/CustomToast";
 import TagSelection from "../TagSelection/TagSelection";
 import { Button } from "../ui/button";
-import { Timestamp } from "firebase/firestore";
 import { ImagePlus, Link2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 function PostModal({ isOpen, onClose }) {
   const { currentUser } = useUser();
   if (!isOpen) return null;
-
+  const { goToProfileDetails } = useNavigation();
   const [postMessage, setPostMessage] = useState("");
   const [link, setLink] = useState("");
   const [coverImage, setCoverImage] = useState(null);
@@ -47,8 +47,8 @@ function PostModal({ isOpen, onClose }) {
       imageUrl: coverImage, // Use the coverImage URL directly
       link,
       tagId: selectedTags.map((tag) => tag.id),
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     try {
@@ -66,7 +66,8 @@ function PostModal({ isOpen, onClose }) {
       setSelectedTags([]);
       setShowError(false);
       onClose();
-      showCustomToast();
+      goToProfileDetails(portfolioId);
+      showCustomToast(5000);
     } catch (error) {
       console.error("Error adding portfolio:", error);
     }
