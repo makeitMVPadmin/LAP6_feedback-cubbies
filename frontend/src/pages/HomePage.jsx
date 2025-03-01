@@ -73,14 +73,10 @@ function HomePage() {
     getData();
   }, []);
 
-  //  Sorted on backend, this was not working // Sort portfolios by updatedAt field in descending order
-  //  const sortedPortfolios = portfolios.sort((a, b) => b.updatedAt - a.updatedAt);
+ const filteredPortfolios = selectedTag
+    ? portfolios.filter((portfolio) => portfolio.tagId.includes(selectedTag))
+   : portfolios;
   
-  // // Filter portfolios based on selected tag
-  // const filteredPortfolios = selectedTag
-  //   ? sortedPortfolios.filter(portfolio => portfolio.tagId === selectedTag)
-  //   : sortedPortfolios;
-
   return (
     <section className="grid grid-cols-1 min-h-screen gap-[3.13rem] justify-items-center">
       <div className="flex w-[55.125rem] justify-start">
@@ -90,7 +86,7 @@ function HomePage() {
           <FilterTags
             selectedTag={selectedTag}
             setSelectedTag={setSelectedTag}
-            tags={tags}
+           
           />
         </Card>
       </div>
@@ -98,9 +94,9 @@ function HomePage() {
       <div>
         {loading ? (
           <p>Loading...</p>
-        ) : portfolios.length > 0 ? (
+        ) : filteredPortfolios.length > 0 ? (
           <Card className="w-[882px] grid grid-cols-1 justify-items-center h-auto text-center gap-6 bg-blue-200 p-16">
-            {portfolios.map((portfolio) => (
+            {filteredPortfolios.map((portfolio) => (
               <PortfolioCard
                 key={portfolio.id}
                 portfolio={portfolio}

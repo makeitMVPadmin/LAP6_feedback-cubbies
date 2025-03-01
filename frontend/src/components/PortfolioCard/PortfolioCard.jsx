@@ -93,7 +93,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
         </div>
 
         <div className="flex flex-wrap gap-2 rounded-lg">
-          <Button className="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] rounded-xl justify-items-center items-center text-center gap-[9.17px] inline-flex text-lg font-medium font-['Montserrat'] leading-7">
+          <Button className="h-[45.85px] pl-[13.75px] pr-[18.34px] bg-[#0264d4] hover:bg-[#024a9b] rounded-xl justify-items-center items-center text-center gap-[9.17px] inline-flex text-lg font-medium font-['Montserrat'] leading-7">
             <VisibilityIcon className="w-12 h-12" />
             <a href={portfolio.link} target="_blank" rel="noopener noreferrer">
               Review Portfolio
@@ -104,7 +104,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
 
           <Button
             onClick={() => goToProfileDetails(portfolio.id)}
-            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
+            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white hover:bg-[#ebebeb] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
           >
             Comments
           </Button>
