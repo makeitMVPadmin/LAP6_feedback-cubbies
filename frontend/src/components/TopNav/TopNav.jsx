@@ -37,7 +37,7 @@ function TopNav({
   );
 
   return (
-    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center m-[1.25rem] rounded-lg p-0">
+    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center mx-[38.75rem] rounded-lg p-[1.5rem]">
       {/* Logo */}
       <img
         src={logo}
