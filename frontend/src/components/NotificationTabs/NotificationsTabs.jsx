@@ -72,11 +72,6 @@ const NotificationTabs = ({ ownerUserId }) => {
 
   // Handle Notification Click
   const handleNotificationClick = async (notif) => {
-    if (!notif.portfolioId) {
-      console.error("No portfolioId found in notification");
-      return;
-    }
-
     setNotifClick((prev) =>
       prev.map((n) => (n.id === notif.id ? { ...n, readStatus: true } : n))
     );
@@ -85,6 +80,10 @@ const NotificationTabs = ({ ownerUserId }) => {
       await markNotificationAsRead(notif.id);
     } catch (err) {
       console.error("Failed to mark notification as read: ", err);
+    }
+    if (!notif.portfolioId) {
+      console.error("No portfolioId found in notification");
+      return;
     }
 
     //Redirect to portfolio page
@@ -107,6 +106,7 @@ const NotificationTabs = ({ ownerUserId }) => {
         [...notifications, ...prev].forEach((notif) =>
           uniqueNotifications.set(notif.id, notif)
         );
+        console.log("Fetched ALL notifications: ", notifications);
         return Array.from(uniqueNotifications.values());
       });
     }
@@ -182,14 +182,13 @@ const NotificationTabs = ({ ownerUserId }) => {
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
-                    notif.readStatus ? "bg-gray-200" : "bg-white"
+                  className={`h-[104px] w-full rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-300" : "bg-white"
                   }`}
                   style={{
                     borderRadius: "12px",
                     borderWidth: "1px 2px 2px 1px",
                     borderColor: "#28363F",
-                    background: "#F5F5F5",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -276,14 +275,13 @@ const NotificationTabs = ({ ownerUserId }) => {
               commentNotif.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
-                    notif.readStatus ? "bg-gray-200" : "bg-white"
+                  className={`h-[104px] w-full rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-300" : "bg-white"
                   }`}
                   style={{
                     borderRadius: "12px",
                     borderWidth: "1px 2px 2px 1px",
                     borderColor: "#28363F",
-                    background: "#F5F5F5",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -368,14 +366,13 @@ const NotificationTabs = ({ ownerUserId }) => {
               boostNotif.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
-                    notif.readStatus ? "bg-gray-200" : "bg-white"
+                  className={`h-[104px] w-full rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-300" : "bg-white"
                   }`}
                   style={{
                     borderRadius: "12px",
                     borderWidth: "1px 2px 2px 1px",
                     borderColor: "#28363F",
-                    background: "#F5F5F5",
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
