@@ -92,19 +92,30 @@ const NotificationTabs = ({ ownerUserId }) => {
     setCommentNotif(getNotifications.filter((notif) => notif.feedbackId));
     setBoostNotif(getNotifications.filter((notif) => notif.boostId));
     setTotalCount((prev) =>
-      prev !== getNotifications.length ? getNotifications.length : prev
+      prev !== getNotifications.length
+        ? getNotifications.filter((notif) => !notif.readStatus).length
+        : prev
     );
     setNotificationCount((prev) =>
-      prev !== getNotifications.length ? getNotifications.length : prev
+      prev !== getNotifications.length
+        ? getNotifications.filter((notif) => !notif.readStatus).length
+        : prev
     );
     setCommentCount((prev) =>
-      prev !== getNotifications.filter((notif) => notif.feedbackId).length
-        ? getNotifications.filter((notif) => notif.feedbackId).length
+      prev !==
+      getNotifications.filter((notif) => notif.feedbackId && !notif.readStatus)
+        .length
+        ? getNotifications.filter(
+            (notif) => notif.feedbackId && !notif.readStatus
+          ).length
         : prev
     );
     setBoostCount((prev) =>
-      prev !== getNotifications.filter((notif) => notif.boostId).length
-        ? getNotifications.filter((notif) => notif.boostId).length
+      prev !==
+      getNotifications.filter((notif) => notif.boostId && !notif.readStatus)
+        .length
+        ? getNotifications.filter((notif) => notif.boostId && !notif.readStatus)
+            .length
         : prev
     );
   }, [getNotifications]);
