@@ -37,14 +37,14 @@ function TopNav({
   );
 
   return (
-    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center m-0 p-0">
+    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center m-[1.25rem] rounded-lg p-0">
       {/* Logo */}
       <img
         src={logo}
         alt="Communiti Logo"
         className="w-[240px] h-[48px] py-2 px-1"
       />
-      <div className="w-[50px]" />
+      <div className="w-[50px] max-width-3/4" />
       {/* Navigation Menu */}
       <NavigationMenu>
         <NavigationMenuList className="flex gap-8 pl-4">
