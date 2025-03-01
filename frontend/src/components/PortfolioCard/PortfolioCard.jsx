@@ -83,6 +83,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
               </div>
             </div>
           )}
+
         </div>
 
         <div className="flex flex-wrap gap-2 rounded-lg">
