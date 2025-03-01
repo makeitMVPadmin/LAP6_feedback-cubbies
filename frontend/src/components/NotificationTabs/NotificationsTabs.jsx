@@ -22,7 +22,7 @@ const NotificationTabs = ({ ownerUserId }) => {
   const [commentCount, setCommentCount] = useState(0);
   const [boostCount, setBoostCount] = useState(0);
   const [notifClick, setNotifClick] = useState(getNotifications);
-  const { goToProfileDetails } = useNavigation();
+  const { goToProfileDetails, setNotificationCount } = useNavigation();
   const [commentNotif, setCommentNotif] = useState([]);
   const [boostNotif, setBoostNotif] = useState([]);
 
@@ -58,6 +58,7 @@ const NotificationTabs = ({ ownerUserId }) => {
 
       // Only update state if values actually changed
       setTotalCount((prev) => (prev !== totalCount ? totalCount : prev));
+      setNotificationCount((prev) => (prev !== totalCount ? totalCount : prev));
       setCommentCount((prev) =>
         prev !== safeCommentCount ? safeCommentCount : prev
       );

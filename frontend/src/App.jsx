@@ -1,4 +1,4 @@
-// import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
+import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
 import { NavigationProvider, useNavigation } from "./context/NavigationContext";
 import { UserProvider, useUser } from "./context/UserContext";
 import HomePage from "./pages/HomePage";
@@ -9,8 +9,13 @@ import { emptyUser } from "./firebase/functions/fetchUsers";
 import { Toaster } from "sonner";
 
 function AppContent() {
-  const { currentPage, goToProfileDetails, isDrawerOpen, closeDrawer } =
-    useNavigation();
+  const {
+    currentPage,
+    goToProfileDetails,
+    isDrawerOpen,
+    closeDrawer,
+    notificationCount,
+  } = useNavigation();
   const { usersList, currentUser, handleUserLogin } = useUser();
 
   const renderPage = () => {
@@ -30,7 +35,7 @@ function AppContent() {
         <TopNav
           setCurrentPage={goToProfileDetails}
           currentPage={currentPage}
-          notificationCount="999"
+          notificationCount={notificationCount}
           currentUser={currentUser || emptyUser}
           usersList={usersList}
           handleUserLogin={handleUserLogin} // Pass login function
@@ -39,11 +44,11 @@ function AppContent() {
       <main className="flex-grow p-12">{renderPage()}</main>
 
       {/* Notification Drawer */}
-      {/* <NotificationDrawer
+      <NotificationDrawer
         currentUser={currentUser || emptyUser}
         isOpen={isDrawerOpen}
         onClose={() => closeDrawer()}
-      /> */}
+      />
     </div>
   );
 }

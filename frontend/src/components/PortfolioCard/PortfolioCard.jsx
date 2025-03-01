@@ -32,10 +32,10 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
 
         <div className="flex w-full items-center gap-4 pb-1">
           <div className="text-slate-950 text-xl flex flex-row font-semibold font-['Montserrat'] leading-7">
-            {user?.firstName} {user?.lastName}
+            {user?.firstName??"First"} {user?.lastName??"Last"}
           </div>
           <div className="text-slate-500 font-header font-bold font-['Montserrat'] leading-tight">
-            @{user?.username}
+            @{user?.username??"Username"}
           </div>
         </div>
       </div>

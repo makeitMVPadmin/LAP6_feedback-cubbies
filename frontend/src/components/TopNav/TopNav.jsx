@@ -37,7 +37,7 @@ function TopNav({
   );
 
   return (
-    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center mx-[38.75rem] rounded-lg p-[1.5rem]">
+    <div className=" h-[120px] bg-[#ffd22f] flex justify-center items-center mx-[28.75rem] rounded-lg p-[1.5rem]">
       {/* Logo */}
       <img
         src={logo}
@@ -222,7 +222,7 @@ function TopNav({
                     >
                       <div className="text-[#28363f] text-sm font-normal font-['Montserrat']">
                         <span className="text-red-500">Login</span> as{" "}
-                        {user.username}
+                        {user.firstName}
                       </div>
                     </DropdownMenuItem>
                   )

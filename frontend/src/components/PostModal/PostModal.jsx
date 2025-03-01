@@ -1,13 +1,15 @@
 import placeholder from "../../assets/portfolio-placeholder.jpeg";
+import { useUser } from "../../context/UserContext";
 import { addPortfolio } from "../../firebase/functions/index.js";
 import { showCustomToast } from "../CustomToast/CustomToast";
 import TagSelection from "../TagSelection/TagSelection";
 import { Button } from "../ui/button";
+import { Timestamp } from "firebase/firestore";
 import { ImagePlus, Link2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { Timestamp } from "firebase/firestore"; 
 
-function PostModal({ isOpen, onClose, currentUser }) {
+function PostModal({ isOpen, onClose }) {
+  const { currentUser } = useUser();
   if (!isOpen) return null;
 
   const [postMessage, setPostMessage] = useState("");
@@ -38,7 +40,7 @@ function PostModal({ isOpen, onClose, currentUser }) {
     }
 
     const portfolioData = {
-      // userId: currentUser.id,
+      userId: currentUser.id,
       postMessage,
       title: postMessage,
       description: postMessage,

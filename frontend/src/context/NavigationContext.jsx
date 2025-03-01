@@ -7,6 +7,7 @@ export const NavigationProvider = ({ children }) => {
   const [currentNavState, setCurrentNavState] = useState("home");
   const [portfolioId, setPortfolioId] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   // Navigate to Portfolio Details Page
   const goToProfileDetails = (id) => {
@@ -39,6 +40,8 @@ export const NavigationProvider = ({ children }) => {
         openDrawer,
         closeDrawer,
         toggleDrawer,
+        notificationCount,
+        setNotificationCount,
       }}
     >
       {children}
