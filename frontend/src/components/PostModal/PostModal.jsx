@@ -34,10 +34,13 @@ function PostModal({ isOpen, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!link.trim() || !coverImage || selectedTags.length === 0) {
-      setShowError(true); // Show error only when submit is clicked
-      return;
-    }
+     // Check if selectedTags is an array and has valid tags
+     const hasValidTags = selectedTags && selectedTags.length > 0;
+
+  if (!link.trim() || !coverImage || !hasValidTags) {
+    setShowError(true);
+    return;
+  }
 
     const portfolioData = {
       userId: currentUser.id,
@@ -86,6 +89,11 @@ function PostModal({ isOpen, onClose }) {
 
   const handleCoverImageChange = (e) => {
     setCoverImage(e.target.value);
+    if (showError) setShowError(false);
+  };
+
+  const handleTagsChange = (tags) => {
+    setSelectedTags(tags);
     if (showError) setShowError(false);
   };
 
@@ -220,17 +228,35 @@ function PostModal({ isOpen, onClose }) {
               )}
             </div>
           </div>
+            {/* Tag selection section */}
+            <section className="pb-4 mt-4 relative w-[313px]">
+              <h2 className="text-base font-bold mb-[25px] mt-[38px]">Choose Tags</h2>
+              
+              <TagSelection
+                onChange={handleTagsChange}
+                selectedTags={selectedTags}
+                showError={showError && selectedTags.length === 0}
+              />
 
-          {/* Tag selection section */}
-          <section className="pb-4 mt-4">
-            <h2 className="text-base font-bold mb-[25px] mt-[38px]">
-              Choose Tags
-            </h2>
-            <TagSelection
-              selectedTags={selectedTags}
-              setSelectedTags={setSelectedTags}
-            />
-          </section>
+              {/* Display error message when clicking submit */}
+              {showError && selectedTags.length === 0 && (
+                <div className="flex gap-2 absolute left-0 mt-[-200px]">
+                  <p
+                    className="text-white text-sm rounded-full bg-red-500 px-[9px]"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    !
+                  </p>
+                  <p
+                    className="text-red-500 text-sm"
+                    style={{ fontFamily: "Montserrat, sans-serif" }}
+                  >
+                    Field input is required
+                  </p>
+                </div>
+              )}
+            </section>
+
 
           {/* Buttons for canceling or publishing */}
           <div className="flex justify-between">

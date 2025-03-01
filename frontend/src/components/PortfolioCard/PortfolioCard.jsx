@@ -98,7 +98,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
 
           <Button
             onClick={() => goToProfileDetails(portfolio.id)}
-            className="h-[45.85px] px-[13.75px] py-[18.34px] bg-white hover:bg-[#ebebeb] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
+            className="h-[45.85px] px-[13.75px] py-[18.34px] border-1 border-[#b8b8b8] bg-white hover:bg-[#ebebeb] rounded-xl shadow-md flex justify-center items-center gap-[9.17px] text-[#28363f] text-lg font-medium font-['Montserrat'] leading-7"
           >
             Comments
           </Button>

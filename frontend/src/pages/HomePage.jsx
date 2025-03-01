@@ -91,11 +91,11 @@ function HomePage() {
         </Card>
       </div>
 
-      <div>
+      <div >
         {loading ? (
           <p>Loading...</p>
         ) : filteredPortfolios.length > 0 ? (
-          <Card className="w-[882px] grid grid-cols-1 justify-items-center h-auto text-center gap-6 bg-blue-200 p-16">
+          <Card className="w-[882px] grid grid-cols-1 justify-items-center h-auto text-center gap-15 bg-blue-200 p-16">
             {filteredPortfolios.map((portfolio) => (
               <PortfolioCard
                 key={portfolio.id}
