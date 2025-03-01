@@ -47,6 +47,7 @@ export const listenForNewFeedbacksAndBoosts = (ownerUserId) => {
         if (existingNotifications.empty) {
           await addDoc(collection(db, "notifications"), {
             userId: ownerUserId,
+            portfolioId: feedbackData.portfolioId,
             feedbackId: change.doc.id,
             message: `@${senderName} commented on your portfolio`,
             readStatus: false,
@@ -90,6 +91,7 @@ export const listenForNewFeedbacksAndBoosts = (ownerUserId) => {
         if (existingNotifications.empty) {
           await addDoc(collection(db, "notifications"), {
             userId: ownerUserId,
+            portfolioId: boostData.portfolioId,
             boostId: change.doc.id,
             message: `@${senderName} boosted your portfolio`,
             readStatus: false,

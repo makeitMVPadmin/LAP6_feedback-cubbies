@@ -9,8 +9,13 @@ import { emptyUser } from "./firebase/functions/fetchUsers";
 import { Toaster } from "sonner";
 
 function AppContent() {
-  const { currentPage, goToProfileDetails, isDrawerOpen, closeDrawer } =
-    useNavigation();
+  const {
+    currentPage,
+    goToProfileDetails,
+    isDrawerOpen,
+    closeDrawer,
+    notificationCount,
+  } = useNavigation();
   const { usersList, currentUser, handleUserLogin } = useUser();
 
   const renderPage = () => {
@@ -30,7 +35,7 @@ function AppContent() {
         <TopNav
           setCurrentPage={goToProfileDetails}
           currentPage={currentPage}
-          notificationCount="999"
+          notificationCount={notificationCount}
           currentUser={currentUser || emptyUser}
           usersList={usersList}
           handleUserLogin={handleUserLogin} // Pass login function

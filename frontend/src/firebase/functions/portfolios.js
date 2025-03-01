@@ -9,11 +9,12 @@ import {
   addDoc,
   deleteDoc,
   updateDoc,
+  orderBy
 } from "firebase/firestore";
 
 const fetchPortfolio = async () => {
   try {
-    const q = query(collection(db, "portfolios"), limit(3));
+    const q = query(collection(db, "portfolios"), orderBy("createdAt", "desc"), limit(3));
     const querySnapshot = await getDocs(q);
 
     const userPortfolio = querySnapshot.docs.map((doc) => ({
@@ -68,37 +69,62 @@ const getPortfolioById = async (portfolioId) => {
     if (portfolioSnapshot.exists()) {
       const portfolioData = portfolioSnapshot.data();
 
+      let userData = null;
+      let roleData = { roleName: "Unknown" };
+
       if (portfolioData.userId) {
         const userId = portfolioData.userId;
         const userDoc = await getDoc(doc(db, "users", userId));
 
-        if (!userDoc.exists()) {
+        if (userDoc.exists()) {
+          userData = userDoc.data();
+
+          const roleId = userData.roleId;
+          const roleDoc = await getDoc(doc(db, "roles", roleId));
+
+          if (roleDoc.exists()) {
+            roleData = roleDoc.data();
+          }
+        } else {
           console.log("No such user with ID:", userId);
-          return null;
         }
-
-        const userData = userDoc.data();
-
-        const roleId = userData.roleId;
-        const roleDoc = await getDoc(doc(db, "roles", roleId));
-
-        const roleData = roleDoc.exists()
-          ? roleDoc.data()
-          : { roleName: "Unknown" };
-
-        return {
-          portfolio: { id: portfolioSnapshot.id, ...portfolioData },
-          user: userData,
-          role: roleData,
-        };
-      } else {
-        console.log("No userId found in the portfolio.");
-        return {
-          portfolio: { id: portfolioSnapshot.id, ...portfolioData },
-          user: { username: "Unknown", profilePhoto: "" },
-          role: { roleName: "Unknown" },
-        };
       }
+
+      let tags = [];
+      if (portfolioData.tagId) {
+        if (Array.isArray(portfolioData.tagId)) {
+          const tagPromises = portfolioData.tagId.map((tagId) =>
+            getDoc(doc(db, "tags", tagId))
+          );
+          const tagSnapshots = await Promise.all(tagPromises);
+
+          tags = tagSnapshots.map((tagSnapshot) => {
+            if (tagSnapshot.exists()) {
+              return tagSnapshot.data().tagName;
+            } else {
+              console.log(`No tag found for ID: ${tagSnapshot.id}`);
+              return "Unknown";
+            }
+          });
+        } else {
+          const tagSnapshot = await getDoc(
+            doc(db, "tags", portfolioData.tagId)
+          );
+          if (tagSnapshot.exists()) {
+            tags = [tagSnapshot.data().tagName];
+          } else {
+            console.log(`No tag found for ID: ${portfolioData.tagId}`);
+            tags = ["Unknown"];
+          }
+        }
+      }
+
+      return {
+        portfolio: { id: portfolioSnapshot.id, ...portfolioData },
+        user: userData || { username: "Unknown", profilePhoto: "" },
+        role: roleData,
+        tags,
+      };
     } else {
       console.log("No such portfolio with ID:", portfolioId);
       return null;

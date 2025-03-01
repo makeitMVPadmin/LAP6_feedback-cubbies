@@ -9,9 +9,11 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const userIds = [
-      "01x5EDdS2TlLNMPLkiPT",
-      "03E7eZ9ODHyBiguPGXtw",
-      "0U4AlgjUcfgyC23raMTo",
+      // "2z77IdGFK4Z12ruuYLnq",
+      "it5S9yC8RtsKqFWLZAqk",
+      // "ve4byKfBsDToVmSvrGKM",
+      "aDodxmi0ldGUTqV1EK1D",
+      "2uBmF6yNpHd6y25lLiIX",
     ];
 
     fetchUsersByIds(userIds).then((users) => {

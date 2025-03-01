@@ -5,10 +5,10 @@ export const blockUser = async () => {};
 
 export const muteUser = async () => {};
 
-export const deleteNotification = async () => {
+export const deleteNotification = async (notificationId) => {
   try {
-    await deleteDoc(doc(db, "notification", notificationId));
-    console.log("Notification deleted successfully");
+    await deleteDoc(doc(db, "notifications", notificationId));
+    console.log(`Notification ${notificationId} deleted successfully`);
   } catch (err) {
     console.error("Error deleting notification: ", err);
   }
