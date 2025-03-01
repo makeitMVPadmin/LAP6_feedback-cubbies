@@ -32,7 +32,7 @@ function PortfolioDetailsPage() {
       <div>{renderMessage}</div>
     </div>
   ) : (
-    <section className="grid grid-cols-1 min-h-screen mt-[64px] pb-[64px] justify-items-center">
+    <section className="grid grid-cols-1 min-h-screen mt-[10px] pb-[64px] justify-items-center">
       <div className="w-[882px] h-auto flex flex-col justify-center items-center text-center bg-blue-200 p-16 rounded-lg shadow-md">
         <PortfolioCard
           portfolio={selectedPortfolio.portfolio}
