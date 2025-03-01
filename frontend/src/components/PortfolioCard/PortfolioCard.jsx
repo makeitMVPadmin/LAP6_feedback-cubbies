@@ -21,10 +21,6 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
       key={portfolio.id}
       className="w-full max-w-[754px] py-6 pb-6 px-8 bg-white rounded-lg border-l border-r-2 border-t border-b-2 border-[#28363f] flex flex-col justify-start items-start overflow-hidden"
     >
-      <CardContent className="h-6 w-15 px-2.5 py-1 mt-1.4 ms-4 bg-[#ebebeb] rounded-lg justify-center items-center gap-0.5 inline-flex text-slate-900 text-sm font-semibold font-['Inter'] leading-none">
-        New
-      </CardContent>
-
       <div className="w-full flex justify-start items-center gap-4 pt-3 pl-1 pb-0.5 ms-[4.18rem]">
         <div className="w-9 h-9 flex justify-center items-center">
           <Avatar className="w-9 h-9 rounded-full" />
@@ -87,9 +83,6 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
               </div>
             </div>
           )}
-          <div className="inline-flex items-center gap-4">
-            <img src={plusIcon} alt="plus icon" />
-          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 rounded-lg">
