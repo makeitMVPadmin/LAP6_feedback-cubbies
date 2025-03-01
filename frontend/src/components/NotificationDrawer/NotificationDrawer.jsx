@@ -1,7 +1,6 @@
 import { useUser } from "../../context/UserContext";
-import { getAllNotifications } from "../../firebase/functions/notifications";
 import NotificationTabs from "../NotificationTabs/NotificationsTabs";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function NotificationDrawer({ isOpen, onClose }) {
   const { currentUser } = useUser();

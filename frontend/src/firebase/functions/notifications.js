@@ -246,7 +246,7 @@ export const getNotificationsCounter = async (ownerUserId) => {
     const boostCount = boostSnapshot.docs.length;
 
     return {
-      totalCount,
+      totalCount: totalCount ?? 0,
       commentCount: commentCount ?? 0,
       boostCount: boostCount ?? 0,
     };
