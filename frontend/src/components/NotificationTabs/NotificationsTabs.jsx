@@ -182,7 +182,7 @@ const NotificationTabs = ({ ownerUserId }) => {
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className={`h-[104px] w-full rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                  className={`h-[104px] w-[620px] rounded-bl-lg rounded-br-lg gap-6 ml-[4px] px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
                     notif.readStatus ? "bg-gray-300" : "bg-white"
                   }`}
                   style={{
