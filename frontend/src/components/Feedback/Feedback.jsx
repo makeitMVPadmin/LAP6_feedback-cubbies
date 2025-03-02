@@ -1,19 +1,16 @@
-import { useState, useEffect } from "react";
+import avatar from "../../assets/avatar.svg";
+import sendIcon from "../../assets/send.svg";
+import { useUser } from "../../context/UserContext";
 import {
   getPortfolioFeedback,
   createFeedback,
-  updateFeedback,
-  deleteFeedback,
 } from "../../firebase/functions/feedbackFunctions";
+import { useState, useEffect } from "react";
 
-
-const Feedback = () => {
+const Feedback = ({ portfolioId }) => {
   const [feedbackList, setFeedbackList] = useState([]);
-  const [portfolioId, setPortfolioId] = useState("KoFVGG5ARPOD2kcRT2JN");
   const [newComment, setNewComment] = useState("");
-  const [editingFeedbackId, setEditingFeedbackId] = useState(null);
-  const [updatedComments, setUpdatedComments] = useState({});
-
+  const { currentUser } = useUser();
 
   const retrivePortfolioFeedback = async () => {
     const feedback = await getPortfolioFeedback(portfolioId);
@@ -21,7 +18,8 @@ const Feedback = () => {
   };
 
   const handleCreateFeedback = async () => {
-    const userId = "wJMvwRo2mqYo59LRA1hT";
+    const userId = currentUser?.id;
+    const username = currentUser?.username;
     const docRef = await createFeedback(portfolioId, userId, newComment);
     setFeedbackList((prevFeedbackList) => [
       ...prevFeedbackList,
@@ -29,7 +27,7 @@ const Feedback = () => {
         id: docRef.id,
         comment: newComment,
         portfolioId,
-        userId,
+        username,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -37,106 +35,52 @@ const Feedback = () => {
     setNewComment("");
   };
 
- 
-  const handleUpdateFeedback = async (feedbackId) => {
-    const updatedComment = updatedComments[feedbackId];
-    if (updatedComment.trim() !== "") {
-      setFeedbackList((prevFeedbackList) =>
-        prevFeedbackList.map((feedback) =>
-          feedback.id === feedbackId
-            ? {
-                ...feedback,
-                comment: updatedComment,
-                updatedAt: new Date().toISOString(),
-              }
-            : feedback
-        )
-      );
-
-      try {
-        await updateFeedback(feedbackId, updatedComment);
-      } catch (err) {
-        console.error("Error updating feedback:", err);
-      }
-
-      setEditingFeedbackId(null);
-    }
-  };
-
-  const handleDeleteFeedback = async (feedbackId) => {
-    try {
-      await deleteFeedback(feedbackId);
-      setFeedbackList((prevFeedbackList) =>
-        prevFeedbackList.filter((feedback) => feedback.id !== feedbackId)
-      );
-    } catch (err) {
-      console.error("Error deleting feedback:", err);
-    }
-  };
-
-  const handleEditClick = (feedbackId) => {
-    setEditingFeedbackId(feedbackId);
-    setUpdatedComments((prev) => ({
-      ...prev,
-      [feedbackId]: feedbackList.find((feedback) => feedback.id === feedbackId)
-        .comment,
-    }));
-  };
-
-  const handleCancelEdit = () => {
-    setEditingFeedbackId(null);
-  };
-
   useEffect(() => {
     retrivePortfolioFeedback();
   }, [portfolioId]);
 
   return (
-    <div>
-      <h2>Feedbacks for Portfolio {portfolioId}</h2>
-      <ul>
-        {feedbackList.map((feedback) => (
-          <li key={feedback.id}>
-            {editingFeedbackId === feedback.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={updatedComments[feedback.id] || feedback.comment}
-                  onChange={(e) =>
-                    setUpdatedComments((prev) => ({
-                      ...prev,
-                      [feedback.id]: e.target.value,
-                    }))
-                  }
-                />
-                <button onClick={() => handleUpdateFeedback(feedback.id)}>
-                  Save
-                </button>
-                <button onClick={handleCancelEdit}>Cancel</button>
+    <div className="w-full max-w-[754px] mx-auto">
+      <div className="pt-6 px-6 mt-[64px] bg-white rounded-lg border border-[#28363f] flex flex-col justify-start items-start overflow-hidden">
+        {feedbackList.length === 0 ? (
+          <p className="text-black text-sm font-['Montserrat'] font-normal leading-[20px] custom-font-settings mb-6">
+            There are no comments yet.
+          </p>
+        ) : (
+          feedbackList.map((feedback) => (
+            <div
+              key={feedback.id}
+              className="flex items-start px-3 mb-6 self-stretch"
+            >
+              <div className="pr-4">
+                <img src={avatar} alt="user avatar" className="w-9 h-9" />
               </div>
-            ) : (
-              <div>
-                <p onClick={() => handleEditClick(feedback.id)}>
+              <div className="flex flex-col items-start">
+                <p className="text-black text-sm font-['Montserrat'] font-semibold leading-[20px] custom-font-settings">
+                  @{feedback.username}
+                </p>
+                <p className="text-black text-sm font-['Montserrat'] font-normal leading-[20px] custom-font-settings">
                   {feedback.comment}
                 </p>
               </div>
-            )}
+            </div>
+          ))
+        )}
+      </div>
 
-            <button onClick={() => handleDeleteFeedback(feedback.id)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <div>
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Write a feedback"
-        />
-        <button onClick={handleCreateFeedback}>Submit Feedback</button>
+      <div className="w-full pt-[64px]">
+        <div className="flex w-full max-w-[590px] h-[40px] items-center gap-[10px] bg-white rounded-lg border border-[#28363f]">
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Add comment..."
+            className="w-full h-full px-3 py-1 text-sm font-['Montserrat'] font-normal leading-[20px] placeholder:text-[#80909A] placeholder:font-['Montserrat'] placeholder:text-sm placeholder:font-normal placeholder:leading-[20px] focus:outline-none"
+          />
+          <button onClick={handleCreateFeedback} className="pr-3">
+            <img src={sendIcon} className="w-6 h-6" />
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,11 +1,9 @@
-import { db } from "../../firebase/firebase";
+import { useNavigation } from "../../context/NavigationContext";
 import { deleteNotification } from "../../firebase/functions/kebabFunction";
+import useNotifications from "../../firebase/functions/notificationHooks";
 import {
-  createCommentNotification,
-  createReactionNotification,
   getAllNotifications,
-  getUnreadCommentsNotification,
-  getUnreadReactionsNotification,
+  markNotificationAsRead,
 } from "../../firebase/functions/notifications";
 import KebabMenu from "../KebabMenu/KebabMenu";
 import {
@@ -14,227 +12,229 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs.jsx";
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 
 const NotificationTabs = ({ ownerUserId }) => {
   const [getNotifications, setGetNotifications] = useState([]);
-  const [getLastVisibleDoc, setGetLastVisibleDoc] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [getUnreadComments, setGetUnreadComments] = useState([]);
-  const [getUnreadReactions, setGetUnreadReactions] = useState([]);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
+  const [boostCount, setBoostCount] = useState(0);
+  const [notifClick, setNotifClick] = useState(getNotifications);
+  const { goToProfileDetails, setNotificationCount } = useNavigation();
+  const [commentNotif, setCommentNotif] = useState([]);
+  const [boostNotif, setBoostNotif] = useState([]);
 
-  // Listener for a new feedback created
-  const listenForNewFeedback = () => {
-    try {
-      const feedbackQuery = query(
-        collection(db, "feedback"),
-        orderBy("createdAt", "desc")
-      );
+  // Listens for new notifications
+  const { notifications } = useNotifications(ownerUserId);
 
-      const unsubscribe = onSnapshot(feedbackQuery, (snapshot) => {
-        snapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const feedbackId = change.doc.id;
-            console.log("New feedback detected");
-
-            try {
-              await createCommentNotification(feedbackId);
-            } catch (err) {
-              console.error("Failed to create notification:", err);
-            }
-          }
-        });
-      });
-      return unsubscribe;
-    } catch (err) {
-      console.error("Error listening for new feedback: ", err);
-      return [];
-    }
-  };
-
-  // Listener for a new reaction created
-  const listenForNewReaction = () => {
-    try {
-      const reactionQuery = query(
-        collection(db, "reaction"),
-        orderBy("createdAt", "desc")
-      );
-
-      const unsubscribe = onSnapshot(reactionQuery, (snapshot) => {
-        snapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const reactionId = change.doc.id;
-            console.log("New reaction detected");
-
-            try {
-              await createReactionNotification(reactionId);
-            } catch (err) {
-              console.error("Failed to create notification:", err);
-            }
-          }
-        });
-      });
-      return unsubscribe;
-    } catch (err) {
-      console.error("Error listening for new reaction: ", err);
-      return [];
-    }
-  };
-
-  // Fetching all notifications
+  // Fetching all initial notifications
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const { notificationList, lastVisible } = await getAllNotifications(
-        ownerUserId
-      );
-      setGetNotifications(
-        Array.isArray(notificationList) ? notificationList : []
-      );
-      setGetLastVisibleDoc(lastVisible);
+      const notifications = await getAllNotifications(ownerUserId);
+      // console.log("OwnerUserId: ", ownerUserId);
+      // console.log("Fetched ALL notifications: ", notifications);
+
+      // Ensure notifications is an array before updating state
+      setGetNotifications(Array.isArray(notifications) ? notifications : []);
     } catch (err) {
       console.error("Error getting initial notifications list: ", err);
-      // setGetNotifications(mockNotifications);
     } finally {
       setLoading(false);
     }
   };
 
-  // Listener for new notifications created
-  const listenForNewNotifications = () => {
+  // Handle Notification Click
+  const handleNotificationClick = async (notif) => {
+    setNotifClick((prev) =>
+      prev.map((n) => (n.id === notif.id ? { ...n, readStatus: true } : n))
+    );
+
     try {
-      const notificationQuery = query(
-        collection(db, "notification"),
-        where("userId", "==", ownerUserId),
-        orderBy("createdAt", "desc")
-      );
-
-      // onSnapshot to listen for new notifications
-      const unsubscribe = onSnapshot(notificationQuery, (snapshot) => {
-        const newNotifications = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        // Update the notifications state and removing duplicates
-        setGetNotifications((prev) => {
-          const prevArr = Array.isArray(prev) ? prev : [];
-          const mergedArr = [
-            ...newNotifications.filter(
-              (newNotification) =>
-                !prevArr.some((p) => p.id === newNotification.id)
-            ),
-            ...prevArr,
-          ];
-          return mergedArr;
-        });
-      });
-
-      return unsubscribe;
+      await markNotificationAsRead(notif.id);
     } catch (err) {
-      console.error("Error listening for new notifications: ", err);
-      return [];
+      console.error("Failed to mark notification as read: ", err);
     }
+    if (!notif.portfolioId) {
+      console.error("No portfolioId found in notification");
+      return;
+    }
+
+    //Redirect to portfolio page
+    goToProfileDetails(notif.portfolioId);
   };
 
-  console.log("getNotifications:", getNotifications);
-
+  // Load initial notifications once on mount
   useEffect(() => {
     fetchNotifications();
-    const unsubscribeFeedback = listenForNewFeedback();
-    const unsubscribeReaction = listenForNewReaction();
-    const unsubscribeNotification = listenForNewNotifications();
-    return () => {
-      if (unsubscribeFeedback) unsubscribeFeedback();
-      if (unsubscribeReaction) unsubscribeReaction();
-      if (unsubscribeNotification) unsubscribeNotification();
-    };
   }, [ownerUserId]);
 
-  // Fetching unread notifications
-  const fetchUnreadNotifs = async () => {
-    setLoading(true);
-    try {
-      const [unreadComments, unreadReactions] = await Promise.all([
-        getUnreadCommentsNotification(ownerUserId),
-        getUnreadReactionsNotification(ownerUserId),
-      ]);
-
-      setGetUnreadComments(unreadComments || []);
-      setGetUnreadReactions(unreadReactions || []);
-    } catch (err) {
-      console.error("Error fetching notifications list:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Merging when real-time notifications are added
   useEffect(() => {
-    fetchUnreadNotifs();
-  }, [ownerUserId]);
+    if (notifications.length > 0) {
+      // console.log("Updated notifications (real-time):", notifications);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+      setGetNotifications((prev) => {
+        // Merge old and new notifications without duplicates
+        const uniqueNotifications = new Map();
+        [...notifications, ...prev].forEach((notif) =>
+          uniqueNotifications.set(notif.id, notif)
+        );
+        console.log("Fetched ALL notifications: ", notifications);
+        return Array.from(uniqueNotifications.values());
+      });
+    }
+  }, [notifications]);
 
-  // if (getNotifications.length == 0) {
-  //   return <div>Loading...</div>;
-  // }
+  // Filtering notifications by comments and boosts
+  useEffect(() => {
+    setCommentNotif(getNotifications.filter((notif) => notif.feedbackId));
+    setBoostNotif(getNotifications.filter((notif) => notif.boostId));
+    setTotalCount((prev) =>
+      prev !== getNotifications.length
+        ? getNotifications.filter((notif) => !notif.readStatus).length
+        : prev
+    );
+    setNotificationCount((prev) =>
+      prev !== getNotifications.length
+        ? getNotifications.filter((notif) => !notif.readStatus).length
+        : prev
+    );
+    setCommentCount((prev) =>
+      prev !==
+      getNotifications.filter((notif) => notif.feedbackId && !notif.readStatus)
+        .length
+        ? getNotifications.filter(
+            (notif) => notif.feedbackId && !notif.readStatus
+          ).length
+        : prev
+    );
+    setBoostCount((prev) =>
+      prev !==
+      getNotifications.filter((notif) => notif.boostId && !notif.readStatus)
+        .length
+        ? getNotifications.filter((notif) => notif.boostId && !notif.readStatus)
+            .length
+        : prev
+    );
+  }, [getNotifications]);
 
   return (
     <>
       <Tabs defaultValue="all">
-        <TabsList className="bg-[#0954B0] p-2 w-full flex justify-evenly rounded-none h-14">
+        <TabsList className="relative bg-transparent flex justify-start rounded-none w-full  min-w-[621px] min-h-[40px] gap-[24px] mt-[11px] mb-[12px] p-[12px_16px]">
           <TabsTrigger
             value="all"
-            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+            className="h-8 min-w-[50px] px-3 py-1.5 text-base font-semibold leading-tight rounded flex justify-between items-center whitespace-nowrap relative transition-colors 
+            bg-[#4386f5] text-white border border-transparent 
+            data-[state=active]:bg-white data-[state=active]:border-l data-[state=active]:border-r-2 data-[state=active]:border-t data-[state=active]:border-b-2 data-[state=active]:border-[#0099ff] data-[state=active]:text-[#0099ff]"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
+            {totalCount !== "undefined" && (
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50 min-w-[24px]">
+                {totalCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger
             value="comments"
-            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+            className="h-8 min-w-[131px] px-3 py-1.5 text-base font-semibold leading-tight rounded flex justify-between items-center whitespace-nowrap relative transition-colors 
+            bg-[#4386f5] text-white border border-transparent 
+            data-[state=active]:bg-white data-[state=active]:border-l data-[state=active]:border-r-2 data-[state=active]:border-t data-[state=active]:border-b-2 data-[state=active]:border-[#0099ff] data-[state=active]:text-[#0099ff]"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             Comments
+            {typeof commentCount !== "undefined" && (
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50 min-w-[24px]">
+                {commentCount}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger
-            value="reactions"
-            className="text-black border border-[#FFF9F4] hover:bg-gray-200 transition-colors duration-200 rounded-md data-[state=active]:text-blue-500"
+            value="boosts"
+            className="h-8 min-w-[81px] px-3 py-1.5 text-base font-semibold leading-tight rounded flex justify-between items-center whitespace-nowrap relative transition-colors 
+            bg-[#4386f5] text-white border border-transparent 
+            data-[state=active]:bg-white data-[state=active]:border-l data-[state=active]:border-r-2 data-[state=active]:border-t data-[state=active]:border-b-2 data-[state=active]:border-[#0099ff] data-[state=active]:text-[#0099ff]"
+            style={{ fontFamily: "Montserrat, sans-serif" }}
           >
-            Reactions
+            Boosts
+            {typeof boostCount !== "undefined" && (
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50 min-w-[24px]">
+                {boostCount}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
 
         {/* ALL Notifications */}
-        <TabsContent value="all">
+        <TabsContent value="all" className="rounded-lg overflow-hidden">
           <section className="flex flex-col gap-2">
             {/* map through the notifications */}
             {getNotifications.length > 0 ? (
               getNotifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm gap-2"
+                  className={`h-[104px] w-[620px] rounded-bl-lg rounded-br-lg gap-6 ml-[4px] px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-300" : "bg-white"
+                  }`}
+                  style={{
+                    borderRadius: "12px",
+                    borderWidth: "1px 2px 2px 1px",
+                    borderColor: "#28363F",
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNotificationClick(notif);
+                  }}
                 >
-                  <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow">
-                    <h3 className="font-bold">{notif.message}</h3>
-                    <p>{notif.feedbackContent}</p>
-                    <p className="text-right">
+                  {/* Profile Picture */}
+                  <span
+                    class="material-symbols-outlined"
+                    style={{
+                      fontSize: "34px",
+                      width: "32px",
+                      height: "34px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontVariationSettings:
+                        "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48", // Ensures correct scaling
+                    }}
+                  >
+                    account_circle
+                  </span>
+                  {/* Notification Content */}
+                  <div className="flex-1 min-w-[300px] max-w-[500px] flex flex-col justify-start gap-[4px]">
+                    <h3
+                      className="text-[#182127] text-base font-bold leading-tight"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      {notif.message}
+                    </h3>
+                    <p
+                      className="text-black text-sm font-normal leading-tight w-full"
+                      style={{
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      {notif.feedbackContent}
+                    </p>
+                    <p className="text-slate-950 text-base text-right font-normal font-['Inter'] leading-normal">
                       {notif.createdAt
-                        ? new Date(
-                            notif.createdAt.toDate()
-                          ).toLocaleDateString()
+                        ? new Date(notif.createdAt.toDate()).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )
                         : ""}
                     </p>
                   </div>
+                  {/* Kebab Menu */}
                   <KebabMenu
                     onBlock={() => console.log("Block user:", notif.userId)}
                     onMute={() => console.log("Mute user:", notif.userId)}
@@ -246,39 +246,90 @@ const NotificationTabs = ({ ownerUserId }) => {
                 </div>
               ))
             ) : (
-              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+              <p
+                className="h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition"
+                style={{
+                  borderRadius: "12px",
+                  borderWidth: "1px 2px 2px 1px",
+                  borderColor: "#28363F",
+                  background: "#F5F5F5",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+              >
                 No notifications to display.
               </p>
             )}
           </section>
         </TabsContent>
 
-        {/* Unread Comments */}
-        <TabsContent value="comments">
+        {/* All Comments */}
+        <TabsContent value="comments" className="rounded-lg overflow-hidden">
           <section className="flex flex-col gap-2">
-            {getUnreadComments.length > 0 ? (
-              getUnreadComments.map((unreadNotif) => (
+            {commentNotif.length > 0 ? (
+              commentNotif.map((notif) => (
                 <div
-                  key={unreadNotif.id}
-                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                  key={notif.id}
+                  className={`h-[104px] w-full rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-300" : "bg-white"
+                  }`}
+                  style={{
+                    borderRadius: "12px",
+                    borderWidth: "1px 2px 2px 1px",
+                    borderColor: "#28363F",
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNotificationClick(notif);
+                  }}
                 >
-                  <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow text-center">
-                    <h3 className="font-bold">{unreadNotif.message}</h3>
-                    <p className="text-right">
+                  {/* Profile Picture */}
+                  <span
+                    class="material-symbols-outlined"
+                    style={{
+                      fontSize: "34px",
+                      width: "32px",
+                      height: "34px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontVariationSettings:
+                        "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48", // Ensures correct scaling
+                    }}
+                  >
+                    account_circle
+                  </span>
+                  {/* Notification Content */}
+                  <div className="flex-1 min-w-[300px] max-w-[500px] flex flex-col justify-start gap-[4px]">
+                    <h3
+                      className="text-[#182127] text-base font-bold leading-tight"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      {notif.message}
+                    </h3>
+                    <p
+                      className="text-black text-sm font-normal leading-tight"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      {notif.feedbackContent}
+                    </p>
+                    <p className="text-slate-950 text-base text-right font-normal font-['Inter'] leading-normal">
                       {notif.createdAt
-                        ? new Date(
-                            notif.createdAt.toDate()
-                          ).toLocaleDateString()
+                        ? new Date(notif.createdAt.toDate()).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )
                         : ""}
                     </p>
                   </div>
+                  {/* Kebab Menu */}
                   <KebabMenu
-                    onBlock={() =>
-                      console.log("Block user:", unreadNotif.userId)
-                    }
-                    onMute={() => console.log("Mute user:", unreadNotif.userId)}
-                    onDelete={() => deleteNotification(unreadNotif.id)}
+                    onBlock={() => console.log("Block user:", notif.userId)}
+                    onMute={() => console.log("Mute user:", notif.userId)}
+                    onDelete={() => deleteNotification(notif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }
@@ -286,39 +337,91 @@ const NotificationTabs = ({ ownerUserId }) => {
                 </div>
               ))
             ) : (
-              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+              <p
+                className="h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition"
+                style={{
+                  borderRadius: "12px",
+                  borderWidth: "1px 2px 2px 1px",
+                  borderColor: "#28363F",
+                  background: "#F5F5F5",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+              >
                 No notifications to display.
               </p>
             )}
           </section>
         </TabsContent>
 
-        {/* Unread Reactions */}
-        <TabsContent value="reactions">
+        {/* All Boosts */}
+        <TabsContent value="boosts" className="rounded-lg overflow-hidden">
           <section className="flex flex-col gap-2">
-            {getUnreadReactions.length > 0 ? (
-              getUnreadReactions.map((unreadNotif) => (
+            {boostNotif.length > 0 ? (
+              boostNotif.map((notif) => (
                 <div
-                  key={unreadNotif.id}
-                  className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm"
+                  key={notif.id}
+                  className={`h-[104px] w-full rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition ${
+                    notif.readStatus ? "bg-gray-300" : "bg-white"
+                  }`}
+                  style={{
+                    borderRadius: "12px",
+                    borderWidth: "1px 2px 2px 1px",
+                    borderColor: "#28363F",
+                  }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleNotificationClick(notif);
+                  }}
                 >
-                  <span class="material-symbols-outlined">account_circle</span>
-                  <div className="flex-grow text-center">
-                    <h3 className="font-bold">{unreadNotif.message}</h3>
-                    <p className="text-right">
+                  {/* Profile Picture */}
+                  <span
+                    class="material-symbols-outlined"
+                    style={{
+                      fontSize: "34px",
+                      width: "32px",
+                      height: "34px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontVariationSettings:
+                        "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48", // Ensures correct scaling
+                    }}
+                  >
+                    account_circle
+                  </span>
+                  {/* Notification Content */}
+                  <div className="flex-1 min-w-[300px] max-w-[500px] flex flex-col justify-start gap-[4px]">
+                    <h3
+                      className="text-[#182127] text-base font-bold leading-tight"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      {notif.message}
+                    </h3>
+                    {/* Placeholder for styling*/}
+                    <p
+                      className="text-transparent text-sm font-normal leading-tight"
+                      style={{ fontFamily: "Montserrat, sans-serif" }}
+                    >
+                      Placeholder
+                    </p>
+                    <p className="text-slate-950 text-base text-right font-normal font-['Inter'] leading-normal">
                       {notif.createdAt
-                        ? new Date(
-                            notif.createdAt.toDate()
-                          ).toLocaleDateString()
+                        ? new Date(notif.createdAt.toDate()).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "2-digit",
+                              month: "numeric",
+                              day: "numeric",
+                            }
+                          )
                         : ""}
                     </p>
                   </div>
+                  {/* Kebab Menu */}
                   <KebabMenu
-                    onBlock={() =>
-                      console.log("Block user:", unreadNotif.userId)
-                    }
-                    onMute={() => console.log("Mute user:", unreadNotif.userId)}
-                    onDelete={() => deleteNotification(unreadNotif.id)}
+                    onBlock={() => console.log("Block user:", notif.userId)}
+                    onMute={() => console.log("Mute user:", notif.userId)}
+                    onDelete={() => deleteNotification(notif.id)}
                     onPreferences={() =>
                       console.log("Open notification preferences")
                     }
@@ -326,7 +429,16 @@ const NotificationTabs = ({ ownerUserId }) => {
                 </div>
               ))
             ) : (
-              <p className="flex items-start justify-between w-full p-4 border rounded-lg shadow-sm">
+              <p
+                className="h-[104px] w-full bg-neutral-100 rounded-bl-lg rounded-br-lg gap-6 px-6 py-4 p-4 border-l border-r-2 border-t border-b-2 border-[#28363f] flex items-start justify-start inline-flex cursor-pointer hover:bg-gray-300 transition"
+                style={{
+                  borderRadius: "12px",
+                  borderWidth: "1px 2px 2px 1px",
+                  borderColor: "#28363F",
+                  background: "#F5F5F5",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+              >
                 No notifications to display.
               </p>
             )}

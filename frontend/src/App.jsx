@@ -1,63 +1,72 @@
 import NotificationDrawer from "./components/NotificationDrawer/NotificationDrawer";
-import FeedbackPage from "./pages/FeedbackPage";
+import { NavigationProvider, useNavigation } from "./context/NavigationContext";
+import { UserProvider, useUser } from "./context/UserContext";
 import HomePage from "./pages/HomePage";
+import PortfolioDetailsPage from "./pages/PortfolioDetailsPage";
 import TopNav from "@/components/TopNav/TopNav";
-import { useState } from "react";
 import "./App.css";
+import { emptyUser } from "./firebase/functions/fetchUsers";
+import { Toaster } from "sonner";
 
-function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [currentNavState, setCurrentSetNavState] = useState("home");
-  const [lastPage, setLastPage] = useState("home");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // Handle navigation selection
-  const handlePageChange = (page) => {
-    if (page === "notifications") {
-      setLastPage(currentPage); // Store last visited page
-      setIsDrawerOpen(true); // Open notification drawer
-      setCurrentSetNavState("notifications");
-    } else {
-      setCurrentPage(page);
-      setCurrentSetNavState(page);
-    }
-  };
-
-  // Close the notifications drawer and restore the last page
-  const handleCloseDrawer = () => {
-    setIsDrawerOpen(false);
-    setCurrentPage(lastPage); // Restore last visited page
-    setCurrentSetNavState(lastPage);
-  };
+function AppContent() {
+  const {
+    currentPage,
+    goToProfileDetails,
+    isDrawerOpen,
+    closeDrawer,
+    notificationCount,
+  } = useNavigation();
+  const { usersList, currentUser, handleUserLogin } = useUser();
 
   const renderPage = () => {
     switch (currentPage) {
       case "home":
         return <HomePage />;
       case "feedback":
-        return <FeedbackPage />;
+        return <PortfolioDetailsPage />;
       default:
-        return <HomePage />; // Fallback
+        return <HomePage />;
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-md p-4">
+    <div className="min-h-screen flex flex-col bg-[#0954b0]">
+      <header>
         <TopNav
-          setCurrentPage={handlePageChange}
-          currentPage={currentNavState}
-          notificationCount="999"
-          username="usernameTest"
+          setCurrentPage={goToProfileDetails}
+          currentPage={currentPage}
+          notificationCount={notificationCount}
+          currentUser={currentUser || emptyUser}
+          usersList={usersList}
+          handleUserLogin={handleUserLogin} // Pass login function
         />
       </header>
-      <main className="flex-grow p-4">
-        {renderPage()} {/* Render current page */}
-      </main>
+      <main className="flex-grow p-12">{renderPage()}</main>
 
       {/* Notification Drawer */}
-      <NotificationDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
+      <NotificationDrawer
+        currentUser={currentUser || emptyUser}
+        isOpen={isDrawerOpen}
+        onClose={() => closeDrawer()}
+      />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <NavigationProvider>
+        <UserProvider>
+          {" "}
+          {/* Wrap AppContent with UserProvider */}
+          <AppContent />
+        </UserProvider>
+      </NavigationProvider>
+      <div className="min-h-full flex flex-col">
+        <Toaster position="bottom-right" richColors />
+      </div>
+    </>
   );
 }
 

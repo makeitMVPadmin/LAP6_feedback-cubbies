@@ -2,25 +2,48 @@ import { db } from "../firebase.js";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   addDoc,
   updateDoc,
   deleteDoc,
   query,
-  where,
+  where
 } from "firebase/firestore";
 
 const getPortfolioFeedback = async (portfolioId) => {
   const feedbackQuery = query(
-    collection(db, "feedback"),
+    collection(db, "feedbacks"),
     where("portfolioId", "==", portfolioId)
   );
   try {
     const feedbackSnapshot = await getDocs(feedbackQuery);
-    const feedbackList = feedbackSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const feedbackList = [];
+
+    const userPromises = feedbackSnapshot.docs.map(async (docSnapshot) => {
+      const feedbackData = docSnapshot.data();
+      const userId = feedbackData.userId;
+
+      const userDoc = await getDoc(doc(db, "users", userId));
+      const userData = userDoc.exists() ? userDoc.data() : { username: "Unknown", profilePhoto: "" };
+      
+      return { docSnapshot, userData };
+    });
+
+    const userFeedbacks = await Promise.all(userPromises);
+
+    userFeedbacks.forEach(({ docSnapshot, userData }) => {
+      const feedbackData = docSnapshot.data();
+      feedbackList.push({
+        id: docSnapshot.id,
+        ...feedbackData,
+        username: userData.username,
+        profilePhoto: userData.profilePhoto,
+      });
+    });
+
+    feedbackList.sort((a, b) => a.createdAt - b.createdAt);
+
     return feedbackList;
   } catch (err) {
     console.error("Error getting feedback: ", err);
@@ -30,7 +53,7 @@ const getPortfolioFeedback = async (portfolioId) => {
 
 const createFeedback = async (portfolioId, userId, comment) => {
   try {
-    const docRef = await addDoc(collection(db, "feedback"), {
+    const docRef = await addDoc(collection(db, "feedbacks"), {
       portfolioId,
       userId,
       comment,
@@ -45,7 +68,7 @@ const createFeedback = async (portfolioId, userId, comment) => {
 };
 
 const updateFeedback = async (feedbackId, newComment) => {
-  const feedbackDoc = doc(db, "feedback", feedbackId);
+  const feedbackDoc = doc(db, "feedbacks", feedbackId);
   try {
     await updateDoc(feedbackDoc, {
       comment: newComment,
@@ -58,7 +81,7 @@ const updateFeedback = async (feedbackId, newComment) => {
 };
 
 const deleteFeedback = async (feedbackId) => {
-  const feedbackDoc = doc(db, "feedback", feedbackId);
+  const feedbackDoc = doc(db, "feedbacks", feedbackId);
   try {
     await deleteDoc(feedbackDoc);
     console.log("Feedback deleted successfully");
