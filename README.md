@@ -13,6 +13,18 @@
 ## About The Project 🔎
 This feature is designed to integrate into an existing app, creating a space where users can give and receive constructive feedback. It’s aimed at supporting new grads who want guidance on their work, helping ease the uncertainty of the job search process. By promoting clarity and confidence, it empowers users to grow and move forward in their careers. 🚀
 
+## Home Page
+![alt text](<frontend/src/assets/FireShot Capture 003 - Feedback Cubbies - [localhost].png>)
+
+## Post Modal
+![alt text](<frontend/src/assets/FireShot Capture 006 - Feedback Cubbies - [localhost].png>)
+
+## Notifications
+![alt text](<frontend/src/assets/FireShot Capture 009 - Feedback Cubbies - [localhost].png>)
+
+## Filter Tags
+![alt-text](<frontend/src/assets/Screenshot 2025-03-02 at 11.41.58 AM.png>)
+
 ## Project Goals 🎯
 
 - Enable members to upload content of their projects/portfolio.
