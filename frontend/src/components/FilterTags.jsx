@@ -12,6 +12,11 @@ import { useEffect, useState } from "react";
 export function FilterTags({ selectedTag, setSelectedTag }) {
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // This ensures the dropdown is rendered only on the client side
+  }, []);
 
   useEffect(() => {
     const getTags = async () => {
@@ -27,6 +32,8 @@ export function FilterTags({ selectedTag, setSelectedTag }) {
     getTags();
   }, []);
 
+  if (!isClient) return null; // Don't render the dropdown on the server
+
   return (
     <DropdownMenu>
       <Button
@@ -37,7 +44,7 @@ export function FilterTags({ selectedTag, setSelectedTag }) {
           <ChevronDown className="w-3 h-3" />
         </DropdownMenuTrigger>
         Tags
-        <DropdownMenuContent className="h-[17.5] w-[37.5rem] px-3 py-[9px] border-b border-[#d0dce3] grid grid-cols-3">
+        <DropdownMenuContent className="h-[17.5rem] w-[37.5rem] px-3 py-[9px] border-b border-[#d0dce3] grid grid-cols-3">
           {tags.map((tag) => (
             <DropdownMenuItem
               key={tag.id}
