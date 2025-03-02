@@ -132,8 +132,8 @@ const NotificationTabs = ({ ownerUserId }) => {
             style={{ fontFamily: "Montserrat, sans-serif" }}
           >
             All
-            {totalCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 min-w-[24px]">
+            {totalCount !== "undefined" && (
+              <span className="absolute -top-2 -right-2 bg-[#000000] text-white text-xs font-bold rounded-full px-2 py-1 z-50 min-w-[24px]">
                 {totalCount}
               </span>
             )}

@@ -20,11 +20,11 @@ function NotificationDrawer({ isOpen, onClose }) {
         transition-transform duration-300 ease-in-out border-none 
         ${isOpen ? "translate-x-0" : "translate-x-full"}`}
         style={{
-          width: "627px",
+          width: "620px",
           maxHeight: "700px",
           height: "700px",
           top: "53%",
-          right: isOpen ? "22%" : "0",
+          right: isOpen ? "18.4%" : "0",
           transform: "translateY(-50%)",
           overflowY: "scroll",
           overflowX: "hidden",

@@ -54,9 +54,7 @@ const PortfolioCard = ({ portfolio, user, role, tags }) => {
           <img
             className="w-full h-full object-cover"
             src={
-              portfolio.imageUrl && portfolio.imageUrl !== ""
-                ? portfolio.imageUrl
-                : media
+              portfolio?.imageUrl || media
             }
             alt={portfolio.title}
           />
