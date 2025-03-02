@@ -24,7 +24,7 @@ function NotificationDrawer({ isOpen, onClose }) {
           maxHeight: "700px",
           height: "700px",
           top: "53%",
-          right: isOpen ? "18.4%" : "0",
+          // right: isOpen ? "10.4%" : "0",
           transform: "translateY(-50%)",
           overflowY: "scroll",
           overflowX: "hidden",
