@@ -1,11 +1,15 @@
 # LAP6_feedback-cubbies 🎉
 
 ## Table of Contents 📜
-- [About The Project](#about-the-project)
-- [Project Goals](#project-goals)
-- [Tech Stack](#tech-stack)
-- [Project Resources](#project-resources)
-- [Installation](#installation)
+- [About The Project](#about-the-project-🔎)
+   - [Home Page](#home-page)
+   - [Post Modal](#post-modal)
+   - [Notifications](#notifications)
+   - [Filter Tags](#filter-tags)
+- [Project Goals](#project-goals-🎯)
+- [Tech Stack](#tech-stack-💻)
+- [Project Resources](#project-resources-📚)
+- [Installation](#installation-🛠️)
 - [Firebase Initialization Steps](#firebase-initialization-steps)
 - [Deploying the App](#deploying-the-app)
 - [Setting Up Firebase API Keys](#setting-up-firebase-api-keys)
