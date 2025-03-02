@@ -36,6 +36,33 @@ This feature is designed to integrate into an existing app, creating a space whe
 - **[Jira](https://www.atlassian.com/software/jira):** Project management and issue tracking.  
 - **[Confluence](https://www.atlassian.com/software/confluence):** Documentation and team collaboration.  
 
+## Contributors
+
+Our team comprises two mains teams, developers and designers. Designers are responsible for all aspects of the design not limited to user research, wireframing, prototyping and creating detailed figma files to hand off to developers. For this project, developers got a chance to try out various aspects of the stack including backend and frontend.
+### Designers:
+
+ - [Anthony Kazman](https://www.linkedin.com/in/anthony-kazman/)
+ - [Kery Mauvais](https://www.linkedin.com/in/kery-mauvais?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+
+### Developers
+
+   - [Darius Fang](https://www.linkedin.com/in/dariusfang/)
+   - [Jamie Ingalls](https://www.linkedin.com/in/jamieingalls/)
+   - [Maria Lukowich](https://www.linkedin.com/in/maria-lukowich/)
+   - [Matie Baida](https://www.linkedin.com/in/maitebaida/)
+   - [Nyakuma Wal](https://www.linkedin.com/in/nyakuma-wal-3-120/)
+   - [Rouene Medina](https://www.linkedin.com/in/rouenemedina/)
+   - [Tetiana Vezyr](https://www.linkedin.com/in/tetiana-vezyr/)
+
+### Product Manager
+
+- [Abigayle Lefranc](https://www.linkedin.com/in/abigaylelefranc/)
+
+### Team Leads
+
+ - [Helen Yan](https://www.linkedin.com/in/helenyanux/)
+
+
 ---
 
 ## Installation 🛠️  
